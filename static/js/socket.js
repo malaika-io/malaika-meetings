@@ -1,9 +1,6 @@
 //const url = 'https://turn.malaika.io';
-//const namespaceName = #{user.fullName}
-//console.log('namespaceName', namespaceName)
-
+const namespaceName = window.location.pathname.replace('/organization/', '')
 const url = 'http://' + location.host + '/' + namespaceName;
-console.log(url)
 const OneSignal = window.OneSignal || [];
 if (url === "https://turn.malaika.io") {
     OneSignal.push(function () {
@@ -13,13 +10,10 @@ if (url === "https://turn.malaika.io") {
     });
 }
 
-
 const ws = io.connect(url, {
     path: '/kurento',
     transports: ['websocket', 'polling']
 });
-
-//const socket = io('/my-namespace');
 
 ws.on('connect', () => {
     console.log('connect')

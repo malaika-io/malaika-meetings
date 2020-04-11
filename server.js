@@ -25,7 +25,7 @@ const {check} = require('express-validator')
 const redisClient = redis.createClient();
 const redisStore = new RedisStore({client: redisClient});
 const SessionStore = new RedisStore({client: redisClient});
-
+let organization = null;
 const hour = 3600000;
 const expiryDate = new Date(Date.now() + hour); // 1 hour
 let sess = {
@@ -89,6 +89,7 @@ app.use(xssFilter({setOnOldIE: true, mode: null}));
 app.use((req, res, next) => {
     res.locals.csrfToken = req.csrfToken();
     res.locals.user = req.user;
+    organization = req.user.Organization.name;
     res.locals.flashes = req.flash();
     next();
 });
@@ -173,59 +174,69 @@ const io = require('socket.io')(server, {
     transports: ['websocket', 'polling']
 });
 
-io.use(function (socket, next) {
-    const handshake = socket.request.headers.cookie;
-    if (!handshake) return next(new Error('socket.io: no found cookie'), false);
-    const parse_cookie = cookie.parse(handshake);
-    const sessionId = cookieParser.signedCookie(parse_cookie['connect.sid'], process.env["SESSION_SECRET"]);
-    try {
-        return redisStore.load(sessionId, function (err, data) {
-            const session = data['passport'];
-            if (!session) return next(new Error('socket.io: no found cookie'), false);
-            socket.userId = session.user;
-            clients[session.user] = socket.id;
-            return next(null, true);
+console.log('io', io)
+
+
+if (organization) {
+    console.log('organization', organization)
+    const nsp = io.of('/' + organization);
+
+    nsp.use(function (socket, next) {
+        const handshake = socket.request.headers.cookie;
+        if (!handshake) return next(new Error('socket.io: no found cookie'), false);
+        const parse_cookie = cookie.parse(handshake);
+        const sessionId = cookieParser.signedCookie(parse_cookie['connect.sid'], process.env["SESSION_SECRET"]);
+        try {
+            return redisStore.load(sessionId, function (err, data) {
+                const session = data['passport'];
+                if (!session) return next(new Error('socket.io: no found cookie'), false);
+                socket.userId = session.user;
+                clients[session.user] = socket.id;
+                return next(null, true);
+            });
+        } catch (e) {
+            return next(new Error('socket.io: no found cookie'), false);
+        }
+    });
+
+
+    nsp.on('connection', async function (socket) {
+        const clientIp = socket.conn.remoteAddress;
+        const socketId = socket.id;
+        let user = await models.User.findByPk(socket.userId, {
+            include: [models.Organization]
         });
-    } catch (e) {
-        return next(new Error('socket.io: no found cookie'), false);
-    }
-});
 
-//const nsp = io.of('/my-namespace');
+        socket.on('jointChat', async function () {
+            user.update({socketId: socket.id, online: true});
+            let dataEvent = user.fullName + " a rejoint le chat";
+            console.log(dataEvent);
+            // sending to all clients in namespace 'myNamespace', including sender
+            socket.broadcast.emit('jointChat', dataEvent)
+        });
 
-io.on('connection', async function (socket) {
-    const clientIp = socket.conn.remoteAddress;
-    const socketId = socket.id;
-    let user = await models.User.findByPk(socket.userId);
+        socket.on('chat', function (chat) {
 
-    socket.on('jointChat', async function () {
-        user.update({socketId: socket.id, online: true});
-        let dataEvent = user.fullName + " a rejoint le chat";
-        console.log(dataEvent);
-        // sending to all clients in namespace 'myNamespace', including sender
-        io.of('myNamespace').emit('jointChat', dataEvent)
+        });
+
+        socket.on('chat:update', () => {
+            console.log('chat:update');
+
+        });
+
+        socket.on('leaveChat', function () {
+            let dataEvent = user.fullName + "a quitté le chat";
+            console.log(dataEvent);
+            socket.broadcast.emit('jointChat', dataEvent)
+        });
+
+
+        socket.on('disconnect', function () {
+            let dataEvent = user.fullName + " disconnected";
+            socket.broadcast.emit('jointChat', dataEvent)
+        });
     });
-
-    socket.on('chat', function (chat) {
-
-    });
-
-    socket.on('chat:update', () => {
-        console.log('chat:update');
-
-    });
-
-    socket.on('leaveChat', function () {
-        let dataEvent = user.fullName + "a quitté le chat";
-        console.log(dataEvent);
-    });
-
-
-    socket.on('disconnect', function () {
-        let dataEvent = user.fullName + " disconnected";
-    });
-});
-
+}
 
 /*
 let candidatesQueue = {};
