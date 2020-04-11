@@ -1,0 +1,54 @@
+extends ./layout.pug
+block content
+    - var socket                = false;
+    .login-page2.animat-rate
+        .login-content-main
+            .login-content2
+                .theme-tab
+                    ul#myTab.nav.nav-tabs(role='tablist')
+                        li.nav-item
+                            a#login-tab.nav-link(href='/login') login
+                        li.nav-item
+                            a#signup-tab.nav-link.active(href='/signup') Signup
+            .login-content
+                .login-content-header
+                    img.img-fluid(src='images/logo/landing-logo.png' alt='images')
+                h3 Wellcome to Malaika Connecter Vous !
+                div.col-10.ml-sm-auto.px-4
+                    if successes
+                        for success in successes
+                            div.alert.alert-success #{ success }
+                    if errors
+                        for error, i in errors
+                            div.alert.alert-danger #{ error.msg }
+                form(method='POST' action='/login').form2
+                    .form-group
+                        label.col-form-label(for='inputname') Username
+                        input#inputname.form-control(type='text' placeholder='Lord' name="username" required)
+                    .form-group
+                        label.col-form-label(for='inputPassword3') Mot de passe
+                        span
+                        input#inputPassword3.form-control(type='password' placeholder='Mot de passe' name="password" required)
+                        input(type="hidden" name="_csrf" value=`${csrfToken}`)
+                    .form-group
+                        .rememberchk
+                            .form-check
+                                input#gridCheck1.form-check-input(type='checkbox')
+                                label.form-check-label(for='gridCheck1')
+                                    | Remember Me.
+                                h6 Forgot Password?
+                    ul.medialogo
+                        li
+                            a.icon-btn.btn-facebook.button-effect.rouded15(href='#')
+                                i.fa.fa-facebook-f
+                        li
+                            a.icon-btn.btn-danger.button-effect.rouded15(href='#')
+                                i.fa.fa-google
+                        li
+                            a.icon-btn.btn-primary.button-effect.rouded15(href='#')
+                                i.fa.fa-twitter
+                    .form-group.mb-0
+                        .buttons
+                            button.btn.btn-primary(type='submit') Identifiez-vous
+
+        .animation-block

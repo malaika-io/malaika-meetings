@@ -1,0 +1,9 @@
+extends ./layout.pug
+block content
+    - var socket                = true;
+    .chitchat-container.sidebar-toggle
+        +sidebar
+        +content_chat_blank
+        +right-sidebar
+        +app-sidebar
+        +modal

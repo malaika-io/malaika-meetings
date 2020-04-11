@@ -1,0 +1,50 @@
+{
+  "name": "kurento-malaika",
+  "version": "6.13.1-dev",
+  "private": true,
+  "scripts": {
+    "postinstall": ""
+  },
+  "dependencies": {
+    "app-root-path": "^3.0.0",
+    "bcrypt": "^4.0.1",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "connect-flash": "^0.1.1",
+    "connect-redis": "^4.0.4",
+    "continuation-local-storage": "^3.2.1",
+    "cookie-parser": "^1.4.5",
+    "csurf": "^1.11.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.0",
+    "express-back": "0.0.2",
+    "express-session": "^1.17.0",
+    "express-socket.io-session": "^1.3.5",
+    "express-validator": "^6.4.0",
+    "gulp-autoprefixer": "^7.0.1",
+    "http-errors": "^1.7.3",
+    "kurento-client": "git+https://github.com/Kurento/kurento-client-js.git",
+    "lodash": "^4.17.5",
+    "lusca": "^1.6.1",
+    "moment": "^2.20.1",
+    "mysql2": "^1.5.3",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "pug": "^2.0.4",
+    "redis": "^3.0.2",
+    "request-promise-native": "^1.0.5",
+    "sequelize": "^5.21.3",
+    "sequelize-cli": "^5.5.1",
+    "socket.io": "^2.3.0",
+    "winston": "^3.2.1",
+    "x-xss-protection": "^1.3.0",
+    "xss": "^1.0.6"
+  },
+  "devDependencies": {
+    "bower": "^1.4.1",
+    "browser-sync": "^2.26.7",
+    "gulp": "^4.0.2",
+    "gulp-install": "^1.1.0",
+    "gulp-sass": "^4.0.2"
+  }
+}
