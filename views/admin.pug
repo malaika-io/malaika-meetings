@@ -1,6 +1,7 @@
 extends ./layout.pug
 block content
     - var socket                = true;
+    var  namespaceName = #{user.fullName}
     .chitchat-container.sidebar-toggle
         +sidebar
         +content_chat_blank

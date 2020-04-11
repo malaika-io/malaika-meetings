@@ -7,6 +7,9 @@ class User extends Sequelize.Model {
         return super.init(
             {
                 username: {type: Sequelize.STRING, allowNull: true},
+                organization: {
+                    type: Sequelize.STRING, allowNull: true
+                },
                 online: {
                     type: DataTypes.BOOLEAN,
                     defaultValue: false, allowNull: false
@@ -51,6 +54,10 @@ class User extends Sequelize.Model {
                 sequelize: sequelize
             }
         );
+    }
+
+    static associate(models) {
+        this.belongsTo(models.Organization);
     }
 
     comparePassword = (password, hash) => {

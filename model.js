@@ -26,10 +26,17 @@ const sequelize = new Sequelize(
 );
 
 const UserModel = require("./userModel");
+const Organization = require("./organization");
 
 const models = {
-    User: UserModel.init(sequelize, Sequelize)
+    User: UserModel.init(sequelize, Sequelize),
+    Organization: Organization.init(sequelize, Sequelize)
 };
+
+Object.values(models)
+    .filter(model => typeof model.associate === "function")
+    .forEach(model => model.associate(models));
+
 
 //sequelize.sync();
 

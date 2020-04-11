@@ -1,5 +1,9 @@
 //const url = 'https://turn.malaika.io';
-const url = 'http://' + location.host;
+//const namespaceName = #{user.fullName}
+//console.log('namespaceName', namespaceName)
+
+const url = 'http://' + location.host + '/' + namespaceName;
+console.log(url)
 const OneSignal = window.OneSignal || [];
 if (url === "https://turn.malaika.io") {
     OneSignal.push(function () {
@@ -9,15 +13,23 @@ if (url === "https://turn.malaika.io") {
     });
 }
 
+
 const ws = io.connect(url, {
     path: '/kurento',
     transports: ['websocket', 'polling']
 });
 
+//const socket = io('/my-namespace');
+
 ws.on('connect', () => {
     console.log('connect')
     ws.emit('jointChat')
 });
+
+ws.on('jointChat', (message) => {
+    console.log(message)
+});
+
 
 let videoInput;
 let videoOutput;

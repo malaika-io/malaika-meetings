@@ -66,7 +66,8 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(async (id, done) => {
     try {
         let user = await models.User.findByPk(id, {
-            attributes: {exclude: ['password']}
+            attributes: {exclude: ['password']},
+            include: [models.Organization]
         });
         user.dataValues.fullName = user.fullName;
         if (!user) {
@@ -95,9 +96,8 @@ app.use((req, res, next) => {
 app.set('view engine', 'pug');
 app.set("views", path.join(__dirname, "views"));
 
+app.use("/public", express.static(path.join(__dirname, "static")));
 app.use(express.static(path.join(__dirname, 'static')));
-
-//app.use("/static", express.static(path.join(__dirname, "public")));
 
 const isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
@@ -108,7 +108,7 @@ const isAuthenticated = (req, res, next) => {
 
 const isNotAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
-        return res.redirect('/admin');
+        return res.redirect('/organization');
     }
     next();
 };
@@ -122,13 +122,18 @@ app.get('/login', isNotAuthenticated, function (req, res) {
     res.render('login');
 });
 
-app.get('/admin', isAuthenticated, function (req, res) {
+app.get('/organization', isAuthenticated, function (req, res) {
+    const organizationName = req.user.Organization.name;
+    res.redirect('organization/' + organizationName);
+});
+
+app.get('/organization/:name', isAuthenticated, function (req, res) {
     res.render('admin');
 });
 
 app.post('/login', [
     // username must be an email
-    check("username", "Empty name").not().isEmpty(),
+    check("email", "Empty email").isEmail(),
     check('password', "Le mots de passe n'est pas correcte").isLength({min: 5})
 ], authCtl.login);
 
@@ -139,9 +144,9 @@ app.get('/signup', isNotAuthenticated, function (req, res) {
 app.post('/signup', [
     // username must be an email
     check("email", "L'adresse email n'est pas correcte").isEmail(),
-    check("first_name", "Empty name").not().isEmpty(),
-    check("last_name", "Empty name").not().isEmpty(),
-    check("username", "Empty name").not().isEmpty(),
+    check("first_name", "Empty first_name").not().isEmpty(),
+    check("last_name", "Empty last_name").not().isEmpty(),
+    check("organization", "Empty organization").not().isEmpty(),
     check('password', "Le mots de passe n'est pas correcte").isLength({min: 5})
 ], authCtl.register);
 
@@ -170,7 +175,6 @@ const io = require('socket.io')(server, {
 
 io.use(function (socket, next) {
     const handshake = socket.request.headers.cookie;
-    console.log(handshake)
     if (!handshake) return next(new Error('socket.io: no found cookie'), false);
     const parse_cookie = cookie.parse(handshake);
     const sessionId = cookieParser.signedCookie(parse_cookie['connect.sid'], process.env["SESSION_SECRET"]);
@@ -178,8 +182,8 @@ io.use(function (socket, next) {
         return redisStore.load(sessionId, function (err, data) {
             const session = data['passport'];
             if (!session) return next(new Error('socket.io: no found cookie'), false);
-            socket.user = session.user;
-            clients[socket.user] = socket.id;
+            socket.userId = session.user;
+            clients[session.user] = socket.id;
             return next(null, true);
         });
     } catch (e) {
@@ -187,18 +191,19 @@ io.use(function (socket, next) {
     }
 });
 
+//const nsp = io.of('/my-namespace');
 
 io.on('connection', async function (socket) {
     const clientIp = socket.conn.remoteAddress;
     const socketId = socket.id;
+    let user = await models.User.findByPk(socket.userId);
 
     socket.on('jointChat', async function () {
-        console.log(socket.user + " jointChat " + socket.id);
-        //let dataEvent = socket.user.name + " a rejoint le chat";
-        await models.User.update({socketId: socket.id, online: true}, {
-            where: {id: socket.user}
-        });
-
+        user.update({socketId: socket.id, online: true});
+        let dataEvent = user.fullName + " a rejoint le chat";
+        console.log(dataEvent);
+        // sending to all clients in namespace 'myNamespace', including sender
+        io.of('myNamespace').emit('jointChat', dataEvent)
     });
 
     socket.on('chat', function (chat) {
@@ -211,13 +216,13 @@ io.on('connection', async function (socket) {
     });
 
     socket.on('leaveChat', function () {
-        let dataEvent = socket.user.name + "a quitté le chat";
+        let dataEvent = user.fullName + "a quitté le chat";
         console.log(dataEvent);
     });
 
 
     socket.on('disconnect', function () {
-        let dataEvent = socket.user.name + " disconnected";
+        let dataEvent = user.fullName + " disconnected";
     });
 });
 

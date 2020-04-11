@@ -11,10 +11,10 @@ exports.register = (req, res, next) => {
         return res.render("signup", {errors: errors.array()});
     }
 
-    const {email, username, password, last_name, first_name} = req.body;
+    const {email, organization, password, last_name, first_name} = req.body;
     const userInfos = {
         password: bcrypt.hashSync(password, 10),
-        username: xss(username),
+        organization: xss(organization),
         last_name: xss(last_name),
         first_name: xss(first_name),
         email: xss(email.toLowerCase()),
@@ -22,22 +22,28 @@ exports.register = (req, res, next) => {
 
     return execute()
         .then((user) => {
-            return req.logIn(user.dataValues, (err) => {
+            return req.logIn(user, (err) => {
                 if (err) {
-                    console.log('err', err)
                     return res.render("signup", {errors: new Error("Une erreur est survenue. Essayez d\'actualiser cette page")});
                 }
-                res.redirect("/admin");
+                res.redirect(`/organization/${user.Organization.name}`);
             })
         }).catch((err) => {
-            console.log(err);
             return res.render("signup", {errors: errors.array()});
         });
 
     async function execute() {
         try {
-            return await models.User.create(userInfos);
+            const new_user = await models.sequelize.transaction(async function (t) {
+                let newUser = await models.User.create(userInfos, {transaction: t});
+                let newOrganization = await models.Organization.create({name: organization}, {transaction: t});
+                await newUser.setOrganization(newOrganization, {transaction: t});
+                return newUser
+            });
+            await new_user.reload({include: [models.Organization]});
+            return new_user;
         } catch (err) {
+            console.log(err)
             if (err.name === 'SequelizeUniqueConstraintError') {
                 throw new Error("Cette adresse email est déjà utilisée.");
             }
@@ -58,7 +64,7 @@ exports.login = async function (req, res) {
     if (!errors.isEmpty()) {
         return res.render("login", {errors: errors.array()});
     }
-    const {username, password} = req.body;
+    const {email, password} = req.body;
 
     return execute()
         .then((user) => {
@@ -87,7 +93,7 @@ exports.login = async function (req, res) {
 
             const user = await models.User.findOne({
                 where: {
-                    username: username
+                    email: email
                 }
             });
 
