@@ -13,10 +13,11 @@ const redisConnect = require("connect-redis");
 const compression = require('compression');
 const csrfMiddleware = require('csurf');
 const xssFilter = require("x-xss-protection");
+var LocalStrategy = require('passport-local').Strategy;
 const lusca = require('lusca');
-const sessionService = require('./sessions');
 const dotenv = require("dotenv");
 dotenv.config();
+var cookie = require('cookie')
 const models = require('./model');
 const authCtl = require('./auth.controller');
 const RedisStore = redisConnect(session);
@@ -24,14 +25,14 @@ const {check} = require('express-validator')
 const redisClient = redis.createClient();
 const redisStore = new RedisStore({client: redisClient});
 const SessionStore = new RedisStore({client: redisClient});
-sessionService.initializeRedis(redisClient, redisStore);
+
 const hour = 3600000;
 const expiryDate = new Date(Date.now() + hour); // 1 hour
 let sess = {
     store: SessionStore,
     secret: process.env["SESSION_SECRET"],
     resave: true,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
         path: '/',
         /* httpOnly: true,
@@ -64,7 +65,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
     try {
-        const user = await models.User.findByPk(id, {
+        let user = await models.User.findByPk(id, {
             attributes: {exclude: ['password']}
         });
         user.dataValues.fullName = user.fullName;
@@ -168,38 +169,35 @@ const io = require('socket.io')(server, {
 });
 
 io.use(function (socket, next) {
-    const handshake = socket.request;
-    var parseCookie = cookieParser(process.env["SESSION_SECRET"]);
-
-    parseCookie(handshake, null, function (err, data) {
-        console.log(data)
-        /*sessionService.get(handshake, async function (err, session) {
-            console.log('session', session)
-            if (err) return next(new Error('Cookie was not found in request'), false);
-            if (!session) return next(new Error("Not authorized"), false);
-            handshake.session = session;
-
-            await models.User.update({socketId: socket.id}, {
-                where: {id: session.user.id}
-            });
-            socket.user = session.user.id;
+    const handshake = socket.request.headers.cookie;
+    console.log(handshake)
+    if (!handshake) return next(new Error('socket.io: no found cookie'), false);
+    const parse_cookie = cookie.parse(handshake);
+    const sessionId = cookieParser.signedCookie(parse_cookie['connect.sid'], process.env["SESSION_SECRET"]);
+    try {
+        return redisStore.load(sessionId, function (err, data) {
+            const session = data['passport'];
+            if (!session) return next(new Error('socket.io: no found cookie'), false);
+            socket.user = session.user;
             clients[socket.user] = socket.id;
             return next(null, true);
-        });*/
-    });
+        });
+    } catch (e) {
+        return next(new Error('socket.io: no found cookie'), false);
+    }
 });
+
 
 io.on('connection', async function (socket) {
     const clientIp = socket.conn.remoteAddress;
-    const session = socket.handshake.session;
-    console.log('session', session)
-    console.log('clientIp')
-    console.log('connection')
     const socketId = socket.id;
 
-    socket.on('jointChat', function () {
-        console.log(socket.user.id + ' ' + socket.user.name + " jointChat " + socket.id);
-        let dataEvent = socket.user.name + " a rejoint le chat";
+    socket.on('jointChat', async function () {
+        console.log(socket.user + " jointChat " + socket.id);
+        //let dataEvent = socket.user.name + " a rejoint le chat";
+        await models.User.update({socketId: socket.id, online: true}, {
+            where: {id: socket.user}
+        });
 
     });
 
@@ -207,7 +205,7 @@ io.on('connection', async function (socket) {
 
     });
 
-    socket.on('chat:update', (touserId) => {
+    socket.on('chat:update', () => {
         console.log('chat:update');
 
     });
