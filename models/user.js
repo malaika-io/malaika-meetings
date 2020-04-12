@@ -1,14 +1,15 @@
 const {Sequelize} = require("sequelize");
 const bcrypt = require('bcrypt');
+const email = require('../email');
 
 class User extends Sequelize.Model {
 
     static init(sequelize, DataTypes) {
         return super.init(
             {
-                username: {type: Sequelize.STRING, allowNull: true},
+                username: {type: DataTypes.STRING, allowNull: true},
                 organization: {
-                    type: Sequelize.STRING, allowNull: true
+                    type: DataTypes.STRING, allowNull: true
                 },
                 online: {
                     type: DataTypes.BOOLEAN,
@@ -17,14 +18,14 @@ class User extends Sequelize.Model {
                 password: {
                     type: DataTypes.STRING, allowNull: false
                 },
-                first_name: {type: Sequelize.STRING, allowNull: true},
-                last_name: {type: Sequelize.STRING, allowNull: true},
+                first_name: {type: DataTypes.STRING, allowNull: true},
+                last_name: {type: DataTypes.STRING, allowNull: true},
                 email: {
                     type: DataTypes.STRING, allowNull: false, unique: true, validate: {isEmail: true}
                 },
-                peer: {type: Sequelize.STRING, allowNull: true, defaultValue: null},
-                socketId: {type: Sequelize.STRING(45), allowNull: true},
-                sdpOffer: {type: Sequelize.TEXT('tiny'), allowNull: true, defaultValue: null},
+                peer: {type: DataTypes.STRING, allowNull: true, defaultValue: null},
+                socketId: {type: DataTypes.STRING(45), allowNull: true},
+                sdpOffer: {type: DataTypes.TEXT('tiny'), allowNull: true, defaultValue: null},
                 active: {
                     type: DataTypes.BOOLEAN,
                     defaultValue: true, allowNull: false
@@ -62,6 +63,17 @@ class User extends Sequelize.Model {
 
     comparePassword = (password, hash) => {
         return !!bcrypt.compareSync(password, hash)
+    };
+
+
+    static inviteUser(invitation) {
+        const data = {
+            invitedBy: invitation.from,
+            to: invitation.to,
+            url: url,
+            organization_name: invitation.organization_name
+        };
+        return email.send(data)
     };
 
     resetPassword = async function (hash) {

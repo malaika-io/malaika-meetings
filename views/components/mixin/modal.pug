@@ -8,16 +8,16 @@ mixin modal
                     button.close(type='button' data-dismiss='modal' aria-label='Close')
                         span(aria-hidden='true') &times;
                 .modal-body
-                    form.default-form
+                    form(method='POST' action='/users/invite').default-form
                         .form-group
-                            h5 Email  or  Username
-                            input#exampleInputEmail1.form-control(type='text', placeholder='Josephin water')
-                        .form-group.mb-0
-                            h5 Contact number
-                            input#examplemsg.form-control(type='number', placeholder='12345678912')
+                            h5 Email
+                            input#exampleInputEmail1.form-control(type='text', name="email" placeholder='email@test.fr' required autofocus)
+                        //.form-group.mb-0
+                        //    h5 Contact number
+                        //    input#examplemsg.form-control(type='number', placeholder='12345678912')
                 .modal-footer
                     button.btn.btn-danger.button-effect.btn-sm(type='button' data-dismiss='modal') Cancel
-                    button.btn.btn-primary.button-effect.btn-sm(type='button') Add contact
+                    button.btn.btn-primary.button-effect.btn-sm(type='button') Inviter un contact
     #pollModal.modal.pol-modal-main.add-popup(tabindex='-1' role='dialog'  aria-hidden='true')
         .modal-dialog.modal-dialog-centered(role='document')
             .modal-content

@@ -5,7 +5,7 @@ class Organization extends Sequelize.Model {
     static init(sequelize, DataTypes) {
         return super.init(
             {
-                name: {type: Sequelize.STRING, allowNull: true}
+                name: {type: DataTypes.STRING, allowNull: true}
             }, {
                 indexes: [{
                     unique: true,

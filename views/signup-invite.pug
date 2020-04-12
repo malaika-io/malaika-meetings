@@ -1,0 +1,46 @@
+extends ./layout.pug
+block content
+    - var socket                = false;
+    .login-page2.animat-rate
+        .login-content-main
+            .login-content2
+                .theme-tab
+                    ul#myTab.nav.nav-tabs(role='tablist')
+                        li.nav-item
+                            a#login-tab.nav-link.active(href='/login') Identifiez-vous
+                        li.nav-item
+                            a#signup-tab.nav-link(href='/signup') Créer votre compte
+            .login-content
+
+                div.col-10.ml-sm-auto.px-4
+                    if successes
+                        for success in successes
+                            div.alert.alert-success #{ success }
+                    if errors
+                        for error, i in errors
+                            div.alert.alert-danger #{ error.msg }
+
+                .login-content-header
+                    img(src='/public/images/logo/landing-logo.png' alt='sign-logo')
+                h3 Wellcome to Malaika Créer votre compte pour rejoindre #{ organization} .
+                form(method='POST' action='/signup').form2
+                    .form-group
+                        label.col-form-label(for='inputFirstname') Mon prénom
+                        input#inputFirstname.form-control(type='text' placeholder='Prénom' name="first_name" required autofocus)
+                    .form-group
+                        label.col-form-label(for='inputLastname') Mon nom
+                        input#inputLastname.form-control(type='text' placeholder='Nom' name="last_name" required)
+                    //.form-group
+                    //    label.col-form-label(for='inputname') organisation
+                    //    input#inputname.form-control(type='text' placeholder='Libheros' name="organization" required)
+
+                    .form-group
+                        label.col-form-label(for='inputPassword3') Mot de passe
+                        span
+                        input#inputPassword3.form-control(type='password' placeholder='Mot de passe' name="password" required)
+                        input(type="hidden" name="_csrf" value=`${csrfToken}`)
+                    .form-group.mb-0
+                        .buttons
+                            button.btn.btn-primary(type='submit') Créer votre compte
+
+        .animat-block

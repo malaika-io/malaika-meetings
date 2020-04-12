@@ -25,12 +25,14 @@ const sequelize = new Sequelize(
     }
 );
 
-const UserModel = require("./userModel");
+const UserModel = require("./user");
 const Organization = require("./organization");
+const Invitation = require("./invitation");
 
 const models = {
     User: UserModel.init(sequelize, Sequelize),
-    Organization: Organization.init(sequelize, Sequelize)
+    Organization: Organization.init(sequelize, Sequelize),
+    Invitation: Invitation.init(sequelize, Sequelize)
 };
 
 Object.values(models)

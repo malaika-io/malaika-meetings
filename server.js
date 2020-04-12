@@ -18,14 +18,13 @@ const lusca = require('lusca');
 const dotenv = require("dotenv");
 dotenv.config();
 var cookie = require('cookie')
-const models = require('./model');
+const models = require('./models');
 const authCtl = require('./auth.controller');
 const RedisStore = redisConnect(session);
 const {check} = require('express-validator')
 const redisClient = redis.createClient();
 const redisStore = new RedisStore({client: redisClient});
 const SessionStore = new RedisStore({client: redisClient});
-let organization = null;
 const hour = 3600000;
 const expiryDate = new Date(Date.now() + hour); // 1 hour
 let sess = {
@@ -89,7 +88,6 @@ app.use(xssFilter({setOnOldIE: true, mode: null}));
 app.use((req, res, next) => {
     res.locals.csrfToken = req.csrfToken();
     res.locals.user = req.user;
-    organization = req.user.Organization.name;
     res.locals.flashes = req.flash();
     next();
 });
@@ -114,6 +112,8 @@ const isNotAuthenticated = (req, res, next) => {
     next();
 };
 
+const user = require('./user_route');
+app.use('/users', user);
 
 app.get('/', isNotAuthenticated, function (req, res) {
     res.render('landing');
@@ -142,6 +142,17 @@ app.post('/login', [
 app.get('/signup', isNotAuthenticated, function (req, res) {
     res.render('signup');
 });
+
+app.get('/signup/invite/:id', isNotAuthenticated, function (req, res) {
+    console.log(req.params)
+    res.render('signup-invite');
+});
+
+app.put('signup/invite/:id', isNotAuthenticated, function (req, res) {
+    console.log(req.params)
+    console.log(req.body)
+});
+
 app.post('/signup', [
     // username must be an email
     check("email", "L'adresse email n'est pas correcte").isEmail(),
@@ -174,69 +185,63 @@ const io = require('socket.io')(server, {
     transports: ['websocket', 'polling']
 });
 
-console.log('io', io)
+const nsp = io.of('/');
+
+nsp.use(function (socket, next) {
+    const handshake = socket.request.headers.cookie;
+    if (!handshake) return next(new Error('socket.io: no found cookie'), false);
+    const parse_cookie = cookie.parse(handshake);
+    const sessionId = cookieParser.signedCookie(parse_cookie['connect.sid'], process.env["SESSION_SECRET"]);
+    try {
+        return redisStore.load(sessionId, function (err, data) {
+            const session = data['passport'];
+            if (!session) return next(new Error('socket.io: no found cookie'), false);
+            socket.userId = session.user;
+            clients[session.user] = socket.id;
+            return next(null, true);
+        });
+    } catch (e) {
+        return next(new Error('socket.io: no found cookie'), false);
+    }
+});
 
 
-if (organization) {
-    console.log('organization', organization)
-    const nsp = io.of('/' + organization);
+nsp.on('connection', async function (socket) {
+    const clientIp = socket.conn.remoteAddress;
+    const socketId = socket.id;
+    let user = await models.User.findByPk(socket.userId, {
+        include: [models.Organization]
+    });
 
-    nsp.use(function (socket, next) {
-        const handshake = socket.request.headers.cookie;
-        if (!handshake) return next(new Error('socket.io: no found cookie'), false);
-        const parse_cookie = cookie.parse(handshake);
-        const sessionId = cookieParser.signedCookie(parse_cookie['connect.sid'], process.env["SESSION_SECRET"]);
-        try {
-            return redisStore.load(sessionId, function (err, data) {
-                const session = data['passport'];
-                if (!session) return next(new Error('socket.io: no found cookie'), false);
-                socket.userId = session.user;
-                clients[session.user] = socket.id;
-                return next(null, true);
-            });
-        } catch (e) {
-            return next(new Error('socket.io: no found cookie'), false);
-        }
+    socket.on('jointChat', async function () {
+        user.update({socketId: socket.id, online: true});
+        let dataEvent = user.fullName + " a rejoint le chat";
+        console.log(dataEvent);
+        // sending to all clients in namespace 'myNamespace', including sender
+        socket.broadcast.emit('jointChat', dataEvent)
+    });
+
+    socket.on('chat', function (chat) {
+
+    });
+
+    socket.on('chat:update', () => {
+        console.log('chat:update');
+
+    });
+
+    socket.on('leaveChat', function () {
+        let dataEvent = user.fullName + "a quitté le chat";
+        console.log(dataEvent);
+        socket.broadcast.emit('jointChat', dataEvent)
     });
 
 
-    nsp.on('connection', async function (socket) {
-        const clientIp = socket.conn.remoteAddress;
-        const socketId = socket.id;
-        let user = await models.User.findByPk(socket.userId, {
-            include: [models.Organization]
-        });
-
-        socket.on('jointChat', async function () {
-            user.update({socketId: socket.id, online: true});
-            let dataEvent = user.fullName + " a rejoint le chat";
-            console.log(dataEvent);
-            // sending to all clients in namespace 'myNamespace', including sender
-            socket.broadcast.emit('jointChat', dataEvent)
-        });
-
-        socket.on('chat', function (chat) {
-
-        });
-
-        socket.on('chat:update', () => {
-            console.log('chat:update');
-
-        });
-
-        socket.on('leaveChat', function () {
-            let dataEvent = user.fullName + "a quitté le chat";
-            console.log(dataEvent);
-            socket.broadcast.emit('jointChat', dataEvent)
-        });
-
-
-        socket.on('disconnect', function () {
-            let dataEvent = user.fullName + " disconnected";
-            socket.broadcast.emit('jointChat', dataEvent)
-        });
+    socket.on('disconnect', function () {
+        let dataEvent = user.fullName + " disconnected";
+        socket.broadcast.emit('jointChat', dataEvent)
     });
-}
+});
 
 /*
 let candidatesQueue = {};
