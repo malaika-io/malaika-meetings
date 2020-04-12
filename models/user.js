@@ -70,7 +70,7 @@ class User extends Sequelize.Model {
         const data = {
             invitedBy: invitation.from,
             to: invitation.to,
-            url: url,
+            url: invitation.url,
             organization_name: invitation.organization_name
         };
         return email.send(data)

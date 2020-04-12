@@ -1,6 +1,9 @@
 const path = require('path');
 const express = require('express');
 const kurento = require('kurento-client');
+const bcrypt = require('bcrypt');
+const xss = require('xss');
+
 const http = require('http');
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
@@ -128,8 +131,20 @@ app.get('/organization', isAuthenticated, function (req, res) {
     res.redirect('organization/' + organizationName);
 });
 
-app.get('/organization/:name', isAuthenticated, function (req, res) {
-    res.render('admin');
+app.get('/organization/:name', isAuthenticated, async function (req, res) {
+    let organization = await models.Organization.findOne({
+        where: {
+            name: req.user.Organization.name
+        },
+        include: [models.User]
+    });
+    const users = organization.Users;
+    const contacts = users.filter(item => {
+        return item.id !== req.user.id;
+    });
+    res.render('admin', {
+        contacts: contacts
+    });
 });
 
 app.post('/login', [
@@ -143,14 +158,71 @@ app.get('/signup', isNotAuthenticated, function (req, res) {
     res.render('signup');
 });
 
-app.get('/signup/invite/:id', isNotAuthenticated, function (req, res) {
-    console.log(req.params)
-    res.render('signup-invite');
+app.get('/signup/invite/:id', async function (req, res) {
+    const invitationId = req.params.id;
+    try {
+        const invitation = await models.Invitation.findOne({
+            where: {
+                uuid: invitationId
+            }
+        });
+        if (!invitation) {
+            return res.render('404', {message: "inviation n'exsite pas "})
+        }
+        res.render('signup-invite', {
+            organization: invitation.organization_name,
+            email: invitation.to
+        });
+    } catch (e) {
+
+    }
 });
 
-app.put('signup/invite/:id', isNotAuthenticated, function (req, res) {
-    console.log(req.params)
-    console.log(req.body)
+app.post('/signup/invite', async function (req, res) {
+    const {organization, password, last_name, first_name, email} = req.body;
+    const userInfos = {
+        password: bcrypt.hashSync(password, 10),
+        organization: xss(organization),
+        last_name: xss(last_name),
+        first_name: xss(first_name),
+        email: xss(email.toLowerCase()),
+    };
+
+    return execute()
+        .then((user) => {
+            return req.logIn(user, (err) => {
+                if (err) {
+                    return res.render("signup", {errors: new Error("Une erreur est survenue. Essayez d\'actualiser cette page")});
+                }
+                res.redirect(`/organization/${user.Organization.name}`);
+            })
+        }).catch((err) => {
+            return res.render("signup", {
+                errors: [{}]
+            });
+        });
+
+    async function execute() {
+        try {
+            const new_user = await models.sequelize.transaction(async function (t) {
+                let newUser = await models.User.create(userInfos, {transaction: t});
+                let newOrganization = await models.Organization.findOne({name: organization}, {transaction: t});
+                await newUser.setOrganization(newOrganization, {transaction: t});
+                return newUser
+            });
+            await new_user.reload({include: [models.Organization]});
+            return new_user;
+        } catch (err) {
+            console.log(err)
+            if (err.name === 'SequelizeUniqueConstraintError') {
+                throw new Error("Cette adresse email est déjà utilisée.");
+            }
+            if (err.name === 'SequelizeValidationError') {
+                throw new Error("Veuillez vérifier le format de votre adresse email");
+            }
+            throw new Error("Une erreur s\'est produite lors de la création de votre compte");
+        }
+    }
 });
 
 app.post('/signup', [

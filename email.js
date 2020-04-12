@@ -48,8 +48,7 @@ function send(data) {
             organization: data.organization_name,
             url: data.url
         }
-    }).then(console.log)
-        .catch(console.error);
+    }).catch(console.error);
 }
 
 module.exports = {

@@ -47,22 +47,22 @@ let callState = null;
 (function ($) {
     "use strict";
     $(".messages").animate({scrollTop: $(document).height()}, "fast");
-    $('.submit').on('click', function () {
+  /*  $('.submit').on('click', function () {
         console.log('kjghfosdhfosifhsidofs')
         typingMessage();
         newMessage();
-    });
+    });*/
     $(window).on('keydown', function (e) {
-        console.log('kjghfosdhfosifhsidofs')
+        //console.log('kjghfosdhfosifhsidofs')
 
-        if (e.which == 13) {
+     /*   if (e.which == 13) {
             if (!e.target.value) {
                 return false
             }
             typingMessage();
             newMessage();
             return false;
-        }
+        }*/
     });
 
     $(".emojis-sub-contain ul li").click(function () {
