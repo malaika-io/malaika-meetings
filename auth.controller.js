@@ -75,7 +75,7 @@ exports.login = async function (req, res) {
                     console.log('err', err)
                     return res.render("login", {errors: new Error("Une erreur est survenue. Essayez d\'actualiser cette page")});
                 }
-                res.redirect("/admin");
+                res.redirect(`/organization/${user.Organization.name}`);
             })
         }).catch((err) => {
             console.log(err);

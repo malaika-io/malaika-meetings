@@ -1,10 +1,69 @@
-mixin content_chat_blank
+mixin content
     .chitchat-main.small-sidebar(id='content')
         .chat-content.tabto.active
-            .messages.custom-scroll#chating
 
+            .messages.custom-scroll.active#chating
+                .contact-details
+                    .row
+                        form.form-inline.search-form
+                            .form-group
+                                input.form-control-plaintext(type='search', placeholder='Search..')
+                                .icon-close.close-search
+                        .col-7
+                            .media.left
+                                .media-left.mr-3
+                                    .profile.online.menu-trigger
+                                        img.bg-img(src='../assets/images/contact/2.jpg' alt='Avatar')
+                                .media-body
+                                    h5 Josephin water
+                                    .badge.badge-success Active
+                                .media-right
+                                    ul
+                                        li
+                                            a.icon-btn.btn-light.button-effect.mute(href="#")
+                                                i.fa.fa-volume-up
+                                        li
+                                            a.icon-btn.btn-light.search-right(href='#')
+                                                i(data-feather='search')
 
-            .messages.custom-scroll.active#blank
+                                        li
+                                            a.icon-btn.btn-light.button-effect.mobile-sidebar(href="#")
+                                                i(data-feather='chevron-left')
+
+                        .col
+                            ul.calls.text-right
+                                li
+                                    a.icon-btn.btn-light.button-effect(href="#", data-tippy-content='Quick Audio Call' data-toggle='modal' data-target='#audiocall')
+                                        i(data-feather='phone')
+                                li
+                                    a.icon-btn.btn-light.button-effect(href="#", data-tippy-content='Quick Video Call' data-toggle='modal' data-target='#videocall')
+                                        i(data-feather='video')
+                                li
+                                    a.icon-btn.btn-light.button-effect.apps-toggle(href="#", data-tippy-content='All Apps')
+                                        i.ti-layout-grid2
+                                li.chat-friend-toggle
+                                    a.icon-btn.btn-light.bg-transparent.button-effect.outside(href="#", data-tippy-content='Quick action')
+                                        i(data-feather='more-vertical')
+
+                                    .chat-frind-content
+                                        ul
+                                            li
+                                                a.icon-btn.btn-outline-primary.button-effect.btn-sm(href='#')
+                                                    i(data-feather='user')
+                                                h5 Profile
+                                            li
+                                                a.icon-btn.btn-outline-success.button-effect.btn-sm(href='#')
+                                                    i(data-feather='plus-circle')
+                                                h5 Archive
+                                            li
+                                                a.icon-btn.btn-outline-danger.button-effect.btn-sm(href='#')
+                                                    i(data-feather='trash-2')
+                                                h5 Delete
+                                            li
+                                                a.icon-btn.btn-outline-light.button-effect.btn-sm(href='#')
+                                                    i(data-feather='slash')
+                                                h5 Block
+
 
                 .contact-chat
                     .rightchat.animat-rate
@@ -308,3 +367,197 @@ mixin content_chat_blank
                                         img.img-fluid(src='/public/images/sticker/43.gif' alt='sticker')
 
 
+        .call-content.tabto
+            a.icon-btn.btn-outline-primary.button-effect.mobile-back.mb-3(href='#')
+                i.ti-angle-left
+            .row
+                .col-sm-5
+                    .user-profile.mb-3
+                        .user-content
+                            img.img-fluid(src="../assets/images/contact/2.jpg" alt="user-img")
+                            h3 Josephin water
+                            h4.mt-2 +0 1800 76855
+                            ul
+                                li
+                                    i.fa.fa-twitch
+                                    | massage
+                                li
+                                    i.fa.fa-phone(data-toggle='modal' data-target='#audiocall')
+                                    | voice call
+
+                                li
+                                    i.fa.fa-video-camera(data-toggle='modal' data-target='#videocall')
+                                    | video call
+                    .user-profile
+                        .document
+                            .filter-block
+                                .collapse-block.open
+                                    h5.block-title Shared Document
+                                        label.badge.badge-success.sm.ml-2 3
+                                    .block-content
+                                        ul.document-list
+                                            li
+                                                i.ti-folder.font-danger
+                                                h5 Simple_practice_project-zip
+                                            li
+                                                i.ti-write.font-success
+                                                h5 Word_Map-jpg
+                                            li
+                                                i.ti-zip.font-primary
+                                                h5 Latest_Design_portfolio.pdf
+                .col-sm-7
+                    .call-log-main.custom-scroll
+                        .coll-log-group
+                            .log-content-left
+                                .media
+                                    i(data-feather='phone-incoming')
+                                    .media-body
+                                        h5 incoming call
+                            .log-content-right
+                                h6 15 Minutes ago 5:10 &nbsp;(22/10/19)
+                        .coll-log-group
+                            .log-content-left
+                                .media
+                                    i(data-feather='phone-incoming')
+                                    .media-body
+                                        h5 outgoing call
+                            .log-content-right
+                                h6 30 Minutes ago 10:30 &nbsp;(12/09/19)
+                        .coll-log-group
+                            .log-content-left
+                                .media
+                                    i(data-feather='phone-missed')
+                                    .media-body
+                                        h5 missed call
+                            .log-content-right
+                                h6 1 Minutes ago 8:30 &nbsp; (28/08/19)
+                        .coll-log-group
+                            .log-content-left
+                                .media
+                                    i(data-feather='phone-missed')
+                                    .media-body
+                                        h5 missed call
+                            .log-content-right
+                                h6 10 Minutes ago 9:10 &nbsp; (18/01/19)
+                        .coll-log-group
+                            .log-content-left
+                                .media
+                                    i(data-feather='phone-missed')
+                                    .media-body
+                                        h5 missed call
+                            .log-content-right
+                                h6 35 Minutes ago 9:10 &nbsp; (17/01/19)
+                        .coll-log-group
+                            .log-content-left
+                                .media
+                                    i(data-feather='phone-missed')
+                                    .media-body
+                                        h5 missed call
+                            .log-content-right
+                                h6 80 Minutes ago 12:05 &nbsp; (17/01/19)
+
+                        .coll-log-group
+                            .log-content-left
+                                .media
+                                    i(data-feather='phone-incoming')
+                                    .media-body
+                                        h5 incoming call
+                            .log-content-right
+                                h6 15 Minutes ago 15:20 &nbsp; (28/02/20)
+
+                        .coll-log-group
+                            .log-content-left
+                                .media
+                                    i(data-feather='phone-incoming')
+                                    .media-body
+                                        h5 incoming call
+                            .log-content-right
+                                h6 10 Minutes ago 20m 26s &nbsp; 10/3/20
+                    .call-log-clear
+                        i.ti-trash.font-danger
+                        span.font-danger Delete call log
+        .contact-content.tabto
+            .contact-sub-content
+                a.icon-btn.btn-outline-primary.button-effect.mobile-back.mb-3(href='#')
+                    i.ti-angle-left
+                .row
+                    .col-sm-5
+                        .user-profile
+                            .user-content
+                                img.img-fluid.bg-icon(src='../assets/images/contact/2.jpg' alt='user-img')
+                                h3 Josephin water
+                                ul
+                                    li
+                                        i.fa.fa-twitch
+                                        | massage
+                                    li
+                                        i.fa.fa-phone
+                                        | voice call
+                                    li
+                                        i.fa.fa-video-camera
+                                        | video call
+
+                        .personal-info-group
+                            .social-info-group
+                                ul.integratin.mt-0
+                                    li
+                                        .media
+                                            .media-left
+                                                a.fb(href='https://www.facebook.com/login' target='_blank')
+                                                    i.fa.fa-facebook
+                                                    h5 Facebook
+                                            .media-right
+                                                .profile.bg-size
+                                                    img.bg-img(src='../assets/images/contact/1.jpg' alt='Avatar')
+                                    li
+                                        .media
+                                            .media-left
+                                                a.twi(href='https://twitter.com/login' target='_blank')
+                                                    i.fa.fa-twitter
+                                                    h5 twitter
+                                            .media-right
+                                                .profile.bg-size
+                                                    img.bg-img(src='../assets/images/contact/3.jpg' alt='Avatar')
+                                    li
+                                        .media
+                                            .media-left
+                                                a.ggl(href='https://accounts.google.com/signin/v2/identifier?service=mail&passive=true&rm=false&continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&ss=1&scc=1&ltmpl=default&ltmplcache=2&emr=1&osid=1&flowName=GlifWebSignIn&flowEntry=ServiceLogin' target='_blank')
+                                                    i.fa.fa-google
+                                                    h5 google
+                                            .media-right
+                                                .profile.bg-size
+                                                    img.bg-img(src='../assets/images/contact/2.jpg' alt='Avatar')
+                    .col-sm-7
+                        .personal-info-group
+                            h3 contact info
+                            ul.basic-info
+                                li
+                                    h5 name
+                                    h5.details Nick
+                                li
+                                    h5 gender
+                                    h5.details male
+                                li
+                                    h5 Birthday
+                                    h5.details 9 april 1994
+                                li
+                                    h5 Favorite Book
+                                    h5.details Perfect Chemistry
+                                li
+                                    h5 Personality
+                                    h5.details Cool
+                                li
+                                    h5 City
+                                    h5.details Moline Acres
+                                li
+                                    h5 mobile no
+                                    h5.details +0 1800 76855
+                                li
+                                    h5 email
+                                    h5.details pixelstrap@test.com
+                                li
+                                    h5 Website
+                                    h5.details www.test.com
+                                li
+                                    h5.m-0 Interest
+                                    h5.details Photography
