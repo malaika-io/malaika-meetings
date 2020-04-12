@@ -65,6 +65,7 @@ exports.login = async function (req, res) {
         return res.render("login", {errors: errors.array()});
     }
     const {email, password} = req.body;
+    console.log(req.user)
 
     return execute()
         .then((user) => {
@@ -94,7 +95,8 @@ exports.login = async function (req, res) {
             const user = await models.User.findOne({
                 where: {
                     email: email
-                }
+                },
+                include:[models.Organization]
             });
 
             if (!user) {

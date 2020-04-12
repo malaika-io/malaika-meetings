@@ -118,6 +118,7 @@ const isNotAuthenticated = (req, res, next) => {
 const user = require('./user_route');
 app.use('/users', user);
 
+
 app.get('/', isNotAuthenticated, function (req, res) {
     res.render('landing');
 });
@@ -145,6 +146,31 @@ app.get('/organization/:name', isAuthenticated, async function (req, res) {
     res.render('admin', {
         contacts: contacts
     });
+});
+
+app.get('/organization/:organisation/contact/:id', isAuthenticated, async function (req, res) {
+    const organizationName = req.user.Organization.name;
+    const contactId = req.params.id;
+    let organization = await models.Organization.findOne({
+        where: {
+            name: req.user.Organization.name
+        },
+        include: [models.User]
+    });
+    const users = organization.Users;
+    const contacts = users.filter(item => {
+        return item.id !== req.user.id;
+    });
+    try {
+        const contact = await models.User.findByPk(contactId);
+        console.log(contact)
+        res.render('admin', {
+            contact: contact,
+            contacts: contacts
+        });
+    } catch (e) {
+
+    }
 });
 
 app.post('/login', [
@@ -244,6 +270,24 @@ app.use(function (err, req, res, next) {
     })
 });
 
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+    // render the error page
+    res.status(err.status || 500);
+    res.render('404');
+});
 
 const server = http.createServer(app).listen(3000, function () {
     console.log('Kurento Tutorial started');

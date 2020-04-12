@@ -95,7 +95,7 @@ mixin sidebar
                             a#call-tab.nav-link.button-effect(data-toggle='tab' href='#call' role='tab' aria-controls='call' aria-selected='false')
                                 i(data-feather='phone')
                                 | Call
-                        li.nav-item(data-to='contact-content')
+                        li.nav-item
                             a#contact-tab.nav-link.button-effect(data-toggle='tab' href='#contact' role='tab' aria-controls='contact' aria-selected='false')
                                 i(data-feather='users')
                                 | Contact
@@ -266,18 +266,19 @@ mixin sidebar
                         #contact.tab-pane.fade(role='tabpanel' aria-labelledby='contact-tab')
                             ul.contact-log-main
                                 each val in contacts
-                                    li
-                                        .contact-box
-                                            .profile.offline
-                                                img.bg-img(src='/public/images/contact/2.jpg' alt='Avatar')
-                                            .details
-                                                h5 #{ val.fullName}
-                                                h6 0683267570
-                                            .contact-action
-                                                .icon-btn.btn-outline-primary.btn-sm.button-effect
-                                                    i(data-feather='phone')
-                                                .icon-btn.btn-outline-success.btn-sm.button-effect
-                                                    i(data-feather='video')
+                                    li.nav-item
+                                        a.nav-link(href=`/organization/libheros/contact/${val.id}`)
+                                            .contact-box
+                                                .profile.offline
+                                                    img.bg-img(src='/public/images/contact/2.jpg' alt='Avatar')
+                                                .details
+                                                    h5 #{ val.fullName}
+                                                    h6 0683267570
+                                                .contact-action
+                                                    .icon-btn.btn-outline-primary.btn-sm.button-effect
+                                                        i(data-feather='phone')
+                                                    .icon-btn.btn-outline-success.btn-sm.button-effect
+                                                        i(data-feather='video')
 
 
         .fevorite-tab.dynemic-sidebar#favourite
