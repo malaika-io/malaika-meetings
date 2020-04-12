@@ -1,13 +1,15 @@
 extends ./layout.pug
 
+include ./components/mixin-landing
+
 block content
     - var socket                = false;
     .theme-landing
         +header
-    +teamwork
-    +collaboration
-    +secure-app
-    +footer
-    +taptop
+        +teamwork
+        +collaboration
+        +secure-app
+        +footer
+        +taptop
 
     script(src='js/jquery.magnific-popup.js')
