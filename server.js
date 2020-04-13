@@ -149,13 +149,14 @@ app.get('/organization/:name', isAuthenticated, async function (req, res) {
 });
 
 app.get('/organization/:organisation/contact/:id', isAuthenticated, async function (req, res) {
-    const organizationName = req.user.Organization.name;
+    console.log('organisation', req.params.organisation)
     const contactId = req.params.id;
+    console.log('contactId', contactId)
     let organization = await models.Organization.findOne({
         where: {
             name: req.user.Organization.name
         },
-        include: [models.User]
+        include: [{model: models.User}]
     });
     const users = organization.Users;
     const contacts = users.filter(item => {
@@ -163,10 +164,11 @@ app.get('/organization/:organisation/contact/:id', isAuthenticated, async functi
     });
     try {
         const contact = await models.User.findByPk(contactId);
-        console.log(contact)
+        console.log('contact', contact)
         res.render('home', {
             contact: contact,
-            contacts: contacts
+            contacts: contacts,
+            chats: [1, 2]
         });
     } catch (e) {
 
@@ -279,8 +281,8 @@ app.use(function(req, res, next) {
 });*/
 
 // error handler
-app.use(function(err, req, res, next) {
-    console.log('eer',err)
+app.use(function (err, req, res, next) {
+    console.log('eer', err)
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
