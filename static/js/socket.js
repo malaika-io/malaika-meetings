@@ -14,18 +14,15 @@ let videoOutput;
 let webRtcPeer;
 let state = null;
 
-window.onload = function () {
-    videoInput = document.getElementById('videoInput');
-    videoOutput = document.getElementById('videoOutput');
-    document.getElementById('call').addEventListener('click', function () {
-        call();
-    });
-    document.getElementById('call').addEventListener('click', function () {
-        console.log('stop')
-        stop();
-    });
-};
-
+videoInput = document.getElementById('videoInput');
+videoOutput = document.getElementById('videoOutput');
+document.getElementById('call').addEventListener('click', function () {
+    call();
+});
+document.getElementById('stop').addEventListener('click', function () {
+    console.log('stop')
+    stop();
+});
 
 const ws = io.connect(url, {
     path: '/kurento',
@@ -145,7 +142,7 @@ function call() {
         localVideo: videoInput,
         remoteVideo: videoOutput,
         onicecandidate: onIceCandidate,
-        mediaConstraints: constraints
+        //mediaConstraints: constraints
     };
 
     webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function (error) {
@@ -164,6 +161,7 @@ function onOffer(error, offerSdp) {
         to: toId,
         sdpOffer: offerSdp
     };
+    console.log('message_onOffer', message)
     ws.emit('call', message);
 }
 
@@ -189,18 +187,15 @@ function callResponse(message) {
 }
 
 function incomingCall(message) {
-    console.log('incomingCall', message)
     $('#confercall').modal();
     document.getElementById('accept-call').addEventListener('click', function () {
         $('#confercall').modal('hide');
         $('#videocall').modal();
-
         const options = {
             localVideo: videoInput,
             remoteVideo: videoOutput,
             onicecandidate: onIceCandidate
         };
-
         webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function (error) {
             if (error) {
                 console.error(error);

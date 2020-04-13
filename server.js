@@ -470,6 +470,7 @@ async function stop(sessionId) {
     }
 
     var pipeline = pipelines[sessionId];
+    console.log('pipeline', pipelines[sessionId])
     delete pipelines[sessionId];
     pipeline.release();
 
