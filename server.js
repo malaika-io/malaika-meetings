@@ -1,13 +1,10 @@
 const path = require('path');
 const express = require('express');
 const kurento = require('kurento-client');
-const bcrypt = require('bcrypt');
-const xss = require('xss');
-
 const http = require('http');
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
-const createError = require('http-errors')
+const cookie = require('cookie');
 const redis = require('redis');
 const passport = require('passport');
 const flash = require('connect-flash');
@@ -16,15 +13,11 @@ const redisConnect = require("connect-redis");
 const compression = require('compression');
 const csrfMiddleware = require('csurf');
 const xssFilter = require("x-xss-protection");
-var LocalStrategy = require('passport-local').Strategy;
 const lusca = require('lusca');
 const dotenv = require("dotenv");
 dotenv.config();
-var cookie = require('cookie')
 const models = require('./models');
-const authCtl = require('./auth.controller');
 const RedisStore = redisConnect(session);
-const {check} = require('express-validator')
 const redisClient = redis.createClient();
 const redisStore = new RedisStore({client: redisClient});
 const SessionStore = new RedisStore({client: redisClient});
@@ -43,18 +36,15 @@ let sess = {
         maxAge: hour
     }
 };
-
 const app = express();
 app.use(bodyParser.json({limit: '50mb', parameterLimit: 50000}));
 app.use(bodyParser.urlencoded({limit: '50mb', parameterLimit: 50000, extended: false}));
-
 app.use(compression({
     filter: function (req, res) {
         return (/json|text|javascript|css|font|svg/).test(res.getHeader('Content-Type'));
     },
     level: 9
 }));
-
 app.use(cookieParser());
 app.use(session(sess));
 app.use(passport.initialize());
@@ -80,7 +70,6 @@ passport.deserializeUser(async (id, done) => {
         return done(e, null);
     }
 });
-
 app.use(
     process.env.NODE_ENV === 'development' ?
         csrfMiddleware({ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT' /* etc */]}) :
@@ -94,175 +83,25 @@ app.use((req, res, next) => {
     res.locals.flashes = req.flash();
     next();
 });
-
 app.set('view engine', 'pug');
 app.set("views", path.join(__dirname, "views"));
-
 app.use("/public", express.static(path.join(__dirname, "static")));
 app.use(express.static(path.join(__dirname, 'static')));
 
-const isAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
-        return next()
-    }
-    res.redirect("/login")
-};
 
-const isNotAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
-        return res.redirect('/organization');
-    }
-    next();
-};
+const home = require('./routes/home');
+const user = require('./routes/user');
+const login = require('./routes/login');
+const signup = require('./routes/signup');
+const logout = require('./routes/logout');
+const organization = require('./routes/organization');
 
-const user = require('./user_route');
+app.use('/', home);
 app.use('/users', user);
-
-
-app.get('/', isNotAuthenticated, function (req, res) {
-    res.render('landing');
-});
-
-app.get('/login', isNotAuthenticated, function (req, res) {
-    res.render('login');
-});
-
-app.get('/organization', isAuthenticated, function (req, res) {
-    const organizationName = req.user.Organization.name;
-    res.redirect('organization/' + organizationName);
-});
-
-app.get('/organization/:name', isAuthenticated, async function (req, res) {
-    let organization = await models.Organization.findOne({
-        where: {
-            name: req.user.Organization.name
-        },
-        include: [models.User]
-    });
-    const users = organization.Users;
-    const contacts = users.filter(item => {
-        return item.id !== req.user.id;
-    });
-    res.render('admin', {
-        contacts: contacts
-    });
-});
-
-app.get('/organization/:organisation/contact/:id', isAuthenticated, async function (req, res) {
-    console.log('organisation', req.params.organisation)
-    const contactId = req.params.id;
-    console.log('contactId', contactId)
-    let organization = await models.Organization.findOne({
-        where: {
-            name: req.user.Organization.name
-        },
-        include: [{model: models.User}]
-    });
-    const users = organization.Users;
-    const contacts = users.filter(item => {
-        return item.id !== req.user.id;
-    });
-    try {
-        const contact = await models.User.findByPk(contactId);
-        console.log('contact', contact)
-        res.render('home', {
-            contact: contact,
-            contacts: contacts,
-            chats: [1, 2]
-        });
-    } catch (e) {
-
-    }
-});
-
-app.post('/login', [
-    // username must be an email
-    check("email", "Empty email").isEmail(),
-    check('password', "Le mots de passe n'est pas correcte").isLength({min: 5})
-], authCtl.login);
-
-
-app.get('/signup', isNotAuthenticated, function (req, res) {
-    res.render('signup');
-});
-
-app.get('/signup/invite/:id', async function (req, res) {
-    const invitationId = req.params.id;
-    try {
-        const invitation = await models.Invitation.findOne({
-            where: {
-                uuid: invitationId
-            }
-        });
-        if (!invitation) {
-            return res.render('404', {message: "inviation n'exsite pas "})
-        }
-        res.render('signup-invite', {
-            organization: invitation.organization_name,
-            email: invitation.to
-        });
-    } catch (e) {
-
-    }
-});
-
-app.post('/signup/invite', async function (req, res) {
-    const {organization, password, last_name, first_name, email} = req.body;
-    const userInfos = {
-        password: bcrypt.hashSync(password, 10),
-        organization: xss(organization),
-        last_name: xss(last_name),
-        first_name: xss(first_name),
-        email: xss(email.toLowerCase()),
-    };
-
-    return execute()
-        .then((user) => {
-            return req.logIn(user, (err) => {
-                if (err) {
-                    return res.render("signup", {errors: new Error("Une erreur est survenue. Essayez d\'actualiser cette page")});
-                }
-                res.redirect(`/organization/${user.Organization.name}`);
-            })
-        }).catch((err) => {
-            return res.render("signup", {
-                errors: [{}]
-            });
-        });
-
-    async function execute() {
-        try {
-            const new_user = await models.sequelize.transaction(async function (t) {
-                let newUser = await models.User.create(userInfos, {transaction: t});
-                let newOrganization = await models.Organization.findOne({name: organization}, {transaction: t});
-                await newUser.setOrganization(newOrganization, {transaction: t});
-                return newUser
-            });
-            await new_user.reload({include: [models.Organization]});
-            return new_user;
-        } catch (err) {
-            console.log(err)
-            if (err.name === 'SequelizeUniqueConstraintError') {
-                throw new Error("Cette adresse email est déjà utilisée.");
-            }
-            if (err.name === 'SequelizeValidationError') {
-                throw new Error("Veuillez vérifier le format de votre adresse email");
-            }
-            throw new Error("Une erreur s\'est produite lors de la création de votre compte");
-        }
-    }
-});
-
-app.post('/signup', [
-    // username must be an email
-    check("email", "L'adresse email n'est pas correcte").isEmail(),
-    check("first_name", "Empty first_name").not().isEmpty(),
-    check("last_name", "Empty last_name").not().isEmpty(),
-    check("organization", "Empty organization").not().isEmpty(),
-    check('password', "Le mots de passe n'est pas correcte").isLength({min: 5})
-], authCtl.register);
-
-app.get('/logout', isAuthenticated, authCtl.logout);
+app.use('/login', login);
+app.use('/signup', signup);
+app.use('/logout', logout);
+app.use('/organization', organization);
 
 
 app.use(function (err, req, res, next) {

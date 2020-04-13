@@ -1,15 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const models = require("./models");
+const models = require("../models");
 const uuidv4 = require('uuid/v4')
 
 
-// Home page route.
 router.get('/', async function (req, res) {
     res.send('Wiki home page');
 });
 
-// About page route.
 router.post('/invite', async function (req, res) {
     let uuid4 = uuidv4();
     const url = process.env.INVITE_URL + uuid4;
