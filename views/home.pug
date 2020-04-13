@@ -57,18 +57,19 @@ block home
                                                 h5 block
 
                 .contact-chat
-                    .contact-chat
-                        ul.chatappend
+                    ul.chatappend
+                        each chat in chats
                             li.replies
                                 .media
                                     .profile.mr-4
-                                        img.bg-img(src='../assets/images/contact/2.jpg' alt='Avatar')
+                                        img.bg-img(src='/public/images/contact/2.jpg' alt='Avatar')
                                     .media-body
                                         .contact-name
                                             h5 Alan josheph
                                             h6 01:40 AM
                                             ul.msg-box
                                                 li.msg-setting-main
+                                                    h5 Hi I am Josephin, can you help me to find best chat app?.
                                                     .msg-dropdown-main
                                                         .msg-setting
                                                             i.ti-more-alt
@@ -90,35 +91,11 @@ block home
                                                                     a(href="#")
                                                                         i.ti-trash
                                                                         | delete
-                                                    h5 Hi I am Alan,
-                                                li.msg-setting-main
-                                                    h5  your personal assistant to help you &#128512;
-                                                    .badge.badge-success.sm.ml-2  R
-                                                    .msg-dropdown-main
-                                                        .msg-setting
-                                                            i.ti-more-alt
-                                                        .msg-dropdown
-                                                            ul
-                                                                li
-                                                                    a(href="#")
-                                                                        i.fa.fa-share
-                                                                        | forward
-                                                                li
-                                                                    a(href="#")
-                                                                        i.fa.fa-clone
-                                                                        | copy
-                                                                li
-                                                                    a(href="#")
-                                                                        i.fa.fa-star-o
-                                                                        | rating
-                                                                li
-                                                                    a(href="#")
-                                                                        i.ti-trash
-                                                                        | delete
+
                             li.sent
                                 .media
                                     .profile.mr-4
-                                        img.bg-img(src='../assets/images/contact/2.jpg' alt='Avatar')
+                                        img.bg-img(src='/public/images/contact/2.jpg' alt='Avatar')
                                     .media-body
                                         .contact-name
                                             h5 Josephin water
@@ -147,55 +124,32 @@ block home
                                                                     a(href="#")
                                                                         i.ti-trash
                                                                         | delete
-                                                li.msg-setting-main
-                                                    h5  it should from elite auther &#128519;
-                                                    .badge.badge-success.sm.ml-2  R
-                                                    .msg-dropdown-main
-                                                        .msg-setting
-                                                            i.ti-more-alt
-                                                        .msg-dropdown
-                                                            ul
-                                                                li
-                                                                    a(href="#")
-                                                                        i.fa.fa-share
-                                                                        | forward
-                                                                li
-                                                                    a(href="#")
-                                                                        i.fa.fa-clone
-                                                                        | copy
-                                                                li
-                                                                    a(href="#")
-                                                                        i.fa.fa-star-o
-                                                                        | rating
-                                                                li
-                                                                    a(href="#")
-                                                                        i.ti-trash
-                                                                        | delete
-                    .rightchat.animat-rate
-                        .bg_circle
-                            div
-                            div
-                            div
-                            div
-                            div
-                            div
-                            div
-                            div
-                            div
-                            div
-                            div
-                        .cross
-                        .cross1
-                        .cross2
-                        .dot
-                        .dot1
-                .call-list-center
-                    img(src='/public/images/chat.png' alt="")
-                    .animated-bg
-                        i
-                        i
-                        i
-                        p aucun messages encore
+                        else
+                            .rightchat.animat-rate
+                                .bg_circle
+                                    div
+                                    div
+                                    div
+                                    div
+                                    div
+                                    div
+                                    div
+                                    div
+                                    div
+                                    div
+                                    div
+                                .cross
+                                .cross1
+                                .cross2
+                                .dot
+                                .dot1
+                            .call-list-center
+                                img(src='/public/images/chat.png' alt="")
+                                .animated-bg
+                                    i
+                                    i
+                                    i
+                                    p aucun messages encore
 
 
             .message-input
