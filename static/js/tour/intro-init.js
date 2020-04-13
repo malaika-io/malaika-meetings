@@ -5,5 +5,5 @@ jQuery(document).ready(function() {
             introJs().start();
         }
     };
-    intro_start.init()
+    //intro_start.init()
 });

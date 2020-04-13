@@ -34,6 +34,7 @@ router.get('/:name', isAuthenticated, async function (req, res) {
 
 // About page route.
 router.get('/:organisation/contact/:id', isAuthenticated, async function (req, res) {
+    console.log('sqdqsdsqqd')
     const contactId = req.params.id;
     let organization = await models.Organization.findOne({
         where: {
@@ -47,13 +48,14 @@ router.get('/:organisation/contact/:id', isAuthenticated, async function (req, r
     });
     try {
         const contact = await models.User.findByPk(contactId);
+        //contact.fullName = `${contact.first_name} ${contact.last_name}`;
         res.render('home', {
             contact: contact,
             contacts: contacts,
-            chats: [1, 2]
+            chats: []
         });
     } catch (e) {
-
+        console.log(e)
     }
 });
 

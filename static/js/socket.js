@@ -1,6 +1,5 @@
 //const url = 'https://turn.malaika.io';
-const namespaceName = window.location.pathname.replace('/organization/', '')
-const url = 'http://' + location.host + '/' + namespaceName;
+const url = 'http://' + location.host;
 const OneSignal = window.OneSignal || [];
 if (url === "https://turn.malaika.io") {
     OneSignal.push(function () {
@@ -16,12 +15,22 @@ const ws = io.connect(url, {
 });
 
 ws.on('connect', () => {
-    console.log('connect')
     ws.emit('jointChat')
 });
 
 ws.on('jointChat', (message) => {
     console.log(message)
+});
+
+ws.on('chat', (message) => {
+    console.log(message)
+    $('<li class="sent last typing-m"> <div class="media"> <div class="profile mr-4 bg-size" style="background-image: url(&quot;/public/images/contact/2.jpg&quot;); background-size: cover; background-position: center center; display: block;"><img class="bg-img" src="/public/images/contact/2.jpg" alt="Avatar" style="display: none;"></div><div class="media-body"> <div class="contact-name"> <h5>'+ message.from +'</h5> <h6>01:42 AM</h6> <ul class="msg-box"> <li> <h5> <div class="type"> <div class="typing-loader"></div></div></h5> </li></ul> </div></div></div></li>').appendTo($('.messages .chatappend'));
+    $(".messages").animate({scrollTop: $(document).height()}, "fast");
+    setTimeout(function () {
+        $('.typing-m').hide();
+        $('<li class="sent"> <div class="media"> <div class="profile mr-4 bg-size" style="background-image: url(&quot;../assets/images/contact/2.jpg&quot;); background-size: cover; background-position: center center; display: block;"></div><div class="media-body"> <div class="contact-name"> <h5>'+ message.from +'</h5> <h6>01:35 AM</h6> <ul class="msg-box"> <li> <h5>' + message.txt + '</h5> <div class="badge badge-success sm ml-2"> R</div></li></ul> </div></div></div></li>').appendTo($('.messages .chatappend'));
+        $(".messages").animate({scrollTop: $(document).height()}, "fast");
+    }, 2000)
 });
 
 
@@ -41,28 +50,20 @@ const PROCESSING_CALL = 1;
 const IN_CALL = 2;
 let callState = null;
 
-/*=====================
-        Chat
-        ==========================*/
 (function ($) {
     "use strict";
     $(".messages").animate({scrollTop: $(document).height()}, "fast");
-  /*  $('.submit').on('click', function () {
-        console.log('kjghfosdhfosifhsidofs')
-        typingMessage();
+    $('.submit').on('click', function () {
         newMessage();
-    });*/
+    });
     $(window).on('keydown', function (e) {
-        //console.log('kjghfosdhfosifhsidofs')
-
-     /*   if (e.which == 13) {
+        if (e.which == 13) {
             if (!e.target.value) {
                 return false
             }
-            typingMessage();
             newMessage();
             return false;
-        }*/
+        }
     });
 
     $(".emojis-sub-contain ul li").click(function () {
@@ -87,25 +88,23 @@ let callState = null;
     });
 
     function newMessage() {
-        var message = $('.message-input input').val();
+        let message = $('.message-input input').val();
         if ($.trim(message) == '') {
             return false;
         }
-        $('<li class="replies"> <div class="media"> <div class="profile mr-4 bg-size" style="background-image: url(&quot;../assets/images/contact/1.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="media-body"> <div class="contact-name"> <h5>Alan josheph</h5> <h6>01:42 AM</h6> <ul class="msg-box"> <li> <h5>' + message + '</h5> </li></ul> </div></div></div></li>').appendTo($('.messages .chatappend'));
+        let pageURL = window.location.href;
+        let toId = pageURL.substr(pageURL.lastIndexOf('/') + 1);
+        ws.emit('chat', {
+            txt: message,
+            to: toId
+        });
+        $('<li class="replies"> <div class="media"> <div class="profile mr-4 bg-size" style="background-image: url(&quot;../images/contact/1.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="media-body"> <div class="contact-name"> <h5>Moi</h5> <h6>01:42 AM</h6> <ul class="msg-box"> <li> <h5>' + message + '</h5> </li></ul> </div></div></div></li>').appendTo($('.messages .chatappend'));
         $('.message-input input').val(null);
         $('.chat-main .active .details h6').html('<span>You : </span>' + message);
         $(".messages").animate({scrollTop: $(document).height()}, "fast");
     };
 
-    function typingMessage() {
-        $('<li class="sent last typing-m"> <div class="media"> <div class="profile mr-4 bg-size" style="background-image: url(&quot;../assets/images/contact/2.jpg&quot;); background-size: cover; background-position: center center; display: block;"><img class="bg-img" src="../assets/images/contact/2.jpg" alt="Avatar" style="display: none;"></div><div class="media-body"> <div class="contact-name"> <h5>Josephin water</h5> <h6>01:42 AM</h6> <ul class="msg-box"> <li> <h5> <div class="type"> <div class="typing-loader"></div></div></h5> </li></ul> </div></div></div></li>').appendTo($('.messages .chatappend'));
-        $(".messages").animate({scrollTop: $(document).height()}, "fast");
-        setTimeout(function () {
-            $('.typing-m').hide();
-            $('<li class="sent"> <div class="media"> <div class="profile mr-4 bg-size" style="background-image: url(&quot;../assets/images/contact/2.jpg&quot;); background-size: cover; background-position: center center; display: block;"></div><div class="media-body"> <div class="contact-name"> <h5>Josephin water</h5> <h6>01:35 AM</h6> <ul class="msg-box"> <li> <h5> Sorry I busy right now, I will text you later </h5> <div class="badge badge-success sm ml-2"> R</div></li></ul> </div></div></div></li>').appendTo($('.messages .chatappend'));
-            $(".messages").animate({scrollTop: $(document).height()}, "fast");
-        }, 2000);
-    }
+
 })(jQuery);
 
 /*
@@ -128,12 +127,7 @@ window.onload = function () {
     });
     //setState(I_CAN_START);
 
-    /!*$('form').submit(function (e) {
-        e.preventDefault(); // prevents page reloading
-        ws.emit('chat message', $('#m').val());
-        $('#m').val('');
-        return false;
-    });*!/
+
 };
 
 function setRegisterState(nextState) {

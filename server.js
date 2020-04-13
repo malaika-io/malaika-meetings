@@ -143,9 +143,8 @@ const io = require('socket.io')(server, {
     transports: ['websocket', 'polling']
 });
 
-const nsp = io.of('/');
 
-nsp.use(function (socket, next) {
+io.use(function (socket, next) {
     const handshake = socket.request.headers.cookie;
     if (!handshake) return next(new Error('socket.io: no found cookie'), false);
     const parse_cookie = cookie.parse(handshake);
@@ -164,7 +163,8 @@ nsp.use(function (socket, next) {
 });
 
 
-nsp.on('connection', async function (socket) {
+io.on('connection', async function (socket) {
+    console.log('connection')
     const clientIp = socket.conn.remoteAddress;
     const socketId = socket.id;
     let user = await models.User.findByPk(socket.userId, {
@@ -172,15 +172,19 @@ nsp.on('connection', async function (socket) {
     });
 
     socket.on('jointChat', async function () {
+        console.log('jointChat')
         user.update({socketId: socket.id, online: true});
         let dataEvent = user.fullName + " a rejoint le chat";
-        console.log(dataEvent);
-        // sending to all clients in namespace 'myNamespace', including sender
         socket.broadcast.emit('jointChat', dataEvent)
     });
 
-    socket.on('chat', function (chat) {
-
+    socket.on('chat', function (message) {
+        let to = clients[message.to];
+        let from = clients[user.id];
+        io.to(to).emit('chat', {
+            from: user.last_name,
+            txt: message.txt
+        });
     });
 
     socket.on('chat:update', () => {
