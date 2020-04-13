@@ -1,9 +1,10 @@
 extends ./layout.pug
+include ./components/mixin-landing
+
 block content
     .inner-page
         +header
         +taptop
-        +breadcrumb(404)
 
     //- error start //
     section.error-main
