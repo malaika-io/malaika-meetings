@@ -164,7 +164,7 @@ app.get('/organization/:organisation/contact/:id', isAuthenticated, async functi
     try {
         const contact = await models.User.findByPk(contactId);
         console.log(contact)
-        res.render('admin', {
+        res.render('home', {
             contact: contact,
             contacts: contacts
         });
