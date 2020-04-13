@@ -8,7 +8,6 @@ if (url === "https://turn.malaika.io") {
         });
     });
 }
-
 let videoInput;
 let videoOutput;
 let webRtcPeer;
@@ -20,7 +19,6 @@ document.getElementById('call').addEventListener('click', function () {
     call();
 });
 document.getElementById('stop').addEventListener('click', function () {
-    console.log('stop')
     stop();
 });
 
@@ -157,11 +155,9 @@ function onOffer(error, offerSdp) {
     let pageURL = window.location.href;
     let toId = pageURL.substr(pageURL.lastIndexOf('/') + 1);
     const message = {
-        //from: document.getElementById('name').value,
         to: toId,
         sdpOffer: offerSdp
     };
-    console.log('message_onOffer', message)
     ws.emit('call', message);
 }
 
@@ -170,7 +166,6 @@ function onIceCandidate(candidate) {
         id: 'onIceCandidate',
         candidate: candidate
     };
-    // Send the candidate to the remote peer
     ws.emit('onIceCandidate', message);
 }
 
@@ -205,71 +200,16 @@ function incomingCall(message) {
                 if (error) {
                     console.error(error);
                 }
-                console.log('offerSdp', offerSdp)
                 const response = {
                     id: 'incomingCallResponse',
                     from: message.from,
                     callResponse: 'accept',
                     sdpOffer: offerSdp
                 };
-                console.log('response', response)
                 ws.emit('incomingCallResponse', response)
             });
         });
     });
-    let response;
-    /*// If bussy just reject without disturbing user
-        if (callState !== NO_CALL) {
-            response = {
-                from: message.from,
-                callResponse: 'reject',
-                message: 'bussy'
-
-            };
-            return ws.emit('incomingCallResponse', response);
-
-        }*/
-
-
-    /*if (confirm('User ' + message.from
-        + ' is calling you. Do you accept the call?')) {
-
-        const options = {
-            localVideo: videoInput,
-            remoteVideo: videoOutput,
-            onicecandidate: onIceCandidate
-        };
-
-        webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options,
-            function (error) {
-                if (error) {
-                    console.error(error);
-                }
-
-                this.generateOffer(function (error, offerSdp) {
-                    if (error) {
-                        console.error(error);
-                    }
-                    const response = {
-                        id: 'incomingCallResponse',
-                        from: message.from,
-                        callResponse: 'accept',
-                        sdpOffer: offerSdp
-                    };
-                    ws.emit('incomingCallResponse', response)
-                });
-            });
-
-    } else {
-        response = {
-            id: 'incomingCallResponse',
-            from: message.from,
-            callResponse: 'reject',
-            message: 'user declined'
-        };
-        ws.emit('incomingCallResponse', response)
-        stop(true);
-    }*/
 }
 
 function startCommunication(message) {

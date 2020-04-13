@@ -88,7 +88,6 @@ app.set("views", path.join(__dirname, "views"));
 app.use("/public", express.static(path.join(__dirname, "static")));
 app.use(express.static(path.join(__dirname, 'static')));
 
-
 const home = require('./routes/home');
 const user = require('./routes/user');
 const login = require('./routes/login');
@@ -439,18 +438,13 @@ function processOffer(webRtcEndpoint, sdpOffer, pipeline, sessionId) {
     return new Promise(function (resolve, reject) {
         return webRtcEndpoint.processOffer(sdpOffer, function (error, sdpAnswer) {
             if (error) {
-                console.log(error)
                 pipeline.release();
                 reject(error);
             }
-
             pipelines[sessionId] = {
                 'pipeline': pipeline,
                 'webRtcEndpoint': webRtcEndpoint
             };
-
-            console.log('pipeline', pipeline)
-
             webRtcEndpoint.gatherCandidates(function (error) {
                 if (error) {
                     throw error;
