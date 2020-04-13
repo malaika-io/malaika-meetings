@@ -136,6 +136,8 @@ const server = http.createServer(app).listen(3000, function () {
 });
 
 let clients = {};
+let candidatesQueue = {};
+let pipelines = {};
 
 const io = require('socket.io')(server, {
     path: '/kurento',
@@ -198,6 +200,21 @@ io.on('connection', async function (socket) {
         socket.broadcast.emit('jointChat', dataEvent)
     });
 
+    socket.on('call', async function (message) {
+        return call(socketId, socket.userId, message);
+    });
+
+    socket.on('onIceCandidate', async function (message) {
+        return onIceCandidate(socketId, message.candidate);
+    });
+
+    socket.on('incomingCallResponse', async function (message) {
+        return incomingCallResponse(socketId, message);
+    });
+    socket.on('stop', async function () {
+        return stop(socketId);
+    });
+
 
     socket.on('disconnect', function () {
         let dataEvent = user.fullName + " disconnected";
@@ -205,70 +222,8 @@ io.on('connection', async function (socket) {
     });
 });
 
-/*
-let candidatesQueue = {};
-let pipelines = {};
-
-io.on('connection', async function (socket) {
-    console.log('connection')
-    const sessionId = socket.id;
-
-    socket.on('register', async function (message) {
-        return register(sessionId, message.name, socket);
-    });
-
-    socket.on('call', async function (message) {
-        return call(sessionId, message);
-    });
-
-    socket.on('incomingCallResponse', async function (message) {
-        return incomingCallResponse(sessionId, message);
-    });
-
-    socket.on('onIceCandidate', async function (message) {
-        return onIceCandidate(sessionId, message.candidate);
-    });
-
-    socket.on('chat message', function (msg) {
-        console.log('message: ' + msg);
-        socket.emit('chat message', msg);
-        //socket.broadcast.emit('hi');
-    });
-
-    socket.on('disconnect', async function () {
-        return stop(sessionId);
-    });
-
-    socket.on('stop', async function () {
-        return stop(sessionId);
-    });
-});
-
-async function register(sessionId, name, socket) {
-
-    function onError(error) {
-        socket.emit('registerResponse', {response: 'rejected ', message: error});
-    }
-
-    if (!name) {
-        return onError("nom d'utilisateur vide");
-    }
-
-    try {
-        const user = await models.User.create({user_name: name, sessionId: sessionId});
-        socket.emit('registerResponse', {response: 'accepted', id: user.id});
-    } catch (e) {
-        if (e.name === 'SequelizeUniqueConstraintError') {
-            return onError("Ce nom d'utilisateur est déjà utilisé. Essayez un autre nom");
-        }
-        onError(e);
-    }
-}
-
-async function call(callerSocketId, message) {
+async function call(callerSocketId, fromUserId, message) {
     const to = message.to;
-    const from = message.from;
-
     clearCandidatesQueue(callerSocketId);
 
     try {
@@ -276,29 +231,20 @@ async function call(callerSocketId, message) {
         let caller;
         let callee;
         try {
-            caller = await models.User.findOne({
-                where: {
-                    sessionId: callerSocketId
-                }
-            });
-            callee = await models.User.findOne({
-                where: {
-                    user_name: to
-                }
-            });
-            const calleeId = callee.sessionId;
+            caller = await models.User.findByPk(fromUserId);
+            callee = await models.User.findByPk(to);
+            const calleeId = callee.socketId;
             if (callee) {
                 callee.update({peer: message.from});
-                caller.update({sdpOffer: message.sdpOffer, peer: message.to});
+                caller.update({sdpOffer: message.sdpOffer, peer: to});
 
                 try {
                     return io.to(calleeId).emit('incomingCall', {
-                        from: message.from
+                        from: fromUserId
                     });
                 } catch (exception) {
                     rejectCause = "Error " + exception;
                 }
-
             }
 
             return io.to(calleeId).emit('callResponse', {
@@ -317,22 +263,44 @@ async function call(callerSocketId, message) {
     }
 }
 
-async function incomingCallResponse(calleeId, message) {
+async function onIceCandidate(sessionId, _candidate) {
 
+    const candidate = kurento.getComplexType('IceCandidate')(_candidate);
+    const user = await models.User.findOne({
+        where: {
+            socketId: sessionId
+        }
+    });
+
+    if (pipelines[user.socketId] && pipelines[user.socketId].webRtcEndpoint) {
+        let webRtcEndpoint = pipelines[user.socketId].webRtcEndpoint;
+        webRtcEndpoint.addIceCandidate(candidate);
+    } else {
+        if (!candidatesQueue[user.socketId]) {
+            candidatesQueue[user.socketId] = [];
+        }
+        candidatesQueue[sessionId].push(candidate);
+    }
+}
+
+function clearCandidatesQueue(sessionId) {
+    if (candidatesQueue[sessionId]) {
+        delete candidatesQueue[sessionId];
+    }
+}
+
+
+async function incomingCallResponse(calleeId, message) {
     let pipeline;
     clearCandidatesQueue(calleeId);
 
     let callee = await models.User.findOne({
         where: {
-            sessionId: calleeId
+            socketId: calleeId
         }
     });
 
-    const caller = await models.User.findOne({
-        where: {
-            user_name: message.from
-        }
-    });
+    const caller = await models.User.findByPk(message.from);
 
     if (!message.from || !caller) {
         return onError(null, 'unknown from = ' + message.from);
@@ -344,9 +312,9 @@ async function incomingCallResponse(calleeId, message) {
         const callerWebRtcEndpoint = await createWebRtcEndpoint(pipeline);
         const calleeWebRtcEndpoint = await createWebRtcEndpoint(pipeline);
 
-        if (candidatesQueue[caller.sessionId]) {
-            while (candidatesQueue[caller.sessionId].length) {
-                let candidate = candidatesQueue[caller.sessionId].shift();
+        if (candidatesQueue[caller.socketId]) {
+            while (candidatesQueue[caller.socketId].length) {
+                let candidate = candidatesQueue[caller.socketId].shift();
                 callerWebRtcEndpoint.addIceCandidate(candidate);
             }
         }
@@ -360,7 +328,7 @@ async function incomingCallResponse(calleeId, message) {
 
         callerWebRtcEndpoint.on('OnIceCandidate', function (event) {
             let candidate = kurento.getComplexType('IceCandidate')(event.candidate);
-            io.to(caller.sessionId).emit('iceCandidate', {
+            io.to(caller.socketId).emit('iceCandidate', {
                 candidate: candidate
             });
         });
@@ -386,13 +354,13 @@ async function incomingCallResponse(calleeId, message) {
             });
 
             try {
-                const calleeSdpAnswer = await processOffer(calleeWebRtcEndpoint, message.sdpOffer, pipeline, callee.sessionId);
-                io.to(callee.sessionId).emit('startCommunication', {
+                const calleeSdpAnswer = await processOffer(calleeWebRtcEndpoint, message.sdpOffer, pipeline, callee.socketId);
+                io.to(callee.socketId).emit('startCommunication', {
                     sdpAnswer: calleeSdpAnswer
                 });
 
-                const callerSdpAnswer = await processOffer(callerWebRtcEndpoint, caller.sdpOffer, pipeline, caller.sessionId);
-                io.to(caller.sessionId).emit('callResponse', {
+                const callerSdpAnswer = await processOffer(callerWebRtcEndpoint, caller.sdpOffer, pipeline, caller.socketId);
+                io.to(caller.socketId).emit('callResponse', {
                     response: 'accepted',
                     sdpAnswer: callerSdpAnswer
                 });
@@ -408,7 +376,7 @@ async function incomingCallResponse(calleeId, message) {
             response: 'rejected',
             message: "l'utilisateur a refusé votre demande"
         };
-        io.to(caller.sessionId).emit('callResponse', decline);
+        io.to(caller.socketId).emit('callResponse', decline);
     }
 
 
@@ -420,14 +388,14 @@ async function incomingCallResponse(calleeId, message) {
                 response: 'rejected'
             };
             if (callerReason) callerMessage.message = callerReason;
-            return io.to(caller.sessionId).emit('callResponse', callerMessage);
+            return io.to(caller.socketId).emit('callResponse', callerMessage);
         }
 
         const calleeMessage = {
             id: 'stopCommunication'
         };
         if (calleeReason) calleeMessage.message = calleeReason;
-        return io.to(callee.sessionId).emit('stopCommunication', calleeMessage);
+        return io.to(callee.socketId).emit('stopCommunication', calleeMessage);
     }
 
 
@@ -481,6 +449,8 @@ function processOffer(webRtcEndpoint, sdpOffer, pipeline, sessionId) {
                 'webRtcEndpoint': webRtcEndpoint
             };
 
+            console.log('pipeline', pipeline)
+
             webRtcEndpoint.gatherCandidates(function (error) {
                 if (error) {
                     throw error;
@@ -505,7 +475,7 @@ async function stop(sessionId) {
 
     const stopperUser = await models.User.findOne({
         where: {
-            sessionId: sessionId
+            socketId: sessionId
         }
     });
     const stoppedUser = await models.User.findOne({
@@ -516,45 +486,18 @@ async function stop(sessionId) {
 
     if (stoppedUser) {
         stoppedUser.update({peer: null, sdpOffer: null});
-        delete pipelines[stoppedUser.sessionId];
+        delete pipelines[stoppedUser.socketId];
         const message = {
             id: 'stopCommunication',
             message: 'remote user hanged out'
         };
-        io.to(stoppedUser.sessionId).emit('stopCommunication', message);
+        io.to(stoppedUser.socketId).emit('stopCommunication', message);
 
     }
 
     clearCandidatesQueue(sessionId);
 
 }
-
-function clearCandidatesQueue(sessionId) {
-    if (candidatesQueue[sessionId]) {
-        delete candidatesQueue[sessionId];
-    }
-}
-
-async function onIceCandidate(sessionId, _candidate) {
-
-    const candidate = kurento.getComplexType('IceCandidate')(_candidate);
-    const user = await models.User.findOne({
-        where: {
-            sessionId: sessionId
-        }
-    });
-
-    if (pipelines[user.sessionId] && pipelines[user.sessionId].webRtcEndpoint) {
-        let webRtcEndpoint = pipelines[user.sessionId].webRtcEndpoint;
-        webRtcEndpoint.addIceCandidate(candidate);
-    } else {
-        if (!candidatesQueue[user.sessionId]) {
-            candidatesQueue[user.sessionId] = [];
-        }
-        candidatesQueue[sessionId].push(candidate);
-    }
-}
-*/
 
 
 process.on('uncaughtException', function (err) {

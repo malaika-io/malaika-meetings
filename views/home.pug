@@ -11,7 +11,7 @@ block home
                                     .profile.online.menu-trigger
                                         img.bg-img(src='/public/images/contact/2.jpg' alt='Avatar')
                                 .media-body
-                                    h5  #{ contact.last_name}
+                                   // h5  #{ contact.last_name}
                                     h6 Last Seen
                                 .media-right
                                     ul
@@ -26,10 +26,10 @@ block home
 
                             ul.calls.text-right
                                 li
-                                    a.icon-btn.btn-light.button-effect(href="#", data-tippy-content='Quick Audio Call',data-toggle='modal' data-target='#audiocall')
+                                    a.icon-btn.btn-light.button-effect(id="ca", data-tippy-content='Quick Audio Call',data-toggle='modal' data-target='#audiocall')
                                         i(data-feather='phone')
                                 li
-                                    a.icon-btn.btn-light.button-effect(href="#", data-tippy-content='Quick Video Call',data-toggle='modal' data-target='#videocall')
+                                    a.icon-btn.btn-light.button-effect(id="call", data-tippy-content='Quick Video Call',data-toggle='modal' data-target='#videocall')
                                         i(data-feather='video')
                                 li
                                     a.icon-btn.btn-light.button-effect.apps-toggle(href="#", data-tippy-content='All Apps')

@@ -9,6 +9,24 @@ if (url === "https://turn.malaika.io") {
     });
 }
 
+let videoInput;
+let videoOutput;
+let webRtcPeer;
+let state = null;
+
+window.onload = function () {
+    videoInput = document.getElementById('videoInput');
+    videoOutput = document.getElementById('videoOutput');
+    document.getElementById('call').addEventListener('click', function () {
+        call();
+    });
+    document.getElementById('call').addEventListener('click', function () {
+        console.log('stop')
+        stop();
+    });
+};
+
+
 const ws = io.connect(url, {
     path: '/kurento',
     transports: ['websocket', 'polling']
@@ -24,31 +42,36 @@ ws.on('jointChat', (message) => {
 
 ws.on('chat', (message) => {
     console.log(message)
-    $('<li class="sent last typing-m"> <div class="media"> <div class="profile mr-4 bg-size" style="background-image: url(&quot;/public/images/contact/2.jpg&quot;); background-size: cover; background-position: center center; display: block;"><img class="bg-img" src="/public/images/contact/2.jpg" alt="Avatar" style="display: none;"></div><div class="media-body"> <div class="contact-name"> <h5>'+ message.from +'</h5> <h6>01:42 AM</h6> <ul class="msg-box"> <li> <h5> <div class="type"> <div class="typing-loader"></div></div></h5> </li></ul> </div></div></div></li>').appendTo($('.messages .chatappend'));
+    $('<li class="sent last typing-m"> <div class="media"> <div class="profile mr-4 bg-size" style="background-image: url(&quot;/public/images/contact/2.jpg&quot;); background-size: cover; background-position: center center; display: block;"><img class="bg-img" src="/public/images/contact/2.jpg" alt="Avatar" style="display: none;"></div><div class="media-body"> <div class="contact-name"> <h5>' + message.from + '</h5> <h6>01:42 AM</h6> <ul class="msg-box"> <li> <h5> <div class="type"> <div class="typing-loader"></div></div></h5> </li></ul> </div></div></div></li>').appendTo($('.messages .chatappend'));
     $(".messages").animate({scrollTop: $(document).height()}, "fast");
     setTimeout(function () {
         $('.typing-m').hide();
-        $('<li class="sent"> <div class="media"> <div class="profile mr-4 bg-size" style="background-image: url(&quot;../assets/images/contact/2.jpg&quot;); background-size: cover; background-position: center center; display: block;"></div><div class="media-body"> <div class="contact-name"> <h5>'+ message.from +'</h5> <h6>01:35 AM</h6> <ul class="msg-box"> <li> <h5>' + message.txt + '</h5> <div class="badge badge-success sm ml-2"> R</div></li></ul> </div></div></div></li>').appendTo($('.messages .chatappend'));
+        $('<li class="sent"> <div class="media"> <div class="profile mr-4 bg-size" style="background-image: url(&quot;../assets/images/contact/2.jpg&quot;); background-size: cover; background-position: center center; display: block;"></div><div class="media-body"> <div class="contact-name"> <h5>' + message.from + '</h5> <h6>01:35 AM</h6> <ul class="msg-box"> <li> <h5>' + message.txt + '</h5> <div class="badge badge-success sm ml-2"> R</div></li></ul> </div></div></div></li>').appendTo($('.messages .chatappend'));
         $(".messages").animate({scrollTop: $(document).height()}, "fast");
     }, 2000)
 });
 
 
-let videoInput;
-let videoOutput;
-let webRtcPeer;
-let state = null;
+ws.on('callResponse', (parsedMessage) => {
+    callResponse(parsedMessage);
+});
 
-const NOT_REGISTERED = 0;
-const REGISTERING = 1;
-const REGISTERED = 2;
-let registerState = null;
+ws.on('incomingCall', (parsedMessage) => {
+    incomingCall(parsedMessage);
+});
 
+ws.on('startCommunication', (parsedMessage) => {
+    startCommunication(parsedMessage);
+});
 
-const NO_CALL = 0;
-const PROCESSING_CALL = 1;
-const IN_CALL = 2;
-let callState = null;
+ws.on('stopCommunication', (parsedMessage) => {
+    stop(true);
+});
+
+ws.on('iceCandidate', (message) => {
+    webRtcPeer.addIceCandidate(message.candidate)
+});
+
 
 (function ($) {
     "use strict";
@@ -107,130 +130,8 @@ let callState = null;
 
 })(jQuery);
 
-/*
-window.onload = function () {
-    setRegisterState(NOT_REGISTERED);
-
-    videoInput = document.getElementById('videoInput');
-    videoOutput = document.getElementById('videoOutput');
-
-
-    document.getElementById('call').addEventListener('click', function () {
-        call();
-    });
-    document.getElementById('register').addEventListener('click', function () {
-        register();
-    });
-
-    document.getElementById('stop').addEventListener('click', function () {
-        stop();
-    });
-    //setState(I_CAN_START);
-
-
-};
-
-function setRegisterState(nextState) {
-    switch (nextState) {
-        case NOT_REGISTERED:
-            $('#register').attr('disabled', false);
-            $('#call').attr('disabled', true);
-            $('#stop').attr('disabled', true);
-            break;
-
-        case REGISTERING:
-            $('#register').attr('disabled', true);
-            break;
-
-        case REGISTERED:
-            $('#register').attr('disabled', true);
-            setCallState(NO_CALL);
-            break;
-
-        default:
-            return;
-    }
-    registerState = nextState;
-}
-
-function setCallState(nextState) {
-    switch (nextState) {
-        case NO_CALL:
-            $('#call').attr('disabled', false);
-            $('#stop').attr('disabled', true);
-            break;
-
-        case PROCESSING_CALL:
-            $('#call').attr('disabled', true);
-            $('#stop').attr('disabled', true);
-            break;
-        case IN_CALL:
-            $('#call').attr('disabled', true);
-            $('#stop').attr('disabled', false);
-            break;
-        default:
-            return;
-    }
-    callState = nextState;
-}
-
-
-ws.on('connect', () => {
-    console.log('connect')
-});
-
-ws.on('registerResponse', (message) => {
-    resgisterResponse(message);
-});
-
-ws.on('callResponse', (parsedMessage) => {
-    callResponse(parsedMessage);
-});
-
-ws.on('incomingCall', (parsedMessage) => {
-    incomingCall(parsedMessage);
-});
-
-ws.on('startCommunication', (parsedMessage) => {
-    startCommunication(parsedMessage);
-});
-
-ws.on('stopCommunication', (parsedMessage) => {
-    console.info("Communication ended by remote peer");
-    stop(true);
-});
-
-ws.on('iceCandidate', (message) => {
-    webRtcPeer.addIceCandidate(message.candidate)
-});
-
-ws.on('error', (parsedMessage) => {
-    // if (state === I_AM_STARTING) {
-    //     setState(I_CAN_START);
-    // }
-    onError('Error message from server: ' + parsedMessage.message);
-});
-
-ws.on('chat message', function (msg) {
-    console.log('msg', msg)
-    $('#messages').append($('<li>').text(msg));
-});
-
-ws.on('connect_error', function (parsedMessage) {
-    onError('Unrecognized message', parsedMessage);
-});
-
 function call() {
     console.log('Starting video call ...')
-
-    if (document.getElementById('peer').value === '') {
-        window.alert("You must specify the peer name");
-        return;
-    }
-
-    setCallState(PROCESSING_CALL);
-
-    showSpinner(videoInput, videoOutput);
 
     const constraints = {
         audio: true,
@@ -250,39 +151,29 @@ function call() {
     webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function (error) {
         if (error) {
             console.error(error);
-            setCallState(NO_CALL);
         }
         this.generateOffer(onOffer);
     });
 }
 
 function onOffer(error, offerSdp) {
-    //if (error) return onError(error);
-    if (error) {
-        console.error(error);
-        setCallState(NO_CALL);
-    }
-
-    //console.info('Invoking SDP offer callback function ' + location.host);
+    let pageURL = window.location.href;
+    let toId = pageURL.substr(pageURL.lastIndexOf('/') + 1);
     const message = {
-        id: 'call',
-        from: document.getElementById('name').value,
-        to: document.getElementById('peer').value,
+        //from: document.getElementById('name').value,
+        to: toId,
         sdpOffer: offerSdp
     };
-    sendMessage(message);
+    ws.emit('call', message);
 }
 
-
 function onIceCandidate(candidate) {
-    console.log('Local candidate' + JSON.stringify(candidate));
-
     const message = {
         id: 'onIceCandidate',
         candidate: candidate
     };
     // Send the candidate to the remote peer
-    sendMessage(message);
+    ws.emit('onIceCandidate', message);
 }
 
 function callResponse(message) {
@@ -293,29 +184,60 @@ function callResponse(message) {
         console.log(errorMessage);
         stop(true);
     } else {
-        setCallState(IN_CALL);
         webRtcPeer.processAnswer(message.sdpAnswer);
     }
 }
 
 function incomingCall(message) {
-    let response;
-// If bussy just reject without disturbing user
-    if (callState !== NO_CALL) {
-        response = {
-            id: 'incomingCallResponse',
-            from: message.from,
-            callResponse: 'reject',
-            message: 'bussy'
+    console.log('incomingCall', message)
+    $('#confercall').modal();
+    document.getElementById('accept-call').addEventListener('click', function () {
+        $('#confercall').modal('hide');
+        $('#videocall').modal();
 
+        const options = {
+            localVideo: videoInput,
+            remoteVideo: videoOutput,
+            onicecandidate: onIceCandidate
         };
-        return sendMessage(response);
-    }
 
-    setCallState(PROCESSING_CALL);
-    if (confirm('User ' + message.from
+        webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function (error) {
+            if (error) {
+                console.error(error);
+            }
+
+            this.generateOffer(function (error, offerSdp) {
+                if (error) {
+                    console.error(error);
+                }
+                console.log('offerSdp', offerSdp)
+                const response = {
+                    id: 'incomingCallResponse',
+                    from: message.from,
+                    callResponse: 'accept',
+                    sdpOffer: offerSdp
+                };
+                console.log('response', response)
+                ws.emit('incomingCallResponse', response)
+            });
+        });
+    });
+    let response;
+    /*// If bussy just reject without disturbing user
+        if (callState !== NO_CALL) {
+            response = {
+                from: message.from,
+                callResponse: 'reject',
+                message: 'bussy'
+
+            };
+            return ws.emit('incomingCallResponse', response);
+
+        }*/
+
+
+    /*if (confirm('User ' + message.from
         + ' is calling you. Do you accept the call?')) {
-        showSpinner(videoInput, videoOutput);
 
         const options = {
             localVideo: videoInput,
@@ -327,13 +249,11 @@ function incomingCall(message) {
             function (error) {
                 if (error) {
                     console.error(error);
-                    setCallState(NO_CALL);
                 }
 
                 this.generateOffer(function (error, offerSdp) {
                     if (error) {
                         console.error(error);
-                        setCallState(NO_CALL);
                     }
                     const response = {
                         id: 'incomingCallResponse',
@@ -341,7 +261,7 @@ function incomingCall(message) {
                         callResponse: 'accept',
                         sdpOffer: offerSdp
                     };
-                    sendMessage(response);
+                    ws.emit('incomingCallResponse', response)
                 });
             });
 
@@ -352,83 +272,22 @@ function incomingCall(message) {
             callResponse: 'reject',
             message: 'user declined'
         };
-        sendMessage(response);
+        ws.emit('incomingCallResponse', response)
         stop(true);
-    }
+    }*/
 }
 
 function startCommunication(message) {
-    setCallState(IN_CALL);
     webRtcPeer.processAnswer(message.sdpAnswer);
 }
 
 function stop(message) {
-    setCallState(NO_CALL);
     if (webRtcPeer) {
         webRtcPeer.dispose();
         webRtcPeer = null;
 
         if (!message) {
-            let message = {
-                id: 'stop'
-            };
-            sendMessage(message);
+            ws.emit('stop', {})
         }
     }
-    hideSpinner(videoInput, videoOutput);
 }
-
-function onError(error) {
-    console.log(error);
-}
-
-
-function sendMessage(message) {
-    ws.emit(message.id, message);
-}
-
-function register() {
-    const name = document.getElementById('name').value;
-    if (name === '') {
-        window.alert("Vous devez insérer votre nom d'utilisateur");
-        return;
-    }
-
-    setRegisterState(REGISTERING);
-
-    const message = {
-        id: 'register',
-        name: name
-    };
-    sendMessage(message);
-    document.getElementById('peer').focus();
-}
-
-function resgisterResponse(message) {
-    if (message.response === 'accepted') {
-        localStorage.setItem('id', message.id);
-        setRegisterState(REGISTERED);
-        alert('Ok ');
-    } else {
-        setRegisterState(NOT_REGISTERED);
-        const errorMessage = message.message ? message.message : 'Raison inconnue du rejet du registre.';
-        alert(errorMessage);
-    }
-}
-
-
-function showSpinner() {
-    for (var i = 0; i < arguments.length; i++) {
-        arguments[i].poster = './img/transparent-1px.png';
-        arguments[i].style.background = 'center transparent url("./img/spinner.gif") no-repeat';
-    }
-}
-
-function hideSpinner() {
-    for (var i = 0; i < arguments.length; i++) {
-        arguments[i].src = '';
-        arguments[i].poster = './img/webrtc.png';
-        arguments[i].style.background = '';
-    }
-}
-*/

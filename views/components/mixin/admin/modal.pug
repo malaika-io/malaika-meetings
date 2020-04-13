@@ -3,21 +3,21 @@ mixin modal
         form(method='POST' action='/users/invite').default-form
             .modal-dialog.modal-dialog-centered(role='document')
                 .modal-content
-                        .modal-header
-                            h2.modal-title
-                                | Ajouter un contact
-                            button.close(type='button' data-dismiss='modal' aria-label='Close')
-                                span(aria-hidden='true') &times;
-                        .modal-body
-                            .form-group
-                                h5 Email
-                                input#exampleInputEmail1.form-control(type='text', name="email" placeholder='email@test.fr' required autofocus)
-                            //.form-group.mb-0
-                            //    h5 Contact number
-                            //    input#examplemsg.form-control(type='number', placeholder='12345678912')
-                            .modal-footer
-                                button.btn.btn-danger.button-effect.btn-sm(type='button') Cancel
-                                button.btn.btn-primary.btn-sm(type='submit' value="Submit") Inviter par email
+                    .modal-header
+                        h2.modal-title
+                            | Ajouter un contact
+                        button.close(type='button' data-dismiss='modal' aria-label='Close')
+                            span(aria-hidden='true') &times;
+                    .modal-body
+                        .form-group
+                            h5 Email
+                            input#exampleInputEmail1.form-control(type='text', name="email" placeholder='email@test.fr' required autofocus)
+                        //.form-group.mb-0
+                        //    h5 Contact number
+                        //    input#examplemsg.form-control(type='number', placeholder='12345678912')
+                        .modal-footer
+                            button.btn.btn-danger.button-effect.btn-sm(type='button') Cancel
+                            button.btn.btn-primary.btn-sm(type='submit' value="Submit") Inviter par email
     #pollModal.modal.pol-modal-main.add-popup(tabindex='-1' role='dialog'  aria-hidden='true')
         .modal-dialog.modal-dialog-centered(role='document')
             .modal-content
@@ -164,9 +164,10 @@ mixin modal
         .modal-dialog.modal-dialog-centered(role='document')
             .modal-body
                 .videocall.call-modal
-                    img.bg-img(src='/public/images/avtar/big/videocall_bg.jpg' alt='Avatar')
+                    .bg-imgage
+                        video(id="videoOutput" autoplay   width="890px" height="654px" poster="/public/images/avtar/big/videocall.jpg")
                     .small-image
-                        img.bg-img(src='/public/images/avtar/big/videocall.jpg' alt='Avatar')
+                        video(id="videoInput" autoplay  width="240px" height="180px" poster="/public/images/avtar/big/videocall.jpg")
                     .media.videocall-details
                         .usersprof
                             .profile
@@ -174,7 +175,7 @@ mixin modal
                             .profile
                                 img.bg-img(src='/public/images/avtar/3.jpg' alt='Avatar')
                         .media-body
-                            h5 Josephin water
+                            ///h5 #{ contact.last_name}
                             h6 America ,California
                         #basicUsage 00:00:00
                         .zoomcontent
@@ -186,7 +187,7 @@ mixin modal
                                 a.icon-btn.btn-light.button-effect.pause(href="#",data-tippy-content='Hold')
                                     i.ti-control-pause
                             li
-                                a.icon-btn.btn-danger.button-effect.btn-xl.is-animating(href='#',data-dismiss="modal",data-tippy-content='Hangup')
+                                a.icon-btn.btn-danger.button-effect.btn-xl.is-animating(id="stop",data-dismiss="modal",data-tippy-content='Hangup')
                                     i(data-feather='phone')
                             li
                                 a.icon-btn.btn-light.button-effect.mic(href="#",data-tippy-content='Mute')
@@ -213,7 +214,7 @@ mixin modal
                                 a.icon-btn.btn-danger.button-effect.btn-xl.is-animating.cancelcall(href='#',data-dismiss="modal")
                                     i(data-feather='phone')
                             li
-                                a.icon-btn.btn-success.button-effect.btn-xl.is-animating(href='#')
+                                a.icon-btn.btn-success.button-effect.btn-xl.is-animating(id="accept-call")
                                     i(data-feather='video')
     #confvideocl.modal.fade(tabindex='-1' role='dialog' aria-hidden='true')
         .modal-dialog.modal-dialog-centered(role='document')
