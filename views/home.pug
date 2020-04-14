@@ -12,7 +12,7 @@ block home
                                         .profile.online.menu-trigger
                                             img.bg-img(src='/public/images/contact/2.jpg' alt='Avatar')
                                     .media-body
-                                         h5  #{ contact.last_name}
+                                         h5  #{ contact.first_name}
                                          h6 Last Seen
                                     .media-right
                                         ul
@@ -58,6 +58,7 @@ block home
                                                     h5 block
 
                 .contact-chat
+                   #{chats.length}
                     ul.chatappend
                         each chat in chats
                             li.replies
@@ -66,11 +67,11 @@ block home
                                         img.bg-img(src='/public/images/contact/2.jpg' alt='Avatar')
                                     .media-body
                                         .contact-name
-                                            h5 Alan josheph
-                                            h6 01:40 AM
+                                            h5= chat.sender_name
+                                            h6= chat.created_at
                                             ul.msg-box
                                                 li.msg-setting-main
-                                                    h5 Hi I am Josephin, can you help me to find best chat app?.
+                                                    h5= chat.content
                                                     .msg-dropdown-main
                                                         .msg-setting
                                                             i.ti-more-alt
@@ -99,11 +100,11 @@ block home
                                         img.bg-img(src='/public/images/contact/2.jpg' alt='Avatar')
                                     .media-body
                                         .contact-name
-                                            h5 Josephin water
-                                            h6 01:35 AM
+                                            h5= chat.receiver_name
+                                            h6= chat.created_at
                                             ul.msg-box
                                                 li.msg-setting-main
-                                                    h5 Hi I am Josephin, can you help me to find best chat app?.
+                                                    h5= chat.content
                                                     .msg-dropdown-main
                                                         .msg-setting
                                                             i.ti-more-alt

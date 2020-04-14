@@ -71,7 +71,7 @@ passport.deserializeUser(async (id, done) => {
             include: [models.Organization]
         });
         if (!user) {
-           return  done(new Error('user Not found'), null);
+            return done(new Error('user Not found'), null);
         }
         user.dataValues.fullName = user.fullName;
         return done(null, user.dataValues);
@@ -181,24 +181,32 @@ io.on('connection', async function (socket) {
     });
 
     socket.on('jointChat', async function () {
-        console.log('jointChat')
+        console.log('jointChat');
         author.update({socketId: socket.id, online: true});
         let dataEvent = user.fullName + " a rejoint le chat";
         socket.broadcast.emit('jointChat', dataEvent)
     });
 
     socket.on('chat', async function (message) {
+        let receiver = await models.User.findByPk(message.receiver_id);
+
         const to_socketId = clients[message.receiver_id];
         const sender_id = socket.sender_id;
-        const channel_id = 1;
+        const chatRoom_id = 1;
         const receiver_id = message.receiver_id;
+        const receiver_name = receiver.first_name;
+        const sender_name = author.first_name;
+
         let content = message.content;
         const chat = {
-            channel_id,
+            chatRoom_id,
+            sender_name,
+            receiver_name,
             receiver_id,
             content,
             sender_id
         };
+        console.log(chat)
         await saveMessage(chat);
         io.to(to_socketId).emit('chat', {
             from: author.fullName,

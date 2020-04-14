@@ -43,16 +43,16 @@ router.get('/:name', isAuthenticated, async function (req, res) {
         },
         order: [['created_at', 'DESC']]
     });
-    console.log('lastContactChat', lastContactChat)
+    console.log('lastContactChat', lastContactChat[0].sender_id)
 
-    //const chats = await getMessages(req.user.id, contactId);
+    const chats = await getMessages(req.user.id, lastContactChat[0].sender_id);
 
     res.render('home', {
         contact: null,
         contacts: contacts,
-        chats: [],
+        chats: chats,
         messages: [],
-        messagesGroupe:[]
+        messagesGroupe: []
     });
 });
 
@@ -73,11 +73,14 @@ router.get('/:organisation/contact/:id', isAuthenticated, async function (req, r
     try {
         const contact = await models.User.findByPk(contactId);
         //contact.fullName = `${contact.first_name} ${contact.last_name}`;
-        const chats = await getMessages(req.user.id, contactId);
+        const chats = await getMessages(contactId, req.user.id);
+        console.log('chats', chats.length)
         res.render('home', {
             contact: contact,
             contacts: contacts,
-            chats: chats
+            chats: chats,
+            messages: [],
+            messagesGroupe: []
         });
     } catch (e) {
         console.log(e)
@@ -85,14 +88,38 @@ router.get('/:organisation/contact/:id', isAuthenticated, async function (req, r
 });
 
 async function getMessages(sender_id, receiver_id) {
+    console.log(sender_id, receiver_id)
     try {
         return models.ChatMessage.findAll({
             where: {
-                [models.Op.or]: {
-                    [models.Op.and]: [{sender_id: sender_id}, {receiver_id: receiver_id}],
-                    [models.Op.and]: [{sender_id: receiver_id}, {receiver_id: sender_id}]
-                }
-            }
+                [models.Op.or]: [{
+                    [models.Op.and]: [
+                        {
+                            sender_id: {
+                                [models.Op.eq]: sender_id
+                            }
+                        }, {
+                            receiver_id: {
+                                [models.Op.eq]: receiver_id
+                            }
+                        }
+                    ]
+                },
+                    {
+                        [models.Op.and]: [
+                            {
+                                sender_id: {
+                                    [models.Op.eq]: receiver_id
+                                }
+                            }, {
+                                receiver_id: {
+                                    [models.Op.eq]: sender_id
+                                }
+                            }
+                        ]
+                    }]
+            },
+            order: [['created_at', 'DESC']]
         })
     } catch (e) {
         console.log(e)
