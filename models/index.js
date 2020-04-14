@@ -28,11 +28,15 @@ const sequelize = new Sequelize(
 const UserModel = require("./user");
 const Organization = require("./organization");
 const Invitation = require("./invitation");
+const ChatMessage = require("./chatmessage");
+const ChatRoom = require("./chatRoom");
 
 const models = {
     User: UserModel.init(sequelize, Sequelize),
     Organization: Organization.init(sequelize, Sequelize),
-    Invitation: Invitation.init(sequelize, Sequelize)
+    Invitation: Invitation.init(sequelize, Sequelize),
+    ChatMessage: ChatMessage.init(sequelize, Sequelize),
+    ChatRoom: ChatRoom.init(sequelize, Sequelize)
 };
 
 Object.values(models)

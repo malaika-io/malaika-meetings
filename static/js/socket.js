@@ -111,10 +111,10 @@ ws.on('iceCandidate', (message) => {
             return false;
         }
         let pageURL = window.location.href;
-        let toId = pageURL.substr(pageURL.lastIndexOf('/') + 1);
+        let receiver_id = pageURL.substr(pageURL.lastIndexOf('/') + 1);
         ws.emit('chat', {
-            txt: message,
-            to: toId
+            content: message,
+            receiver_id: receiver_id
         });
         $('<li class="replies"> <div class="media"> <div class="profile mr-4 bg-size" style="background-image: url(&quot;../images/contact/1.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="media-body"> <div class="contact-name"> <h5>Moi</h5> <h6>01:42 AM</h6> <ul class="msg-box"> <li> <h5>' + message + '</h5> </li></ul> </div></div></div></li>').appendTo($('.messages .chatappend'));
         $('.message-input input').val(null);
@@ -127,6 +127,7 @@ ws.on('iceCandidate', (message) => {
 
 function call() {
     console.log('Starting video call ...')
+    showSpinner(videoInput, videoOutput);
 
     const constraints = {
         audio: true,
@@ -210,6 +211,18 @@ function incomingCall(message) {
             });
         });
     });
+    /*
+    else {
+        response = {
+            id: 'incomingCallResponse',
+            from: message.from,
+            callResponse: 'reject',
+            message: 'user declined'
+        };
+        sendMessage(response);
+        stop(true);
+    }
+     */
 }
 
 function startCommunication(message) {
@@ -224,5 +237,21 @@ function stop(message) {
         if (!message) {
             ws.emit('stop', {})
         }
+    }
+    hideSpinner(videoInput, videoOutput);
+}
+
+function showSpinner() {
+    for (var i = 0; i < arguments.length; i++) {
+        arguments[i].poster = './images/transparent-1px.png';
+        arguments[i].style.background = 'center transparent url("./images/spinner.gif") no-repeat';
+    }
+}
+
+function hideSpinner() {
+    for (var i = 0; i < arguments.length; i++) {
+        arguments[i].src = '';
+        arguments[i].poster = './images/webrtc.png';
+        arguments[i].style.background = '';
     }
 }

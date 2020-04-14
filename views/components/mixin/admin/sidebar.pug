@@ -102,25 +102,27 @@ mixin sidebar
                             .theme-tab
                                 ul#myTab1.nav.nav-tabs(role='tablist')
                                     li.nav-item
-                                        a#direct-tab.nav-link.button-effect.active(data-toggle='tab' href='#direct' role='tab' aria-controls='direct' aria-selected='false' data-to='chating') Direct
+                                        a#direct-tab.nav-link.button-effect.active(data-toggle='tab' href='#direct') Direct
                                     li.nav-item
-                                        a#group-tab.nav-link.button-effect(data-toggle='tab' href='#group' role='tab' aria-controls='group' aria-selected='true' data-to='group_chat') Group
+                                        a#group-tab.nav-link.button-effect(data-toggle='tab' href='#group') Group
 
                                 #myTabContent1.tab-content
                                     #direct.tab-pane.fade.show.active(role='tabpanel' aria-labelledby='direct-tab')
                                         ul.chat-main
-                                            li(data-to='blank')
-                                                .chat-box
-                                                    .profile.offline
-                                                        img.bg-img(src='/public/images/contact/1.jpg' alt='Avatar')
-                                                    .details
-                                                        h5 karim water
-                                                        h6 Hi, i am josephin. How are you.. ! There are many variations of passages.
-                                                    .date-status
-                                                        i.ti-pin2
-                                                        h6 22/10/19
-                                                        h6.font-success.status  Seen
-
+                                            each message in messages
+                                                li(data-to='blank')
+                                                    .chat-box
+                                                        .profile.offline
+                                                            img.bg-img(src='/public/images/contact/1.jpg' alt='Avatar')
+                                                        .details
+                                                            h5 karim water
+                                                            h6 Hi, i am josephin. How are you.. ! There are many variations of passages.
+                                                        .date-status
+                                                            i.ti-pin2
+                                                            h6 22/10/19
+                                                            h6.font-success.status  Seen
+                                            else
+                                                li aucune messages
                                     #group.tab-pane.fade(role='tabpanel' aria-labelledby='group-tab')
                                         .search2
                                             div
@@ -130,25 +132,28 @@ mixin sidebar
                                                             i.fa.fa-search
                                                     input.form-control(type='text' placeholder='Start Chat')
                                         ul.group-main
-                                            li.active(data-to='group_chat')
-                                                .group-box
-                                                    .profile
-                                                        img.bg-img(src='/public/images/avtar/teq.jpg' alt='Avatar')
-                                                    .details
-                                                        h5 Tech Ninjas
-                                                        h6 Lorem Ipsum is simply dummy text the printing and typesetting industry.
-                                                    .date-status
-                                                        ul.grop-icon
-                                                            li
-                                                                a.group-tp(href='#',data-tippy-content='Josephin')
-                                                                    img(src="/public/images/contact/1.jpg" alt="group-icon-img")
-                                                            li
-                                                                a.group-tp(href='#',data-tippy-content='Jony ')
-                                                                    img(src="/public/images/contact/2.jpg" alt="group-icon-img")
-                                                            li
-                                                                a.group-tp(href='#',data-tippy-content='Pabelo')
-                                                                    img(src="/public/images/contact/3.jpg" alt="group-icon-img")
-                                                            li + 35
+                                            each message in messagesGroupe
+                                                li.active(data-to='group_chat')
+                                                    .group-box
+                                                        .profile
+                                                            img.bg-img(src='/public/images/avtar/teq.jpg' alt='Avatar')
+                                                        .details
+                                                            h5 Tech Ninjas
+                                                            h6 Lorem Ipsum is simply dummy text the printing and typesetting industry.
+                                                        .date-status
+                                                            ul.grop-icon
+                                                                    li
+                                                                        a.group-tp(href='#',data-tippy-content='Josephin')
+                                                                            img(src="/public/images/contact/1.jpg" alt="group-icon-img")
+                                                                    li
+                                                                        a.group-tp(href='#',data-tippy-content='Jony ')
+                                                                            img(src="/public/images/contact/2.jpg" alt="group-icon-img")
+                                                                    li
+                                                                        a.group-tp(href='#',data-tippy-content='Pabelo')
+                                                                            img(src="/public/images/contact/3.jpg" alt="group-icon-img")
+                                                                    li + 35
+                                            else
+                                                li aucune messages
                         #contact.tab-pane.fade(role='tabpanel' aria-labelledby='contact-tab')
                             ul.contact-log-main
                                 each val in contacts
@@ -165,7 +170,8 @@ mixin sidebar
                                                         i(data-feather='phone')
                                                     .icon-btn.btn-outline-success.btn-sm.button-effect
                                                         i(data-feather='video')
-
+                                else
+                                    li inviter des contacts
 
         .fevorite-tab.dynemic-sidebar#favourite
             .theme-title

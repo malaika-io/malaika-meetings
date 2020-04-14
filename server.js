@@ -36,6 +36,15 @@ let sess = {
         maxAge: hour
     }
 };
+const cassandra = require('cassandra-driver');
+
+const client = new cassandra.Client({
+    contactPoints: ['localhost:32769'],
+    localDataCenter: 'datacenter1',
+    //authProvider: new cassandra.auth.PlainTextAuthProvider('developer', 'devpassword'),
+    //keyspace: 'mykeyspace'
+});
+
 const app = express();
 app.use(bodyParser.json({limit: '50mb', parameterLimit: 50000}));
 app.use(bodyParser.urlencoded({limit: '50mb', parameterLimit: 50000, extended: false}));
@@ -61,10 +70,10 @@ passport.deserializeUser(async (id, done) => {
             attributes: {exclude: ['password']},
             include: [models.Organization]
         });
-        user.dataValues.fullName = user.fullName;
         if (!user) {
-            done(new Error('user Not found'), null);
+           return  done(new Error('user Not found'), null);
         }
+        user.dataValues.fullName = user.fullName;
         return done(null, user.dataValues);
     } catch (e) {
         return done(e, null);
@@ -154,7 +163,7 @@ io.use(function (socket, next) {
         return redisStore.load(sessionId, function (err, data) {
             const session = data['passport'];
             if (!session) return next(new Error('socket.io: no found cookie'), false);
-            socket.userId = session.user;
+            socket.sender_id = session.user;
             clients[session.user] = socket.id;
             return next(null, true);
         });
@@ -166,31 +175,39 @@ io.use(function (socket, next) {
 
 io.on('connection', async function (socket) {
     console.log('connection')
-    const clientIp = socket.conn.remoteAddress;
     const socketId = socket.id;
-    let user = await models.User.findByPk(socket.userId, {
+    let author = await models.User.findByPk(socket.sender_id, {
         include: [models.Organization]
     });
 
     socket.on('jointChat', async function () {
         console.log('jointChat')
-        user.update({socketId: socket.id, online: true});
+        author.update({socketId: socket.id, online: true});
         let dataEvent = user.fullName + " a rejoint le chat";
         socket.broadcast.emit('jointChat', dataEvent)
     });
 
-    socket.on('chat', function (message) {
-        let to = clients[message.to];
-        let from = clients[user.id];
-        io.to(to).emit('chat', {
-            from: user.last_name,
-            txt: message.txt
+    socket.on('chat', async function (message) {
+        const to_socketId = clients[message.receiver_id];
+        const sender_id = socket.sender_id;
+        const channel_id = 1;
+        const receiver_id = message.receiver_id;
+        let content = message.content;
+        const chat = {
+            channel_id,
+            receiver_id,
+            content,
+            sender_id
+        };
+        await saveMessage(chat);
+        io.to(to_socketId).emit('chat', {
+            from: author.fullName,
+            txt: content
         });
     });
 
     socket.on('chat:update', () => {
         console.log('chat:update');
-
     });
 
     socket.on('leaveChat', function () {
@@ -200,7 +217,7 @@ io.on('connection', async function (socket) {
     });
 
     socket.on('call', async function (message) {
-        return call(socketId, socket.userId, message);
+        return call(socketId, socket.author_id, message);
     });
 
     socket.on('onIceCandidate', async function (message) {
@@ -220,6 +237,16 @@ io.on('connection', async function (socket) {
         socket.broadcast.emit('jointChat', dataEvent)
     });
 });
+
+async function saveMessage(chat) {
+
+    try {
+        return await models.ChatMessage.create(chat);
+    } catch (e) {
+        console.log(e)
+
+    }
+}
 
 async function call(callerSocketId, fromUserId, message) {
     const to = message.to;

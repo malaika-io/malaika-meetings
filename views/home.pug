@@ -2,59 +2,60 @@ extends ./admin.pug
 block home
     .chitchat-main.small-sidebar(id='content')
         .chat-content.tabto.active
-            .messages.custom-scroll.active#blank
-                .contact-details
-                    .row
-                        .col
-                            .media.left
-                                .media-left.mr-3
-                                    .profile.online.menu-trigger
-                                        img.bg-img(src='/public/images/contact/2.jpg' alt='Avatar')
-                                .media-body
-                                   // h5  #{ contact.last_name}
-                                    h6 Last Seen
-                                .media-right
-                                    ul
-                                        li
-                                            a.icon-btn.btn-light.button-effect.mute(href="#")
-                                                i.fa.fa-volume-up
-                                        li
-                                            a.icon-btn.btn-light.button-effect.mobile-sidebar(href="#")
-                                                i(data-feather='chevron-left')
-
-                        .col
-
-                            ul.calls.text-right
-                                li
-                                    a.icon-btn.btn-light.button-effect(id="ca", data-tippy-content='Quick Audio Call',data-toggle='modal' data-target='#audiocall')
-                                        i(data-feather='phone')
-                                li
-                                    a.icon-btn.btn-light.button-effect(id="call", data-tippy-content='Quick Video Call',data-toggle='modal' data-target='#videocall')
-                                        i(data-feather='video')
-                                li
-                                    a.icon-btn.btn-light.button-effect.apps-toggle(href="#", data-tippy-content='All Apps')
-                                        i.ti-layout-grid2
-                                li.chat-friend-toggle
-                                    a.icon-btn.btn-light.bg-transparent.button-effect.outside(href="#", data-tippy-content='Quick action')
-                                        i(data-feather='more-vertical')
-                                    .chat-frind-content
+            .messages.custom-scroll.active
+                if contact
+                    .contact-details
+                        .row
+                            .col
+                                .media.left
+                                    .media-left.mr-3
+                                        .profile.online.menu-trigger
+                                            img.bg-img(src='/public/images/contact/2.jpg' alt='Avatar')
+                                    .media-body
+                                         h5  #{ contact.last_name}
+                                         h6 Last Seen
+                                    .media-right
                                         ul
                                             li
-                                                a.icon-btn.btn-outline-primary.button-effect.btn-sm(href='#')
-                                                    i(data-feather='user')
-                                                h5 profile
+                                                a.icon-btn.btn-light.button-effect.mute(href="#")
+                                                    i.fa.fa-volume-up
                                             li
-                                                a.icon-btn.btn-outline-success.button-effect.btn-sm(href='#')
-                                                    i(data-feather='plus-circle')
-                                                h5 archive
-                                            li
-                                                a.icon-btn.btn-outline-danger.button-effect.btn-sm(href='#')
-                                                    i(data-feather='trash-2')
-                                                h5 delete
-                                            li
-                                                a.icon-btn.btn-outline-light.button-effect.btn-sm(href='#')
-                                                    i(data-feather='slash')
-                                                h5 block
+                                                a.icon-btn.btn-light.button-effect.mobile-sidebar(href="#")
+                                                    i(data-feather='chevron-left')
+
+                            .col
+
+                                ul.calls.text-right
+                                    li
+                                        a.icon-btn.btn-light.button-effect(id="ca", data-tippy-content='Quick Audio Call',data-toggle='modal' data-target='#audiocall')
+                                            i(data-feather='phone')
+                                    li
+                                        a.icon-btn.btn-light.button-effect(id="call", data-tippy-content='Quick Video Call',data-toggle='modal' data-target='#videocall')
+                                            i(data-feather='video')
+                                    li
+                                        a.icon-btn.btn-light.button-effect.apps-toggle(href="#", data-tippy-content='All Apps')
+                                            i.ti-layout-grid2
+                                    li.chat-friend-toggle
+                                        a.icon-btn.btn-light.bg-transparent.button-effect.outside(href="#", data-tippy-content='Quick action')
+                                            i(data-feather='more-vertical')
+                                        .chat-frind-content
+                                            ul
+                                                li
+                                                    a.icon-btn.btn-outline-primary.button-effect.btn-sm(href='#')
+                                                        i(data-feather='user')
+                                                    h5 profile
+                                                li
+                                                    a.icon-btn.btn-outline-success.button-effect.btn-sm(href='#')
+                                                        i(data-feather='plus-circle')
+                                                    h5 archive
+                                                li
+                                                    a.icon-btn.btn-outline-danger.button-effect.btn-sm(href='#')
+                                                        i(data-feather='trash-2')
+                                                    h5 delete
+                                                li
+                                                    a.icon-btn.btn-outline-light.button-effect.btn-sm(href='#')
+                                                        i(data-feather='slash')
+                                                    h5 block
 
                 .contact-chat
                     ul.chatappend
@@ -125,31 +126,31 @@ block home
                                                                         i.ti-trash
                                                                         | delete
                         else
-                            //.rightchat.animat-rate
-                            //    .bg_circle
-                            //        div
-                            //        div
-                            //        div
-                            //        div
-                            //        div
-                            //        div
-                            //        div
-                            //        div
-                            //        div
-                            //        div
-                            //        div
-                            //    .cross
-                            //    .cross1
-                            //    .cross2
-                            //    .dot
-                            //    .dot1
-                            //.call-list-center
-                            //    img(src='/public/images/chat.png' alt="")
-                            //    .animated-bg
-                            //        i
-                            //        i
-                            //        i
-                            //        p aucun messages encore
+                            .rightchat.animat-rate
+                                .bg_circle
+                                    div
+                                    div
+                                    div
+                                    div
+                                    div
+                                    div
+                                    div
+                                    div
+                                    div
+                                    div
+                                    div
+                                .cross
+                                .cross1
+                                .cross2
+                                .dot
+                                .dot1
+                            .call-list-center
+                                img(src='/public/images/chat.png' alt="")
+                                .animated-bg
+                                    i
+                                    i
+                                    i
+                                    p aucun messages encore
 
 
             .message-input

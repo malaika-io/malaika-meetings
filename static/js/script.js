@@ -54,7 +54,6 @@
     });
 
 
-
     /*=====================
          04. Chitchat Loder js
          ==========================*/
@@ -294,16 +293,7 @@
         $(this).parent().find("li").removeClass("active");
         $(this).addClass("active");
     });
-    $("#myTab1 li a").on('click', function () {
-        var active_class = $(this).attr("data-to");
-        $('.messages.custom-scroll').removeClass("active");
-        $('#' + active_class).addClass("active");
-    });
-    $(".chat-tabs .nav-tabs li[data-to]").on('click', function () {
-        $('.chitchat-main .tabto').removeClass("active");
-        var active_class = $(this).attr("data-to");
-        $('.' + active_class).addClass("active");
-    });
+
     $(".sidebar-top  a").on('click', function () {
         $(".sidebar-top  a").removeClass("active");
         $(this).addClass("active");
