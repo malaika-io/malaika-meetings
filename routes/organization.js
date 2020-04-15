@@ -124,7 +124,7 @@ async function getMessages(sender_id, receiver_id) {
                         ]
                     }]
             },
-            order: [['created_at', 'DESC']]
+            order: [['created_at', 'ASC']]
         })
     } catch (e) {
         console.log(e)
