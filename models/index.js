@@ -44,7 +44,7 @@ Object.values(models)
     .forEach(model => model.associate(models));
 
 
-//sequelize.sync();
+sequelize.sync({force: true});
 
 models.sequelize = sequelize;
 models.Sequelize = Sequelize;

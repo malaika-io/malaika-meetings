@@ -175,8 +175,9 @@ io.use(function (socket, next) {
 
 
 io.on('connection', async function (socket) {
-    console.log('connection')
     const socketId = socket.id;
+    console.log('connection', socketId)
+
     let author = await models.User.findByPk(socket.sender_id, {
         include: [models.Organization]
     });
@@ -229,7 +230,7 @@ io.on('connection', async function (socket) {
     });
 
     socket.on('call', async function (message) {
-        return call(socketId, socket.author_id, message);
+        return call(socketId, socket.sender_id, message);
     });
 
     socket.on('onIceCandidate', async function (message) {
@@ -261,6 +262,7 @@ async function saveMessage(chat) {
 }
 
 async function call(callerSocketId, fromUserId, message) {
+    console.log('fromUserId', fromUserId)
     const to = message.to;
     clearCandidatesQueue(callerSocketId);
 
@@ -310,6 +312,8 @@ async function onIceCandidate(sessionId, _candidate) {
         }
     });
 
+    console.log('user', user)
+
     if (pipelines[user.socketId] && pipelines[user.socketId].webRtcEndpoint) {
         let webRtcEndpoint = pipelines[user.socketId].webRtcEndpoint;
         webRtcEndpoint.addIceCandidate(candidate);
@@ -337,6 +341,8 @@ async function incomingCallResponse(calleeId, message) {
             socketId: calleeId
         }
     });
+
+    console.log('callee', callee)
 
     const caller = await models.User.findByPk(message.from);
 

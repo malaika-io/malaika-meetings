@@ -28,6 +28,7 @@ const ws = io.connect(url, {
 });
 
 ws.on('connect', () => {
+    console.log('connect')
     ws.emit('jointChat')
 });
 
@@ -155,6 +156,7 @@ function call() {
 function onOffer(error, offerSdp) {
     let pageURL = window.location.href;
     let toId = pageURL.substr(pageURL.lastIndexOf('/') + 1);
+    console.log('ToId',toId)
     const message = {
         to: toId,
         sdpOffer: offerSdp
