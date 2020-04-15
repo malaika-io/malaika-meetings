@@ -90,6 +90,7 @@ app.use((req, res, next) => {
     res.locals.csrfToken = req.csrfToken();
     res.locals.user = req.user;
     res.locals.flashes = req.flash();
+    app.locals.moment = require('moment');
     next();
 });
 app.set('view engine', 'pug');
@@ -188,7 +189,10 @@ io.on('connection', async function (socket) {
     });
 
     socket.on('chat', async function (message) {
+        console.log(message)
+
         let receiver = await models.User.findByPk(message.receiver_id);
+        console.log(receiver)
 
         const to_socketId = clients[message.receiver_id];
         const sender_id = socket.sender_id;

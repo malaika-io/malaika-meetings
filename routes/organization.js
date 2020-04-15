@@ -25,39 +25,46 @@ router.get('/', isAuthenticated, async function (req, res) {
 });
 
 router.get('/:name', isAuthenticated, async function (req, res) {
-    let organization = await models.Organization.findOne({
-        where: {
-            name: req.user.Organization.name
-        },
-        include: [models.User]
-    });
-    const users = organization.Users;
-    const contacts = users.filter(item => {
-        return item.id !== req.user.id;
-    });
 
-    const lastContactChat = await models.ChatMessage.findAll({
-        limit: 1,
-        where: {
-            [models.Op.or]: [{sender_id: req.user.id}, {receiver_id: req.user.id}]
-        },
-        order: [['created_at', 'DESC']]
-    });
-    console.log('lastContactChat', lastContactChat[0].sender_id)
+    try {
+        let organization = await models.Organization.findOne({
+            where: {
+                name: req.user.Organization.name
+            },
+            include: [models.User]
+        });
+        const users = organization.Users;
+        const contacts = users.filter(item => {
+            return item.id !== req.user.id;
+        });
 
-    const chats = await getMessages(req.user.id, lastContactChat[0].sender_id);
+        const lastContactChat = await models.ChatMessage.findAll({
+            limit: 1,
+            where: {
+                [models.Op.or]: [{sender_id: req.user.id}, {receiver_id: req.user.id}]
+            },
+            order: [['created_at', 'DESC']]
+        });
 
-    res.render('home', {
-        contact: null,
-        contacts: contacts,
-        chats: chats,
-        messages: [],
-        messagesGroupe: []
-    });
+        if(lastContactChat.length > 0){
+            const contact = await models.User.findByPk(lastContactChat[0].sender_id);
+            return res.redirect(`/organization/${organization.name}/contact/${contact.id}`);
+        }
+        return  res.render('home', {
+            contact: null,
+            contacts: contacts,
+            chats: [],
+            messages: [],
+            messagesGroupe: []
+        });
+
+
+    } catch (e) {
+        console.log(e)
+        throw e;
+    }
 });
 
-
-// About page route.
 router.get('/:organisation/contact/:id', isAuthenticated, async function (req, res) {
     const contactId = req.params.id;
     let organization = await models.Organization.findOne({
@@ -72,9 +79,7 @@ router.get('/:organisation/contact/:id', isAuthenticated, async function (req, r
     });
     try {
         const contact = await models.User.findByPk(contactId);
-        //contact.fullName = `${contact.first_name} ${contact.last_name}`;
         const chats = await getMessages(contactId, req.user.id);
-        console.log('chats', chats.length)
         res.render('home', {
             contact: contact,
             contacts: contacts,

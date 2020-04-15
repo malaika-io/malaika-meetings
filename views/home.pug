@@ -12,8 +12,8 @@ block home
                                         .profile.online.menu-trigger
                                             img.bg-img(src='/public/images/contact/2.jpg' alt='Avatar')
                                     .media-body
-                                         h5  #{ contact.first_name}
-                                         h6 Last Seen
+                                        h5  #{ contact.first_name}
+                                        h6 Last Seen
                                     .media-right
                                         ul
                                             li
@@ -58,50 +58,16 @@ block home
                                                     h5 block
 
                 .contact-chat
-                   #{chats.length}
                     ul.chatappend
-                        each chat in chats
-                            li.replies
+                        each  chat in chats
+                            li(class=(chat.sender_id.toString() === `${user.id.toString()}` ? "replies" : "sent"))
                                 .media
                                     .profile.mr-4
                                         img.bg-img(src='/public/images/contact/2.jpg' alt='Avatar')
                                     .media-body
                                         .contact-name
-                                            h5= chat.sender_name
-                                            h6= chat.created_at
-                                            ul.msg-box
-                                                li.msg-setting-main
-                                                    h5= chat.content
-                                                    .msg-dropdown-main
-                                                        .msg-setting
-                                                            i.ti-more-alt
-                                                        .msg-dropdown
-                                                            ul
-                                                                li
-                                                                    a(href="#")
-                                                                        i.fa.fa-share
-                                                                        | forward
-                                                                li
-                                                                    a(href="#")
-                                                                        i.fa.fa-clone
-                                                                        | copy
-                                                                li
-                                                                    a(href="#")
-                                                                        i.fa.fa-star-o
-                                                                        | rating
-                                                                li
-                                                                    a(href="#")
-                                                                        i.ti-trash
-                                                                        | delete
-
-                            li.sent
-                                .media
-                                    .profile.mr-4
-                                        img.bg-img(src='/public/images/contact/2.jpg' alt='Avatar')
-                                    .media-body
-                                        .contact-name
-                                            h5= chat.receiver_name
-                                            h6= chat.created_at
+                                            h5= chat.sender_id === user.id ? 'moi' : chat.sender_name
+                                            h6= moment(chat.created_at).format('DD MMMM [à] H[h]mm')
                                             ul.msg-box
                                                 li.msg-setting-main
                                                     h5= chat.content
@@ -380,5 +346,3 @@ block home
                                 li
                                     a(href='#')
                                         img.img-fluid(src='/public/images/sticker/43.gif' alt='sticker')
-
-
