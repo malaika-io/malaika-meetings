@@ -181,12 +181,15 @@ io.on('connection', async function (socket) {
     let author = await models.User.findByPk(socket.sender_id, {
         include: [models.Organization]
     });
+    console.log('author', author)
 
     socket.on('jointChat', async function () {
         console.log('jointChat');
-        author.update({socketId: socket.id, online: true});
-        let dataEvent = user.fullName + " a rejoint le chat";
-        socket.broadcast.emit('jointChat', dataEvent)
+        if (author) {
+            author.update({socketId: socket.id, online: true});
+            let dataEvent = user.fullName + " a rejoint le chat";
+            socket.broadcast.emit('jointChat', dataEvent)
+        }
     });
 
     socket.on('chat', async function (message) {
