@@ -2,10 +2,12 @@ extends ./layout.pug
 include ./components/mixin-admin
 
 block content
-    - var socket                = true;
+    - var socket  = true;
     .chitchat-container.sidebar-toggle
         +sidebar
         block home
         +right-sidebar
         +app-sidebar
         +modal
+
+    include script

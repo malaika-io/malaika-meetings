@@ -26,7 +26,7 @@ const expiryDate = new Date(Date.now() + hour); // 1 hour
 let sess = {
     store: SessionStore,
     secret: process.env["SESSION_SECRET"],
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     cookie: {
         path: '/',
@@ -181,20 +181,19 @@ io.on('connection', async function (socket) {
     let author = await models.User.findByPk(socket.sender_id, {
         include: [models.Organization]
     });
+    console.log('author', author)
 
     socket.on('jointChat', async function () {
         console.log('jointChat');
-        author.update({socketId: socket.id, online: true});
-        let dataEvent = user.fullName + " a rejoint le chat";
-        socket.broadcast.emit('jointChat', dataEvent)
+        if (author) {
+            author.update({socketId: socket.id, online: true});
+            let dataEvent = user.fullName + " a rejoint le chat";
+            socket.broadcast.emit('jointChat', dataEvent)
+        }
     });
 
     socket.on('chat', async function (message) {
-        console.log(message)
-
         let receiver = await models.User.findByPk(message.receiver_id);
-        console.log(receiver)
-
         const to_socketId = clients[message.receiver_id];
         const sender_id = socket.sender_id;
         const chatRoom_id = 1;
@@ -211,7 +210,6 @@ io.on('connection', async function (socket) {
             content,
             sender_id
         };
-        console.log(chat)
         await saveMessage(chat);
         io.to(to_socketId).emit('chat', {
             from: author.fullName,
@@ -225,7 +223,6 @@ io.on('connection', async function (socket) {
 
     socket.on('leaveChat', function () {
         let dataEvent = user.fullName + "a quitté le chat";
-        console.log(dataEvent);
         socket.broadcast.emit('jointChat', dataEvent)
     });
 
@@ -252,12 +249,10 @@ io.on('connection', async function (socket) {
 });
 
 async function saveMessage(chat) {
-
     try {
         return await models.ChatMessage.create(chat);
     } catch (e) {
         console.log(e)
-
     }
 }
 
@@ -304,6 +299,7 @@ async function call(callerSocketId, fromUserId, message) {
 }
 
 async function onIceCandidate(sessionId, _candidate) {
+    console.log('onIceCandidate',sessionId)
 
     const candidate = kurento.getComplexType('IceCandidate')(_candidate);
     const user = await models.User.findOne({
@@ -311,8 +307,6 @@ async function onIceCandidate(sessionId, _candidate) {
             socketId: sessionId
         }
     });
-
-    console.log('user', user)
 
     if (pipelines[user.socketId] && pipelines[user.socketId].webRtcEndpoint) {
         let webRtcEndpoint = pipelines[user.socketId].webRtcEndpoint;
@@ -342,10 +336,7 @@ async function incomingCallResponse(calleeId, message) {
         }
     });
 
-    console.log('callee', callee)
-
     const caller = await models.User.findByPk(message.from);
-
     if (!message.from || !caller) {
         return onError(null, 'unknown from = ' + message.from);
     }
@@ -482,6 +473,7 @@ function createWebRtcEndpoint(pipeline) {
 function processOffer(webRtcEndpoint, sdpOffer, pipeline, sessionId) {
     return new Promise(function (resolve, reject) {
         return webRtcEndpoint.processOffer(sdpOffer, function (error, sdpAnswer) {
+            console.log('sdpAnswer', sdpAnswer)
             if (error) {
                 pipeline.release();
                 reject(error);
@@ -509,7 +501,6 @@ async function stop(sessionId) {
     }
 
     var pipeline = pipelines[sessionId];
-    console.log('pipeline', pipelines[sessionId])
     delete pipelines[sessionId];
     pipeline.release();
 

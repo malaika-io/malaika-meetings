@@ -18,6 +18,7 @@ router.get('/', isNotAuthenticated, async function (req, res) {
 });
 
 router.post('/', [
+    // username must be an email
     check("email", "L'adresse email n'est pas correcte").isEmail(),
     check("first_name", "Empty first_name").not().isEmpty(),
     check("last_name", "Empty last_name").not().isEmpty(),
