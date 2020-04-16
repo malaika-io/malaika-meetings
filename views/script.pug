@@ -113,11 +113,12 @@ script.
             if ($.trim(message) == '') {
                 return false;
             }
-            // let pageURL = window.location.href;
-            // let receiver_id = pageURL.substr(pageURL.lastIndexOf('/') + 1);
+            let pageURL = window.location.href;
+            let receiver_id = pageURL.substr(pageURL.lastIndexOf('/') + 1);
+            let contact = !{JSON.stringify(contact)}
             ws.emit('chat', {
                 content: message,
-                receiver_id: #{ contact.id}
+                receiver_id: receiver_id
             });
             $('<li class="replies"> <div class="media"> <div class="profile mr-4 bg-size" style="background-image: url(&quot;../images/contact/1.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="media-body"> <div class="contact-name"> <h5>Moi</h5> <h6>01:42 AM</h6> <ul class="msg-box"> <li> <h5>' + message + '</h5> </li></ul> </div></div></div></li>').appendTo($('.messages .chatappend'));
             $('.message-input input').val(null);
@@ -128,7 +129,7 @@ script.
 
         function call() {
             console.log('Starting video call ...')
-            showSpinner(videoInput, videoOutput);
+            //showSpinner(videoInput, videoOutput);
 
             const constraints = {
                 audio: true,
@@ -154,8 +155,12 @@ script.
         }
 
         function onOffer(error, offerSdp) {
+            let rm120 = !{JSON.stringify(contact)}
+            console.log(rm120)
+            let pageURL = window.location.href;
+            let receiver_id = pageURL.substr(pageURL.lastIndexOf('/') + 1);
             const message = {
-                to: #{ contact.id},
+                to: receiver_id,
                 sdpOffer: offerSdp
             };
             ws.emit('call', message);
@@ -225,6 +230,7 @@ script.
         }
 
         function startCommunication(message) {
+            console.log('startCommunication',message)
             webRtcPeer.processAnswer(message.sdpAnswer);
         }
 
@@ -237,20 +243,20 @@ script.
                     ws.emit('stop', {})
                 }
             }
-            hideSpinner(videoInput, videoOutput);
+            //hideSpinner(videoInput, videoOutput);
         }
 
         function showSpinner() {
             for (var i = 0; i < arguments.length; i++) {
-                arguments[i].poster = './images/transparent-1px.png';
-                arguments[i].style.background = 'center transparent url("./images/spinner.gif") no-repeat';
+                arguments[i].poster = '/public/images/transparent-1px.png';
+                arguments[i].style.background = 'center transparent url("/public/images/spinner.gif") no-repeat';
             }
         }
 
         function hideSpinner() {
             for (var i = 0; i < arguments.length; i++) {
                 arguments[i].src = '';
-                arguments[i].poster = './images/webrtc.png';
+                arguments[i].poster = '/public/images/webrtc.png';
                 arguments[i].style.background = '';
             }
         }
