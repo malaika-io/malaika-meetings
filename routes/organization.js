@@ -50,8 +50,8 @@ router.get('/:name', isAuthenticated, async function (req, res) {
             const contact = await models.User.findByPk(lastContactChat[0].sender_id);
             return res.redirect(`/organization/${organization.name}/contact/${contact.id}`);
         }
-        return  res.render('home', {
-            contact: null,
+        return  res.render('admin', {
+            contact: {},
             contacts: contacts,
             chats: [],
             messages: [],
@@ -80,7 +80,7 @@ router.get('/:organisation/contact/:id', isAuthenticated, async function (req, r
     try {
         const contact = await models.User.findByPk(contactId);
         const chats = await getMessages(contactId, req.user.id);
-        res.render('home', {
+        res.render('admin', {
             contact: contact,
             contacts: contacts,
             chats: chats,

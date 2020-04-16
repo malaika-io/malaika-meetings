@@ -5,9 +5,104 @@
 
 doctype html
 html(lang='fr')
-include header-files
+head
+    title Malaika
+    meta(http-equiv='Content-Type' content='text/html; charset=UTF-8')
+    meta(http-equiv='X-UA-Compatible' content='IE=edge')
+    meta(name='viewport' content='width=device-width,initial-scale=1')
+    meta(name='description' content='chat')
+    meta(name='keywords' content='chat ')
+    meta(name='author' content='karim Mhamdi')
+    link(rel='icon' href='images/favicon/favicon.png' type='image/x-icon')
+    link(rel='shortcut icon' href='images/favicon/favicon.png' type='image/x-icon')
+
+    //- font css
+    link(href='https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700,800&display=swap' rel='stylesheet')
+    link(href='https://fonts.googleapis.com/css?family=Roboto:400,500,600&display=swap' rel='stylesheet')
+    link(href='https://fonts.googleapis.com/css?family=Rubik:300,300i,400,400i,500,500i,700,700i,900,900i&display=swap' rel='stylesheet')
+
+    //- Date-picker
+    link(rel='stylesheet' type='text/css' href='/public/css/date-picker.css')
+
+    //- magnify-pop up css
+    link(rel='stylesheet' type='text/css' href='/public/css/magnific-popup.css')
+
+    //- main css
+    link(rel='stylesheet' type='text/css' href='/public/css/style.css' media="screen" id="color")
+
+    //-Tour icon
+    link(rel='stylesheet' type='text/css' href='/public/css/tour.css')
+
+    //- ckeditor
+    link(rel="stylesheet" type="text/css" href='/public/js/ckeditor/skins/moono-lisa/editor.css?t=HBDD')
+    link(rel="stylesheet" type="text/css" href='/public/js/ckeditor/plugins/scayt/skins/moono-lisa/scayt.css')
+    link(rel="stylesheet" type="text/css" href='/public/js/ckeditor/plugins/scayt/dialogs/dialog.css')
+    link(rel="stylesheet" type="text/css" href='/public/js/ckeditor/plugins/tableselection/styles/tableselection.css')
+    link(rel="stylesheet" type="text/css" href='/public/js/ckeditor/plugins/wsc/skins/moono-lisa/wsc.css')
+    link(rel="stylesheet" type="text/css" href='/public/js/ckeditor/plugins/copyformatting/styles/copyformatting.css')
+
+
 
 body.sidebar-active
     block content
 
-include footer-files
+
+//- latest jquery
+script(src='/public/js/jquery-3.3.1.min.js')
+
+//- slick js
+script(src='/public/js/owl.carousel.js')
+
+//- popper js
+script(src='/public/js/popper.min.js')
+script(src='/public/js/tippy-bundle.iife.min.js')
+
+//- Bootstrap js
+script(src='/public/js/bootstrap.js')
+
+//- Plugins JS start
+//script(src='/public/js/switchery.js')
+
+script(src='/public/js/jquery.magnific-popup.js')
+
+if socket
+    script(src="/public/js/webrtc-adapter/release/adapter.js")
+    script(src="/public/js/kurento-utils/js/kurento-utils.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js")
+    script(src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async="")
+
+
+//- Plugins JS start
+if index
+    script(src='/public/js/easytimer.min.js')
+    script(src='/public/js/index.js')
+
+if feathericon
+    script(src='/public/js/feather-icon/feather.min.js')
+    script(src='/public/js/feather-icon/feather-icon.js')
+
+if ckeditor
+    script(src='/public/js/ckeditor/ckeditor.js')
+    script(src='/public/js/ckeditor/styles.js')
+    script(src='/public/js/ckeditor/adapters/jquery.js')
+    script(src='/public/js/ckeditor/ckeditor.custom.js')
+
+if datepicker
+    //-Datepicker js
+    script(src='/public/js/date-picker/datepicker.js')
+    script(src='/public/js/date-picker/datepicker.en.js')
+    script(src='/public/js/date-picker/datepicker.custom.js')
+
+
+//-tour js
+script(src='/public/js/tour/intro.js')
+script(src='/public/js/tour/intro-init.js')
+
+//- magnifypopup js //
+script(src='/public/js/jquery.magnific-popup.js')
+
+//- zoom gallary js //
+script(src='/public/js/zoom-gallery.js')
+
+//- Theme js
+script(src='/public/js/script.js')

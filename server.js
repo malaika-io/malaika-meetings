@@ -26,7 +26,7 @@ const expiryDate = new Date(Date.now() + hour); // 1 hour
 let sess = {
     store: SessionStore,
     secret: process.env["SESSION_SECRET"],
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     cookie: {
         path: '/',
@@ -65,6 +65,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
+    console.log('id',id)
     try {
         let user = await models.User.findByPk(id, {
             attributes: {exclude: ['password']},
