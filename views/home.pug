@@ -12,7 +12,7 @@ block home
                                         .profile.online.menu-trigger
                                             img.bg-img(src='/public/images/contact/2.jpg' alt='Avatar')
                                     .media-body
-                                        h5  #{ contact.first_name}
+                                        h5  #{ contact.last_name}
                                         h6 Last Seen
                                     .media-right
                                         ul
@@ -56,7 +56,6 @@ block home
                                                     a.icon-btn.btn-outline-light.button-effect.btn-sm(href='#')
                                                         i(data-feather='slash')
                                                     h5 block
-
                 .contact-chat
                     ul.chatappend
                         each  chat in chats
