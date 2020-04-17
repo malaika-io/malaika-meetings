@@ -20,18 +20,17 @@ script.
         let videoInput;
         let videoOutput;
         let webRtcPeer;
-        let state = null;
+        let state = false;
 
         videoInput = document.getElementById('videoInput');
         videoOutput = document.getElementById('videoOutput');
 
 
         ws.on('connect', function () {
-                console.log('connect')
-                ws.emit('jointChat');
-            }
-        );
-        ws.on('jointChat', function (message) {
+            console.log('connect')
+        });
+
+        ws.on('leaveChat', function (message) {
             console.log(message)
         });
 
@@ -72,6 +71,17 @@ script.
 
         $("#call").click(call)
         $("#stop").click(stop)
+        $('#videocall').on('hidden.bs.modal', function () {
+            console.log("Modal closed Programmatically");
+            if (!state) {
+
+            }
+        });
+
+
+        $('#myModal').on('shown.bs.modal', function () {
+
+        });
 
         $(".messages").animate({scrollTop: $(document).height()}, "fast");
         $('.submit').on('click', function () {
@@ -128,7 +138,6 @@ script.
         function call() {
             console.log('Starting video call ...')
             //showSpinner(videoInput, videoOutput);
-
             const constraints = {
                 audio: true,
                 video: {
@@ -141,7 +150,7 @@ script.
                 localVideo: videoInput,
                 remoteVideo: videoOutput,
                 onicecandidate: onIceCandidate,
-                //mediaConstraints: constraints
+                mediaConstraints: constraints
             };
 
             webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function (error) {
@@ -153,8 +162,10 @@ script.
         }
 
         function onOffer(error, offerSdp) {
-            let contact = !{JSON.stringify(contact)}
+            let contact = !{JSON.stringify(contact)};
+            let user = !{JSON.stringify(user)};
             const message = {
+                from: user.id,
                 to: contact.id,
                 sdpOffer: offerSdp
             };
@@ -172,21 +183,26 @@ script.
         function callResponse(message) {
             if (message.response !== 'accepted') {
                 console.info('Call not accepted by peer. Closing call');
-                const errorMessage = message.message ? message.message
-                    : 'Unknown reason for call rejection.';
-                console.log(errorMessage);
+                const errorMessage = message.message ? message.message : 'Unknown reason for call rejection.';
                 stop(true);
             } else {
+                console.log('callResponse', message)
                 webRtcPeer.processAnswer(message.sdpAnswer);
             }
         }
 
         function incomingCall(message) {
-            console.log('incomingCall')
+            console.log('incomingCall');
+            let user = !{JSON.stringify(user)};
+
             $('#confercall').modal();
+
             document.getElementById('accept-call').addEventListener('click', function () {
+
                 $('#confercall').modal('hide');
+
                 $('#videocall').modal();
+
                 const options = {
                     localVideo: videoInput,
                     remoteVideo: videoOutput,
@@ -202,6 +218,7 @@ script.
                             console.error(error);
                         }
                         const response = {
+                            me: user.id,
                             id: 'incomingCallResponse',
                             from: message.from,
                             callResponse: 'accept',
@@ -211,18 +228,17 @@ script.
                     });
                 });
             });
-            /*
-            else {
-                response = {
+            document.getElementById('reject-call').addEventListener('click', function () {
+                const response = {
                     id: 'incomingCallResponse',
+                    me: user.id,
                     from: message.from,
                     callResponse: 'reject',
                     message: 'user declined'
                 };
-                sendMessage(response);
+                ws.emit('incomingCallResponse', response)
                 stop(true);
-            }
-             */
+            });
         }
 
         function startCommunication(message) {
@@ -231,12 +247,17 @@ script.
         }
 
         function stop(message) {
+            state = true;
+            $('#videocall').modal('hide');
+            let user = !{JSON.stringify(user)};
             if (webRtcPeer) {
                 webRtcPeer.dispose();
                 webRtcPeer = null;
 
                 if (!message) {
-                    ws.emit('stop', {})
+                    ws.emit('stop', {
+                        id: user.id
+                    })
                 }
             }
             //hideSpinner(videoInput, videoOutput);

@@ -165,17 +165,14 @@ mixin modal
             .modal-body
                 .videocall.call-modal
                     .bg-imgage
-                        video(id="videoOutput" autoplay="autoplay"   width="890px" height="654px" poster="/public/images/avtar/big/videocall.jpg")
+                        video(id="videoOutput" width="640px" height="480px"  poster="/public/images/webrtc.png")
                     .small-image
-                        video(id="videoInput" autoplay="autoplay"  width="240px" height="180px" poster="/public/images/avtar/big/videocall.jpg")
+                        video(id="videoInput" autoplay="autoplay"  width="240px" height="280px" poster="/public/images/webrtc.png")
                     .media.videocall-details
                         .usersprof
-                            .profile
-                                img.bg-img(src='/public/images/avtar/2.jpg' alt='Avatar')
-                            .profile
-                                img.bg-img(src='/public/images/avtar/3.jpg' alt='Avatar')
+                            img.bg-img(src='/public/images/avtar/3.jpg' alt='Avatar')
                         .media-body
-                            ///h5 #{ contact.last_name}
+                            h5 #{ contact.last_name}
                             h6 America ,California
                         #basicUsage 00:00:00
                         .zoomcontent
@@ -211,7 +208,7 @@ mixin modal
                         h3 Conference Call
                         ul
                             li
-                                a.icon-btn.btn-danger.button-effect.btn-xl.is-animating.cancelcall(href='#',data-dismiss="modal")
+                                a.icon-btn.btn-danger.button-effect.btn-xl.is-animating.cancelcall(id="reject-call")
                                     i(data-feather='phone')
                             li
                                 a.icon-btn.btn-success.button-effect.btn-xl.is-animating(id="accept-call")

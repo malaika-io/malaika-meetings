@@ -45,12 +45,16 @@ router.get('/:name', isAuthenticated, async function (req, res) {
             },
             order: [['created_at', 'DESC']]
         });
+        if (lastContactChat.length > 0) {
+            console.log('lastContactChat', lastContactChat[0].sender_id)
+            console.log('lastContactChat', lastContactChat[0].receiver_id)
+            const relationId = lastContactChat[0].sender_id === req.user ? lastContactChat[0].sender_id : lastContactChat[0].receiver_id;
+            console.log('lastContactChat',relationId)
 
-        if(lastContactChat.length > 0){
-            const contact = await models.User.findByPk(lastContactChat[0].sender_id);
-            return res.redirect(`/organization/${organization.name}/contact/${contact.id}`);
+
+            return res.redirect(`/organization/${organization.name}/contact/${relationId}`);
         }
-        return  res.render('home', {
+        return res.render('home', {
             contact: null,
             contacts: contacts,
             chats: [],
