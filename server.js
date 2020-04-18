@@ -328,7 +328,7 @@ async function incomingCallResponse(socketId, message) {
             return io.to(callee.socketId).emit('callResponse', calleeMessage);
         }
 
-        if (callResponse === 'accept') {
+        /*if (callResponse === 'accept') {
             const kurentoClient = await createKurentoClient();
             pipeline = await createPipeline(kurentoClient);
             try {
@@ -399,14 +399,13 @@ async function incomingCallResponse(socketId, message) {
             }
 
         } else {
-            console.log('kksqnlmkd,jqldmkj,qkls')
             const declineMessage = {
                 response: 'rejected',
                 message: `${callee.first_name} a refusé votre demande`
             };
             const to_socketId = clients[from];
             io.to(to_socketId).emit('callResponse', declineMessage);
-        }
+        }*/
 
     } catch (e) {
         console.log(e)
@@ -417,7 +416,7 @@ async function incomingCallResponse(socketId, message) {
 
 function createKurentoClient() {
     return new Promise(function (resolve, reject) {
-        return kurento("ws://turn.malaika.io:8888/kurento", function (error, _kurentoClient) {
+        return kurento("ws://malaika.io:8888/kurento", function (error, _kurentoClient) {
             if (error) {
                 console.log('createKurentoClient', error)
                 return reject(new Error('Coult not find media server at address ' + ws_uri))
