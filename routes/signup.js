@@ -26,7 +26,7 @@ router.post('/', [
     check("last_name", "Empty last_name").not().isEmpty(),
     check("organization", "Empty organization").not().isEmpty(),
     check('password', "Le mots de passe n'est pas correcte").isLength({min: 5})
-], async function (req, res) {
+], async function (req, res, next) {
     debug.log.info('register');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -56,6 +56,7 @@ router.post('/', [
                 return res.render("auth/signup", {errors: errors.array()});
             }
         }).catch((err) => {
+            next(err);
         });
 
     async function execute() {
