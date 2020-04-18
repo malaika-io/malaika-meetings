@@ -73,13 +73,10 @@ script.
         $("#stop").click(stop)
 
 
-        // $('#videocall').on('hidden.bs.modal', function () {
-        //     console.log("Modal closed Programmatically");
-        //     if (!state) {
-        //
-        //     }
-        // });
-        //
+        $('#videocall').on('hidden.bs.modal', function () {
+            //$('#confercall').modal();
+        });
+
 
         $(".messages").animate({scrollTop: $(document).height()}, "fast");
         $('.submit').on('click', function () {

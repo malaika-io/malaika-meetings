@@ -55,7 +55,6 @@
     });
 
 
-
     /*=====================
          05. Search js
          ==========================*/
@@ -293,7 +292,6 @@
     });
 
 
-
     /*=====================
            24. right sidebar
            ==========================*/
@@ -439,13 +437,36 @@
         $('.app-sidebar').removeClass("active");
         $('.chitchat-main').removeClass("small-sidebar");
     }
-    
+
     if ($(window).width() <= 800) {
         $("ul.chat-main  li").on('click', function () {
             $('.main-nav').removeClass("on");
         });
     }
 
+    /*=====================
+    02 . calling timer js
+    ==========================*/
+    var timer = new Timer();
+    timer.start();
+    timer.addEventListener('secondsUpdated', function (e) {
+        $('#basicUsage').html(timer.getTimeValues().toString());
+    });
+    timer.addEventListener('secondsUpdated', function (e) {
+        $('#basicUsage3').html(timer.getTimeValues().toString());
+    });
+    timer.addEventListener('secondsUpdated', function (e) {
+        $('#basicUsage2').html(timer.getTimeValues().toString());
+    });
+
 })(jQuery);
 
 
+function toggleFullScreen() {
+    $('#videocall').toggleClass("active");
+}
+
+function removedefault() {
+    $('body').removeClass("sidebar-active");
+    $('.app-sidebar').removeClass("active");
+}

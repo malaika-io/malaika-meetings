@@ -71,7 +71,7 @@ mixin modal
                         h3 Appel entrant
                         ul
                             li
-                                a.icon-btn.btn-danger.button-effect.btn-xl.is-animating.cancelcall(id="reject-call")
+                                a.icon-btn.btn-danger.button-effect.btn-xl.is-animating.cancelcall(id="reject-call", data-dismiss="modal")
                                     i(data-feather='phone')
                             li
                                 a.icon-btn.btn-success.button-effect.btn-xl.is-animating(id="accept-call")
@@ -81,10 +81,10 @@ mixin modal
         .modal-dialog.modal-dialog-centered(role='document')
             .modal-body
                 .videocall.call-modal
-                    .bg-imgage
+                    .bg-image
                         video(id="videoOutput" autoplay width="640px" height="480px"  poster="/public/images/webrtc.png")
                     .small-image
-                        video(id="videoInput" autoplay  width="220px" height="300px" poster="/public/images/webrtc.png")
+                        video(id="videoInput" autoplay  width="240px" height="180px" poster="/public/images/webrtc.png")
                     .media.videocall-details
                         .usersprof
                             img.bg-img(src='/public/images/avtar/3.jpg' alt='Avatar')
@@ -98,7 +98,7 @@ mixin modal
                     .center-con.text-center
                         ul
                             li
-                                a.icon-btn.btn-light.button-effect.pause(href="#",data-tippy-content='Hold')
+                                a.icon-btn.btn-light.button-effect.pause(data-tippy-content='Hold')
                                     i.ti-control-pause
                             li
                                 a.icon-btn.btn-danger.button-effect.btn-xl.is-animating(id="stop",data-dismiss="modal",data-tippy-content='Hangup')

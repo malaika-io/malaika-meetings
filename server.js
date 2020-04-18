@@ -277,6 +277,7 @@ async function call(callerSocketId, message) {
         });
 
     } catch (e) {
+        console.log('e', e)
         rejectCause = `err servenue`;
         return io.to(callerSocketId).emit('callResponse', {
             response: 'rejected: ',

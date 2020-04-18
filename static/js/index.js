@@ -39,20 +39,7 @@
    var elem = document.querySelector('.js-switch17');
    var init = new Switchery(elem, { color: '#1c9dea', size: 'small' });
 
- /*=====================
- 02 . calling timer js
- ==========================*/
- var timer = new Timer();
- timer.start();
- timer.addEventListener('secondsUpdated', function(e) {
-  $('#basicUsage').html(timer.getTimeValues().toString());
-});
- timer.addEventListener('secondsUpdated', function(e) {
-  $('#basicUsage3').html(timer.getTimeValues().toString());
-});
- timer.addEventListener('secondsUpdated', function(e) {
-  $('#basicUsage2').html(timer.getTimeValues().toString());
-});
+
 
  /*=====================
  03 .Add class to body for identify this is application page
