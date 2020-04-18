@@ -20,7 +20,7 @@ router.post('/', [
     check("email", "Empty email").isEmail(),
     check('password', "Le mots de passe n'est pas correcte").isLength({min: 5})
 ], async function (req, res) {
-    debug.info('login');
+    debug.log.info('login');
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
