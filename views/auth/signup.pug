@@ -1,8 +1,15 @@
-extends ./layout.pug
+extends ../layout
 block content
     - var socket                = false;
     .login-page2.animat-rate
         .login-content-main
+            .login-content2
+                .theme-tab
+                    ul#myTab.nav.nav-tabs(role='tablist')
+                        li.nav-item
+                            a#login-tab.nav-link.active(href='/login') Identifiez-vous
+                        li.nav-item
+                            a#signup-tab.nav-link(href='/signup') Créer votre compte
             .login-content
 
                 div.col-10.ml-sm-auto.px-4
@@ -15,8 +22,8 @@ block content
 
                 .login-content-header
                     img(src='/public/images/logo/landing-logo.png' alt='sign-logo')
-                h3 Créer votre compte pour rejoindre #{ organization} .
-                form(method='POST' action='/signup/invite').form2
+                h3 Wellcome to Malaika Créer votre compte.
+                form(method='POST' action='/signup').form2
                     .form-group
                         label.col-form-label(for='inputFirstname') Mon prénom
                         input#inputFirstname.form-control(type='text' placeholder='Prénom' name="first_name" required autofocus)
@@ -24,12 +31,26 @@ block content
                         label.col-form-label(for='inputLastname') Mon nom
                         input#inputLastname.form-control(type='text' placeholder='Nom' name="last_name" required)
                     .form-group
+                        label.col-form-label(for='inputname') organisation
+                        input#inputname.form-control(type='text' placeholder='Libheros' name="organization" required)
+                    .form-group
+                        label.col-form-label(for='inputEmail3') Email
+                        input#inputEmail3.form-control(type='email' placeholder="exemple@domaine.com" name="email" required)
+                    .form-group
                         label.col-form-label(for='inputPassword3') Mot de passe
                         span
                         input#inputPassword3.form-control(type='password' placeholder='Mot de passe' name="password" required)
                         input(type="hidden" name="_csrf" value=`${csrfToken}`)
-                        input(type='hidden'  hidden name='organization' value=`${organization}` required)
-                        input(type='hidden' hidden name='email' value=`${email}`  required)
+                    ul.medialogo
+                        li
+                            a.icon-btn.btn-facebook.button-effect.rouded15(href='#')
+                                i.fa.fa-facebook-f
+                        li
+                            a.icon-btn.btn-danger.button-effect.rouded15(href='#')
+                                i.fa.fa-google
+                        li
+                            a.icon-btn.btn-primary.button-effect.rouded15(href='#')
+                                i.fa.fa-twitter
                     .form-group.mb-0
                         .buttons
                             button.btn.btn-primary(type='submit') Créer votre compte

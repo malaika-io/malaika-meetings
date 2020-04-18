@@ -14,7 +14,7 @@ const isNotAuthenticated = (req, res, next) => {
 };
 
 router.get('/', isNotAuthenticated, async function (req, res) {
-    res.render('signup');
+    res.render('auth/signup');
 });
 
 router.post('/', [
@@ -28,7 +28,7 @@ router.post('/', [
     debug.info('register');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.render("signup", {errors: errors.array()});
+        return res.render("auth/signup", {errors: errors.array()});
     }
 
     const {email, organization, password, last_name, first_name} = req.body;
@@ -49,7 +49,7 @@ router.post('/', [
                 res.redirect(`/organization/${user.Organization.name}`);
             })
         }).catch((err) => {
-            return res.render("signup", {errors: errors.array()});
+            return res.render("auth/signup", {errors: errors.array()});
         });
 
     async function execute() {
@@ -87,7 +87,7 @@ router.get('/invite/:id', async function (req, res) {
         if (!invitation) {
             return res.render('404', {message: "inviation n'exsite pas "})
         }
-        res.render('signup-invite', {
+        res.render('auth/signup-invite', {
             organization: invitation.organization_name,
             email: invitation.to
         });
@@ -111,12 +111,12 @@ router.post('/invite', async function (req, res) {
         .then((user) => {
             return req.logIn(user, (err) => {
                 if (err) {
-                    return res.render("signup", {errors: new Error("Une erreur est survenue. Essayez d\'actualiser cette page")});
+                    return res.render("auth/signup", {errors: new Error("Une erreur est survenue. Essayez d\'actualiser cette page")});
                 }
                 res.redirect(`/organization/${user.Organization.name}`);
             })
         }).catch((err) => {
-            return res.render("signup", {
+            return res.render("auth/signup", {
                 errors: [{}]
             });
         });

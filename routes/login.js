@@ -13,7 +13,7 @@ const isNotAuthenticated = (req, res, next) => {
 };
 
 router.get('/',isNotAuthenticated, async function (req, res) {
-    res.render('login');
+    res.render('auth/login');
 
 });
 
@@ -34,13 +34,13 @@ router.post('/', [
 
         return req.logIn(user.dataValues, (err) => {
             if (err) {
-                return res.render("login", {errors: new Error("Une erreur est survenue. Essayez d\'actualiser cette page")});
+                return res.render("auth/login", {errors: new Error("Une erreur est survenue. Essayez d\'actualiser cette page")});
             }
             res.redirect(`/organization/${user.Organization.name}`);
         })
     }).catch((err) => {
         console.log(err);
-        return res.render("login", {
+        return res.render("auth/login", {
             errors: [{
                 value: err,
                 msg: err,

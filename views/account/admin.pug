@@ -1,0 +1,16 @@
+extends ../layout
+include ../mixin/admin/sidebar
+include ../mixin/admin/modal
+include ../mixin/admin/app-sidebar
+include ../mixin/admin/right-sidebar
+
+block content
+    - var socket  = true;
+    .chitchat-container.sidebar-toggle
+        +sidebar
+        block home
+        +right-sidebar
+        +app-sidebar
+        +modal
+
+    include ../mixin/admin/script

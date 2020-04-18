@@ -1,14 +1,59 @@
 extends ./layout.pug
 
-include ./components/mixin-landing
-
 block content
     - var socket                = false;
     .theme-landing
-        +header
-        +teamwork
-        +collaboration
-        +secure-app
-        +footer
-        +taptop
+        header#home
+            .custom-container
+                .row
+                    .col-12
+                        .login-content-main
+                            .login-content2
+                                .theme-tab
+                                    ul#myTab.nav.nav-tabs(role='tablist')
+                                        li.nav-item
+                                            a#signup-tab.nav-link(href='/login') Se connecter
+
+        section.section-py-space.team-work-main#team
+            .custom-container
+                .row.team-block
+                    .col-md-6
+                        .team-work-content
+                            div
+                                h1 Un travail d'équipe efficace pour chaque entreprise
+                                h4 Les grandes entreprises gagnent du temps avec Slack en collaborant en toute sécurité entre les équipes, les départements, les bureaux et les pays.
+                                a.btn.pricing-btn(href="/signup")  créer votre compte
+                    .col-md-6
+                        .team-work-content
+                            img.img-fluid.team-main(src='/public/images/landing/teamwork/5.png' alt='chit-chat')
+                            img.img-fluid.team1(src="/public/images/landing/teamwork/1.png" alt="team-work")
+                            img.img-fluid.team2(src="/public/images/landing/teamwork/2.png" alt="team-work")
+                            img.img-fluid.team3(src="/public/images/landing/teamwork/3.png" alt="team-work")
+                            img.img-fluid.team4(src="/public/images/landing/teamwork/4.png" alt="team-work")
+                            img.img-fluid.team5(src="/public/images/landing/slider/6.png" alt="team-work")
+
+        section.section-pb-space.secure-app-main
+            .custom-container
+                .row
+                    .col-lg-5.offset-lg-7.col-lg-5.offset-lg-2
+                        .secure-app-content
+                            div
+                                .ply-main
+                                    .ply-content
+                                        i.ti-shield
+                                    h3 Sécurisez votre
+                                        span Messages
+                                a.btn.pricing-btn(href="#") learn more
+            .secure-back-content
+
+        footer
+            .footer-back-block
+                img.img-fluid.inner1(src="/public/images/landing/footer/2.png" alt="footer-back-img")
+                img.img-fluid.inner2(src="/public/images/landing/footer/2.png" alt="footer-back-img")
+            .container.copyright-footer
+                .row.copyright
+                    .col-md-6.col-sm-12
+                        p © 2020 Malaika. All Rights Reserved
+                    .col-md-6.col-sm-12.links_horizontal
+
 
