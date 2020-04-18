@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const models = require('../models');
 const {check, validationResult} = require('express-validator');
-const debug = require('../utils/logger');
+const debug = require('../utils/logging');
 
 
 const isNotAuthenticated = (req, res, next) => {

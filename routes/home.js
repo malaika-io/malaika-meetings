@@ -9,9 +9,13 @@ const isNotAuthenticated = (req, res, next) => {
     next();
 };
 
-router.get('/', isNotAuthenticated,async function (req, res) {
+router.get('/', isNotAuthenticated, async function (req, res, next) {
     debug.info('home');
-    res.render('landing');
+    try {
+        res.render('landng');
+    } catch (e) {
+        next(e);
+    }
 });
 
 

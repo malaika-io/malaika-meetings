@@ -41,6 +41,8 @@ if (process.env.NODE_ENV === 'production') {
     sess.cookie.secure = true;
 }
 const app = express();
+var logger = require('./utils/logging');
+
 app.use(bodyParser.json({limit: '50mb', parameterLimit: 50000}));
 app.use(bodyParser.urlencoded({limit: '50mb', parameterLimit: 50000, extended: false}));
 app.use(compression({
@@ -115,10 +117,14 @@ app.use(function (err, req, res, next) {
     })
 });
 
+app.use(logger.loggerMiddleware);
+app.use(logger.exceptionMiddleware);
+process.on('uncaughtException', logger.logAndCrash);
+
 
 // error handler
 app.use(function (err, req, res, next) {
-    console.log('eer', err)
+    console.error("Error: " + err + ", Stacktrace: " + err.stack);
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -129,7 +135,7 @@ app.use(function (err, req, res, next) {
 });
 
 const server = http.createServer(app).listen(3000, function () {
-    console.log('Kurento Tutorial started');
+    console.log('Kurento server started');
 });
 
 let clients = {};
@@ -193,11 +199,16 @@ io.on('connection', async function (socket) {
             content,
             sender_id
         };
-        await saveMessage(chat);
-        io.to(to_socketId).emit('chat', {
-            from: author.fullName,
-            txt: content
-        });
+        try {
+            await saveMessage(chat);
+            io.to(to_socketId).emit('chat', {
+                from: author.fullName,
+                txt: content
+            });
+        }
+        catch (error) {
+            throw error;
+        }
     });
 
     socket.on('chat:update', () => {
@@ -236,17 +247,15 @@ async function saveMessage(chat) {
     try {
         return await models.Message.create(chat);
     } catch (e) {
-        console.log(e)
+        throw e
     }
 }
 
-let sdpOfferTest;
 
 async function call(callerSocketId, message) {
     const toId = message.to;
     const fromId = message.from;
     const sdpOffer = message.sdpOffer;
-    sdpOfferTest = sdpOffer
     let rejectCause = ``;
 
     clearCandidatesQueue(fromId);
@@ -308,7 +317,6 @@ function clearCandidatesQueue(id) {
 
 
 async function incomingCallResponse(socketId, message) {
-    console.log('incomingCallResponse', socketId)
     let pipeline;
     const me = message.me;
     const from = message.from;
@@ -316,7 +324,7 @@ async function incomingCallResponse(socketId, message) {
     clearCandidatesQueue(me);
 
     if (!from || !me) {
-        //return;
+        return;
     }
 
     try {
@@ -368,14 +376,12 @@ async function incomingCallResponse(socketId, message) {
 
                 callerWebRtcEndpoint.connect(calleeWebRtcEndpoint, async function (error) {
                     if (error) {
-                        console.log(error)
                         pipeline.release();
                         throw error;
                     }
 
                     calleeWebRtcEndpoint.connect(callerWebRtcEndpoint, async function (error) {
                         if (error) {
-                            console.log(error)
                             pipeline.release();
                             throw error;
                         }
@@ -388,7 +394,6 @@ async function incomingCallResponse(socketId, message) {
                                 sdpAnswer: callerSdpAnswer
                             });
                         } catch (e) {
-                            console.log(e)
                             if (pipeline) pipeline.release();
                             const calleeMessage = {
                                 id: 'stopCommunication'
@@ -400,7 +405,7 @@ async function incomingCallResponse(socketId, message) {
 
 
             } catch (e) {
-                console.log(e)
+                throw e
             }
 
         } else {
@@ -413,7 +418,6 @@ async function incomingCallResponse(socketId, message) {
         }
 
     } catch (e) {
-        console.log(e)
         throw e;
     }
 }
@@ -423,7 +427,6 @@ function createKurentoClient() {
     return new Promise(function (resolve, reject) {
         return kurento("ws://malaika.io:8888/kurento", function (error, _kurentoClient) {
             if (error) {
-                console.log('createKurentoClient', error)
                 return reject(new Error('Coult not find media server at address ' + ws_uri))
             }
             resolve(_kurentoClient);
@@ -435,7 +438,6 @@ function createPipeline(kurentoClient) {
     return new Promise(function (resolve, reject) {
         return kurentoClient.create('MediaPipeline', function (error, pipeline) {
             if (error) {
-                console.log(error)
                 return reject(error);
             }
             resolve(pipeline);
@@ -447,7 +449,6 @@ function createWebRtcEndpoint(pipeline) {
     return new Promise(function (resolve, reject) {
         pipeline.create('WebRtcEndpoint', function (error, webRtcEndpoint) {
             if (error) {
-                console.log(error)
                 return reject(error);
             }
             return resolve(webRtcEndpoint);
@@ -459,7 +460,6 @@ function processOffer(webRtcEndpoint, sdpOffer, pipeline, userId) {
     return new Promise(function (resolve, reject) {
         return webRtcEndpoint.processOffer(sdpOffer, function (error, sdpAnswer) {
             if (error) {
-                console.log('error', error)
                 pipeline.release();
                 reject(error);
             }
@@ -469,7 +469,6 @@ function processOffer(webRtcEndpoint, sdpOffer, pipeline, userId) {
             };
             webRtcEndpoint.gatherCandidates(function (error) {
                 if (error) {
-                    console.log(error)
                     reject(error)
                 }
             });
@@ -510,10 +509,9 @@ async function stop(message) {
 }
 
 
-process.on('uncaughtException', function (err) {
-    console.error((new Date).toUTCString() + ' uncaughtException:', err.message)
-    console.error(err.stack)
-    //process.exit(1)
+process.on('unhandledRejection', (error, promise) => {
+    console.log(' Oh Lord! We forgot to handle a promise rejection here: ', promise);
+    console.log(' The error was: ', error );
 });
 
 process.on('exit', (code) => {

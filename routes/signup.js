@@ -4,7 +4,7 @@ const models = require('../models');
 const bcrypt = require('bcrypt');
 const xss = require('xss');
 const {check, validationResult} = require('express-validator');
-const debug = require('../utils/logger');
+const debug = require('../utils/logging');
 const uuidv4 = require('uuid/v4')
 
 
@@ -82,7 +82,7 @@ router.post('/', [
 });
 
 
-router.get('/invite/:id', async function (req, res) {
+router.get('/invite/:id', async function (req, res, next) {
     const invitationId = req.params.id;
     try {
         const invitation = await models.Invitation.findOne({
@@ -103,7 +103,7 @@ router.get('/invite/:id', async function (req, res) {
 });
 
 
-router.post('/invite', async function (req, res) {
+router.post('/invite', async function (req, res, next) {
     const {organization, password, last_name, first_name, email} = req.body;
     const userInfos = {
         password: bcrypt.hashSync(password, 10),
@@ -123,9 +123,7 @@ router.post('/invite', async function (req, res) {
                 res.redirect(`/clients/${user.uuid}`);
             })
         }).catch((err) => {
-            return res.render("auth/signup", {
-                errors: [{}]
-            });
+            next(err);
         });
 
     async function execute() {

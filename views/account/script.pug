@@ -1,10 +1,9 @@
 script.
-    console.log('Foo bar');
     document.addEventListener("DOMContentLoaded", function (event) {
-        //const url = 'https://turn.malaika.io';
-        const url = 'http://' + location.host;
+        const url = 'https://malaika.io';
+        //const url = 'http://' + location.host;
         const OneSignal = window.OneSignal || [];
-        if (url === "https://turn.malaika.io") {
+        if (url === "https://malaika.io") {
             OneSignal.push(function () {
                 OneSignal.init({
                     appId: "33332867-5fd8-4785-846d-bcebf163bfef",
@@ -23,6 +22,8 @@ script.
         let state = false;
         videoInput = document.getElementById('videoInput');
         videoOutput = document.getElementById('videoOutput');
+        $("#call").click(call)
+        $("#stop").click(stop)
 
         ws.on('connect', function () {
             console.log('connect')
@@ -34,12 +35,9 @@ script.
 
         ws.on('chat', function (message) {
             $('#message_animation').hide()
-
             $('<li class="sent last typing-m"> <div class="media"> <div class="profile mr-4 bg-size" style="background-image: url(&quot;/public/images/contact/2.jpg&quot;); background-size: cover; background-position: center center; display: block;"><img class="bg-img" src="/public/images/contact/2.jpg" alt="Avatar" style="display: none;"></div><div class="media-body"> <div class="contact-name"> <h5>' + message.from + '</h5> <h6>01:42 AM</h6> <ul class="msg-box"> <li> <h5> <div class="type"> <div class="typing-loader"></div></div></h5> </li></ul> </div></div></div></li>'
             ).appendTo($('.messages .chatappend'));
-
             $(".messages").animate({scrollTop: $(document).height()}, "fast");
-
             setTimeout(function () {
                 $('.typing-m').hide();
                 $('<li class="sent"> <div class="media"> <div class="profile mr-4 bg-size" style="background-image: url(&quot;../assets/images/contact/2.jpg&quot;); background-size: cover; background-position: center center; display: block;"></div><div class="media-body"> <div class="contact-name"> <h5>' + message.from + '</h5> <h6>01:35 AM</h6> <ul class="msg-box"> <li> <h5>' + message.txt + '</h5> <div class="badge badge-success sm ml-2"> R</div></li></ul> </div></div></div></li>').appendTo($('.messages .chatappend'));
@@ -60,7 +58,6 @@ script.
         });
 
         ws.on('stopCommunication', function (parsedMessage) {
-            console.log('stopCommunication')
             stop(true);
         });
 
@@ -69,13 +66,9 @@ script.
         });
 
 
-        $("#call").click(call)
-        $("#stop").click(stop)
-
-
-        $('#videocall').on('hidden.bs.modal', function () {
-            //$('#confercall').modal();
-        });
+        // $('#videocall').on('hidden.bs.modal', function () {
+        //     //$('#confercall').modal();
+        // });
 
 
         $(".messages").animate({scrollTop: $(document).height()}, "fast");
@@ -131,7 +124,6 @@ script.
 
 
         function call() {
-            console.log('Starting video call ...')
             showSpinner(videoInput, videoOutput);
             const constraints = {
                 audio: true,
@@ -149,9 +141,6 @@ script.
             };
 
             webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function (error) {
-                if (error) {
-                    console.error(error);
-                }
                 this.generateOffer(onOffer);
             });
         }
@@ -177,7 +166,6 @@ script.
 
         function callResponse(message) {
             if (message.response !== 'accepted') {
-                console.info('Call not accepted by peer. Closing call');
                 const errorMessage = message.message ? message.message : 'Unknown reason for call rejection.';
                 stop(true);
             } else {
@@ -199,14 +187,7 @@ script.
                     onicecandidate: onIceCandidate
                 };
                 webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function (error) {
-                    if (error) {
-                        console.log(error);
-                    }
-
                     this.generateOffer(function (error, offerSdp) {
-                        if (error) {
-                            console.error(error);
-                        }
                         const response = {
                             me: user.id,
                             id: 'incomingCallResponse',

@@ -10,7 +10,7 @@ const isAuthenticated = (req, res, next) => {
 };
 
 
-router.get('/', isAuthenticated, async function (req, res) {
+router.get('/', isAuthenticated, async function (req, res,next) {
     const uuid = req.user.uuid;
     console.log('uuid', uuid)
     if (uuid) {
@@ -19,7 +19,7 @@ router.get('/', isAuthenticated, async function (req, res) {
 
 });
 
-router.get('/:uuid', isAuthenticated, async function (req, res) {
+router.get('/:uuid', isAuthenticated, async function (req, res,next) {
     const uuid = req.params.uuid;
     const user_uuid = req.user.uuid;
     if (uuid !== user_uuid) {
@@ -76,11 +76,11 @@ router.get('/:uuid', isAuthenticated, async function (req, res) {
         };
         return res.render('account/home', data);
     } catch (error) {
-        console.log(error)
+        next(error);
     }
 });
 
-router.get('/:uuid/contacts/:contact_uuid', isAuthenticated, async function (req, res) {
+router.get('/:uuid/contacts/:contact_uuid', isAuthenticated, async function (req, res,next) {
     const contactUuid = req.params.contact_uuid;
     const uuid = req.params.uuid;
     const user_uuid = req.user.uuid;
@@ -89,32 +89,36 @@ router.get('/:uuid/contacts/:contact_uuid', isAuthenticated, async function (req
     if (uuid !== user_uuid) {
         res.redirect(`/clients/${user_uuid}`);
     }
+    try {
+        const organizationName = req.user.Team.name;
+        let organization = await models.Team.findOne({
+            where: {
+                name: organizationName
+            },
+            include: [models.User]
+        });
+        const contacts = organization.Users.filter(contact => {
+            return contact.id !== req.user.id;
+        });
 
-    const organizationName = req.user.Team.name;
-    let organization = await models.Team.findOne({
-        where: {
-            name: organizationName
-        },
-        include: [models.User]
-    });
-    const contacts = organization.Users.filter(contact => {
-        return contact.id !== req.user.id;
-    });
+        let contact = await models.User.findOne({
+            where: {
+                uuid: contactUuid
+            }
+        });
+        let chats = await getMessages(contact.id, user_id);
 
-    let contact = await models.User.findOne({
-        where: {
-            uuid: contactUuid
-        }
-    });
-    let chats = await getMessages(contact.id, user_id);
-
-    return res.render('account/home', {
-        contact: contact,
-        contacts: contacts,
-        chats: chats,
-        messages: [],
-        messagesGroupe: []
-    });
+        return res.render('account/home', {
+            contact: contact,
+            contacts: contacts,
+            chats: chats,
+            messages: [],
+            messagesGroupe: []
+        });
+    }
+    catch (e) {
+        next(e);
+    }
 });
 
 async function getMessages(sender_id, receiver_id) {
