@@ -224,7 +224,7 @@ io.on('connection', async function (socket) {
     socket.on('disconnect', function () {
         let dataEvent = author.last_name + " disconnected";
         //socket.broadcast.emit('Leavejoint', dataEvent);
-        //author.update({socketId: null, online: false, sdpOffer: null, peer: null}, {where: {id: author.id}});
+        author.update({socketId: null, online: false, sdpOffer: null, peer: null}, {where: {id: author.id}});
     });
 });
 
@@ -236,10 +236,13 @@ async function saveMessage(chat) {
     }
 }
 
+let sdpOfferTest;
+
 async function call(callerSocketId, message) {
     const toId = message.to;
     const fromId = message.from;
     const sdpOffer = message.sdpOffer;
+    sdpOfferTest = sdpOffer
     let rejectCause = ``;
 
     clearCandidatesQueue(fromId);
@@ -281,7 +284,7 @@ async function call(callerSocketId, message) {
 async function onIceCandidate(userId, _candidate) {
     const candidate = kurento.getComplexType('IceCandidate')(_candidate);
     const user = await models.User.findByPk(userId);
-    if (user && pipelines[user.id] && pipelines[user.id].webRtcEndpoint) {
+    if (pipelines[user.id] && pipelines[user.id].webRtcEndpoint) {
         let webRtcEndpoint = pipelines[user.id].webRtcEndpoint;
         webRtcEndpoint.addIceCandidate(candidate);
     } else {
@@ -315,6 +318,9 @@ async function incomingCallResponse(socketId, message) {
         let callee = await models.User.findByPk(me);
         let caller = await models.User.findByPk(from);
 
+        const callee_socketId = callee.socketId;
+        const caller_socketId = caller.socketId;
+
         if (!callee) {
             const calleeMessage = {
                 response: 'rejected'
@@ -336,6 +342,12 @@ async function incomingCallResponse(socketId, message) {
                     }
                 }
 
+                callerWebRtcEndpoint.on('OnIceCandidate', function (event) {
+                    let candidate = kurento.getComplexType('IceCandidate')(event.candidate);
+                    io.to(caller_socketId).emit('iceCandidate', {candidate: candidate});
+
+                });
+
                 if (candidatesQueue[callee.id]) {
                     while (candidatesQueue[callee.id].length) {
                         let candidate = candidatesQueue[callee.id].shift();
@@ -343,43 +355,49 @@ async function incomingCallResponse(socketId, message) {
                     }
                 }
 
+                calleeWebRtcEndpoint.on('OnIceCandidate', function (event) {
+                    let candidate = kurento.getComplexType('IceCandidate')(event.candidate);
+                    io.to(callee_socketId).emit('iceCandidate', {candidate: candidate});
+                });
+
+
                 callerWebRtcEndpoint.connect(calleeWebRtcEndpoint, async function (error) {
                     if (error) {
+                        console.log(error)
                         pipeline.release();
                         throw error;
                     }
 
-                    calleeWebRtcEndpoint.connect(callerWebRtcEndpoint, function (error) {
+                    calleeWebRtcEndpoint.connect(callerWebRtcEndpoint, async function (error) {
                         if (error) {
+                            console.log(error)
                             pipeline.release();
                             throw error;
+                        }
+                        try {
+                            const callerSdpAnswer = await processOffer(callerWebRtcEndpoint, caller.sdpOffer, pipeline, caller.id);
+                            const calleeSdpAnswer = await processOffer(calleeWebRtcEndpoint, message.sdpOffer, pipeline, callee.id);
+                            io.to(callee_socketId).emit('startCommunication', {sdpAnswer: calleeSdpAnswer});
+                            io.to(caller_socketId).emit('callResponse', {
+                                response: 'accepted',
+                                sdpAnswer: callerSdpAnswer
+                            });
+                        } catch (e) {
+                            console.log(e)
+                            if (pipeline) pipeline.release();
+                            const calleeMessage = {
+                                id: 'stopCommunication'
+                            };
+                            io.to(callee.socketId).emit('stopCommunication', calleeMessage);
                         }
                     });
                 });
 
-                try {
-                    const calleeSdpAnswer = await processOffer(calleeWebRtcEndpoint, message.sdpOffer, pipeline, callee.id);
-                    const callerSdpAnswer = await processOffer(callerWebRtcEndpoint, caller.sdpOffer, pipeline, caller.id);
-                    const callee_socketId = clients[callee.id];
-                    const caller_socketId = clients[caller.id];
 
-                    io.to(callee_socketId).emit('startCommunication', {sdpAnswer: calleeSdpAnswer});
-                    io.to(caller_socketId).emit('callResponse', {
-                        response: 'accepted',
-                        sdpAnswer: callerSdpAnswer
-                    });
-                } catch (e) {
-                    console.log(e)
-                    if (pipeline) pipeline.release();
-
-                    const calleeMessage = {
-                        id: 'stopCommunication'
-                    };
-                    io.to(callee.socketId).emit('stopCommunication', calleeMessage);
-                }
             } catch (e) {
                 console.log(e)
             }
+
         } else {
             console.log('kksqnlmkd,jqldmkj,qkls')
             const declineMessage = {
@@ -399,7 +417,7 @@ async function incomingCallResponse(socketId, message) {
 
 function createKurentoClient() {
     return new Promise(function (resolve, reject) {
-        return kurento("ws://52.143.144.133:8888/kurento", function (error, _kurentoClient) {
+        return kurento("ws://turn.malaika.io:8888/kurento", function (error, _kurentoClient) {
             if (error) {
                 console.log('createKurentoClient', error)
                 return reject(new Error('Coult not find media server at address ' + ws_uri))
@@ -459,10 +477,12 @@ function processOffer(webRtcEndpoint, sdpOffer, pipeline, userId) {
 
 
 async function stop(message) {
+    console.log('stop', message)
 
     if (!pipelines[message.id]) {
         return;
     }
+    console.log('stoip')
 
     let pipeline = pipelines[message.id];
     delete pipelines[message.id];
@@ -476,7 +496,7 @@ async function stop(message) {
     });
 
     if (stoppedUser) {
-        stoppedUser.update({peer: null, sdpOffer: null});
+        stoppedUser.update({peer: null, sdpOffer: null}, {where: {id: stoppedUser.id}});
         delete pipelines[stoppedUser.id];
         const message = {
             id: 'stopCommunication',

@@ -61,6 +61,7 @@ script.
         });
 
         ws.on('stopCommunication', function (parsedMessage) {
+            console.log('stopCommunication')
             stop(true);
         });
 
@@ -71,17 +72,15 @@ script.
 
         $("#call").click(call)
         $("#stop").click(stop)
-        $('#videocall').on('hidden.bs.modal', function () {
-            console.log("Modal closed Programmatically");
-            if (!state) {
-
-            }
-        });
 
 
-        $('#myModal').on('shown.bs.modal', function () {
-
-        });
+        // $('#videocall').on('hidden.bs.modal', function () {
+        //     console.log("Modal closed Programmatically");
+        //     if (!state) {
+        //
+        //     }
+        // });
+        //
 
         $(".messages").animate({scrollTop: $(document).height()}, "fast");
         $('.submit').on('click', function () {
@@ -137,7 +136,7 @@ script.
 
         function call() {
             console.log('Starting video call ...')
-            //showSpinner(videoInput, videoOutput);
+            showSpinner(videoInput, videoOutput);
             const constraints = {
                 audio: true,
                 video: {
@@ -150,7 +149,7 @@ script.
                 localVideo: videoInput,
                 remoteVideo: videoOutput,
                 onicecandidate: onIceCandidate,
-                mediaConstraints: constraints
+                //mediaConstraints: constraints
             };
 
             webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function (error) {
@@ -186,7 +185,6 @@ script.
                 const errorMessage = message.message ? message.message : 'Unknown reason for call rejection.';
                 stop(true);
             } else {
-                console.log('callResponse', message)
                 webRtcPeer.processAnswer(message.sdpAnswer);
             }
         }
@@ -198,10 +196,9 @@ script.
             $('#confercall').modal();
 
             document.getElementById('accept-call').addEventListener('click', function () {
-
                 $('#confercall').modal('hide');
-
                 $('#videocall').modal();
+                showSpinner(videoInput, videoOutput);
 
                 const options = {
                     localVideo: videoInput,
@@ -242,25 +239,24 @@ script.
         }
 
         function startCommunication(message) {
-            console.log('startCommunication', message)
+            console.log('startCommunication', message.sdpAnswer)
             webRtcPeer.processAnswer(message.sdpAnswer);
         }
 
         function stop(message) {
+            console.log('stop', message)
             state = true;
-            $('#videocall').modal('hide');
             let user = !{JSON.stringify(user)};
             if (webRtcPeer) {
                 webRtcPeer.dispose();
                 webRtcPeer = null;
+                ws.emit('stop', {
+                    id: user.id
+                })
 
-                if (!message) {
-                    ws.emit('stop', {
-                        id: user.id
-                    })
-                }
+                if (!message) {}
             }
-            //hideSpinner(videoInput, videoOutput);
+            hideSpinner(videoInput, videoOutput);
         }
 
         function showSpinner() {
