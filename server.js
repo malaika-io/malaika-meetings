@@ -37,8 +37,10 @@ let sess = {
     }
 };
 if (process.env.NODE_ENV === 'production') {
-    sess.cookie.httpOnly = false;
+    sess.cookie.httpOnly = true;
+    sess.cookie.signed = true;
     sess.cookie.secure = true;
+    sess.cookie.sameSite = true;
 }
 const app = express();
 var logger = require('./utils/logging');
@@ -111,6 +113,7 @@ app.use('/clients', client);
 
 
 app.use(function (err, req, res, next) {
+    console.log(err)
     if (err.code !== 'EBADCSRFTOKEN') return next(err);
     console.log('Oops! Something went wrong...')
 });
@@ -204,8 +207,7 @@ io.on('connection', async function (socket) {
                 from: author.fullName,
                 txt: content
             });
-        }
-        catch (error) {
+        } catch (error) {
             throw error;
         }
     });
@@ -510,7 +512,7 @@ async function stop(message) {
 
 process.on('unhandledRejection', (error, promise) => {
     console.log(' Oh Lord! We forgot to handle a promise rejection here: ', promise);
-    console.log(' The error was: ', error );
+    console.log(' The error was: ', error);
 });
 
 process.on('exit', (code) => {
