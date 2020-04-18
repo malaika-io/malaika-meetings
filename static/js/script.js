@@ -434,17 +434,13 @@
 
 
     if ($(window).width() <= 992) {
-        console.log('wmlsdjkpqs^^k^^sdk^^qskd')
         $(".main-nav").removeClass("on");
         $('body').removeClass("sidebar-active");
         $('.app-sidebar').removeClass("active");
         $('.chitchat-main').removeClass("small-sidebar");
     }
-
-
+    
     if ($(window).width() <= 800) {
-        console.log('wmlsdjkpqs^^k^^sdk^^qskd')
-
         $("ul.chat-main  li").on('click', function () {
             $('.main-nav').removeClass("on");
         });

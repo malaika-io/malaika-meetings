@@ -1,0 +1,26 @@
+{
+  "name": "static",
+  "homepage": "https://github.com/malaika-io/malaika-meetings",
+  "authors": [
+    "karimmhamdi <contact@nourlabs.fr>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "webrtc-adapter": "v6.4.0",
+    "jquery": "3.3.1",
+    "bootstrap": "4.1.1",
+    "kurento-utils": "master",
+    "owl.carousel": "^2.3.4",
+    "feather-icons": "^4.28.0",
+    "socket.io-client": "^2.3.0"
+  }
+}
