@@ -12,6 +12,7 @@ mixin modal
                         .form-group
                             h5 Email
                             input#exampleInputEmail1.form-control(type='text', name="email" placeholder='email@test.fr' required autofocus)
+                            input(type="hidden" name="_csrf" value=`${csrfToken}`)
                         .modal-footer
                             button.btn.btn-danger.button-effect.btn-sm(type='button' data-dismiss='modal') Annuler
                             button.btn.btn-primary.btn-sm(type='submit' value="Submit") Envoyer
