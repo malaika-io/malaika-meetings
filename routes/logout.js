@@ -11,7 +11,8 @@ const isAuthenticated = (req, res, next) => {
 
 router.get('/', isAuthenticated, async function (req, res) {
     debug.info('logout');
-    res.render('landing');
+    req.logout();
+    res.redirect("/login")
 });
 
 

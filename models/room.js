@@ -1,14 +1,14 @@
 const {Sequelize} = require("sequelize");
 
-class ChatRoom extends Sequelize.Model {
+class Room extends Sequelize.Model {
 
     static init(sequelize, DataTypes) {
         return super.init(
             {
                 name: DataTypes.STRING,
             }, {
-                tableName: "ChatRooms",
-                modelName: "ChatRoom",
+                tableName: "Rooms",
+                modelName: "Room",
                 underscored: true,
                 sequelize: sequelize
             }
@@ -16,11 +16,11 @@ class ChatRoom extends Sequelize.Model {
     }
 
     static associate(models) {
-        this.hasMany(models.ChatMessage, {
+        this.hasMany(models.Message, {
             foreignKey: "chatRoomId",
             sourceKey: "id",
         });
     }
 }
 
-module.exports = ChatRoom;
+module.exports = Room;

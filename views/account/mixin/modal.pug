@@ -96,7 +96,7 @@ mixin modal
                         .usersprof
                             img.bg-img(src='/public/images/avtar/3.jpg' alt='Avatar')
                         .media-body
-                            h5 #{ contact.last_name}
+                            h5= contact !== null ? `${contact.last_name.toString()}` : ""
                             h6 America ,California
                         #basicUsage 00:00:00
                         .zoomcontent

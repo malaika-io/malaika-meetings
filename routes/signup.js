@@ -5,6 +5,8 @@ const bcrypt = require('bcrypt');
 const xss = require('xss');
 const {check, validationResult} = require('express-validator');
 const debug = require('../utils/logger');
+const uuidv4 = require('uuid/v4')
+
 
 const isNotAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
@@ -37,30 +39,34 @@ router.post('/', [
         organization: xss(organization),
         last_name: xss(last_name),
         first_name: xss(first_name),
+        uuid: uuidv4(),
         email: xss(email.toLowerCase()),
     };
 
     return execute()
         .then((user) => {
-            return req.logIn(user, (err) => {
-                if (err) {
-                    return res.render("signup", {errors: new Error("Une erreur est survenue. Essayez d\'actualiser cette page")});
-                }
-                res.redirect(`/organization/${user.Organization.name}`);
-            })
+            if (user) {
+                return req.logIn(user, (err) => {
+                    if (err) {
+                        return res.render("signup", {errors: new Error("Une erreur est survenue. Essayez d\'actualiser cette page")});
+                    }
+                    res.redirect(`/clients/${user.uuid}`);
+                })
+            } else {
+                return res.render("auth/signup", {errors: errors.array()});
+            }
         }).catch((err) => {
-            return res.render("auth/signup", {errors: errors.array()});
         });
 
     async function execute() {
         try {
             const new_user = await models.sequelize.transaction(async function (t) {
                 let newUser = await models.User.create(userInfos, {transaction: t});
-                let newOrganization = await models.Organization.create({name: organization}, {transaction: t});
-                await newUser.setOrganization(newOrganization, {transaction: t});
+                let newTeam = await models.Team.create({name: organization}, {transaction: t});
+                await newUser.setTeam(newTeam, {transaction: t});
                 return newUser
             });
-            await new_user.reload({include: [models.Organization]});
+            await new_user.reload({include: [models.Team]});
             return new_user;
         } catch (err) {
             console.log(err)
@@ -113,7 +119,7 @@ router.post('/invite', async function (req, res) {
                 if (err) {
                     return res.render("auth/signup", {errors: new Error("Une erreur est survenue. Essayez d\'actualiser cette page")});
                 }
-                res.redirect(`/organization/${user.Organization.name}`);
+                res.redirect(`/clients/${user.uuid}`);
             })
         }).catch((err) => {
             return res.render("auth/signup", {
@@ -125,14 +131,14 @@ router.post('/invite', async function (req, res) {
         try {
             const new_user = await models.sequelize.transaction(async function (t) {
                 let newUser = await models.User.create(userInfos, {transaction: t});
-                let newOrganization = await models.Organization.findOne({name: organization}, {transaction: t});
-                await newUser.setOrganization(newOrganization, {transaction: t});
+                let newTeam = await models.Team.findOne({name: organization, uuid: uuidv4()}, {transaction: t});
+                await newUser.setTeam(newTeam, {transaction: t});
                 return newUser
             });
-            await new_user.reload({include: [models.Organization]});
+            await new_user.reload({include: [models.Team]});
             return new_user;
         } catch (err) {
-            console.log(err)
+            console.log('transaction', err)
             if (err.name === 'SequelizeUniqueConstraintError') {
                 throw new Error("Cette adresse email est déjà utilisée.");
             }

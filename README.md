@@ -18,3 +18,5 @@ The Kurento project provides detailed [documentation] including tutorials,
 installation and development guides. A simplified version of the documentation
 can be found on [readthedocs.org]. The [Open API specification] a.k.a. Kurento
 Protocol is also available on [apiary.io].
+
+ sudo /usr/bin/kurento-media-server --gst-debug-level=3 --gst-debug=Kurento*:4,kms*:4,sdp*:4,webrtc*:4,*rtpendpoint:4,rtp*handler:4,rtpsynchronizer:4

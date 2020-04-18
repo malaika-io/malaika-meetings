@@ -30,13 +30,16 @@ let sess = {
     saveUninitialized: false,
     cookie: {
         path: '/',
-        /* httpOnly: true,
-         secure: false,*/
+        httpOnly: true,
+        secure: false,
         expires: expiryDate,
         maxAge: hour
     }
 };
-
+if (process.env.NODE_ENV === 'production') {
+    sess.cookie.httpOnly = false;
+    sess.cookie.secure = true;
+}
 const app = express();
 app.use(bodyParser.json({limit: '50mb', parameterLimit: 50000}));
 app.use(bodyParser.urlencoded({limit: '50mb', parameterLimit: 50000, extended: false}));
@@ -60,7 +63,7 @@ passport.deserializeUser(async (id, done) => {
     try {
         let user = await models.User.findByPk(id, {
             attributes: {exclude: ['password']},
-            include: [models.Organization]
+            include: [models.Team]
         });
         if (!user) {
             return done(new Error('user Not found'), null);
@@ -95,14 +98,14 @@ const user = require('./routes/user');
 const login = require('./routes/login');
 const signup = require('./routes/signup');
 const logout = require('./routes/logout');
-const organization = require('./routes/organization');
+const client = require('./routes/client');
 
 app.use('/', home);
 app.use('/users', user);
 app.use('/login', login);
 app.use('/signup', signup);
 app.use('/logout', logout);
-app.use('/organization', organization);
+app.use('/clients', client);
 
 
 app.use(function (err, req, res, next) {
@@ -163,7 +166,7 @@ io.on('connection', async function (socket) {
     const socketId = socket.id;
 
     let author = await models.User.findByPk(socket.user_id, {
-        include: [models.Organization]
+        include: [models.Team]
     });
 
     if (author) {
@@ -174,6 +177,7 @@ io.on('connection', async function (socket) {
 
     socket.on('chat', async function (message) {
         let receiver = await models.User.findByPk(message.receiver_id);
+        if (!receiver) return;
         const to_socketId = clients[message.receiver_id];
         const sender_id = socket.user_id;
         const chatRoom_id = 1;
@@ -230,7 +234,7 @@ io.on('connection', async function (socket) {
 
 async function saveMessage(chat) {
     try {
-        return await models.ChatMessage.create(chat);
+        return await models.Message.create(chat);
     } catch (e) {
         console.log(e)
     }

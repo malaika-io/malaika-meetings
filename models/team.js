@@ -1,18 +1,19 @@
 const {Sequelize} = require("sequelize");
 
-class Organization extends Sequelize.Model {
+class Team extends Sequelize.Model {
 
     static init(sequelize, DataTypes) {
         return super.init(
             {
-                name: {type: DataTypes.STRING, allowNull: true}
+                name: {type: DataTypes.STRING, allowNull: true},
+                uuid: {type: DataTypes.STRING(1234), allowNull: true}
             }, {
                 indexes: [{
                     unique: true,
                     fields: ["name"]
                 }],
-                tableName: "Organization",
-                modelName: "Organization",
+                tableName: "Teams",
+                modelName: "Team",
                 underscored: true,
                 sequelize: sequelize
             }
@@ -23,4 +24,4 @@ class Organization extends Sequelize.Model {
     }
 }
 
-module.exports = Organization;
+module.exports = Team;

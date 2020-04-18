@@ -7,7 +7,7 @@ const debug = require('../utils/logger');
 
 const isNotAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
-        return res.redirect('/organization');
+        return res.redirect('/clients');
     }
     next();
 };
@@ -36,7 +36,7 @@ router.post('/', [
             if (err) {
                 return res.render("auth/login", {errors: new Error("Une erreur est survenue. Essayez d\'actualiser cette page")});
             }
-            res.redirect(`/organization/${user.Organization.name}`);
+            res.redirect(`/clients/${user.uuid}`);
         })
     }).catch((err) => {
         console.log(err);
@@ -55,7 +55,7 @@ router.post('/', [
                 where: {
                     email: email
                 },
-                include: [models.Organization]
+                include: [models.Team]
             });
 
             if (!user) {

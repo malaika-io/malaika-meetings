@@ -8,6 +8,7 @@ class User extends Sequelize.Model {
         return super.init(
             {
                 username: {type: DataTypes.STRING, allowNull: true},
+                uuid: {type: DataTypes.STRING(1234), allowNull: true},
                 organization: {
                     type: DataTypes.STRING, allowNull: true
                 },
@@ -25,7 +26,7 @@ class User extends Sequelize.Model {
                 },
                 peer: {type: DataTypes.STRING, allowNull: true, defaultValue: null},
                 socketId: {type: DataTypes.STRING(45), allowNull: true},
-                sdpOffer: {type: DataTypes.TEXT('tiny'), allowNull: true, defaultValue: null},
+                sdpOffer: {type: DataTypes.TEXT(), allowNull: true, defaultValue: null},
                 active: {
                     type: DataTypes.BOOLEAN,
                     defaultValue: true, allowNull: false
@@ -58,7 +59,7 @@ class User extends Sequelize.Model {
     }
 
     static associate(models) {
-        this.belongsTo(models.Organization);
+        this.belongsTo(models.Team);
     }
 
     comparePassword = (password, hash) => {

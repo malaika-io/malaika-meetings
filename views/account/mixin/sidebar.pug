@@ -89,7 +89,7 @@ mixin sidebar
                                                     .input-group-append
                                                         span.input-group-text
                                                             i.fa.fa-search
-                                                    input.form-control(type='text' placeholder='Start Chat')
+                                                    input.form-control(type='text')
                                         ul.group-main
                                             each message in messagesGroupe
                                                 li.active(data-to='group_chat')
@@ -131,6 +131,9 @@ mixin sidebar
                                                         i(data-feather='video')
                                 else
                                     li inviter des contacts
+                                    a(href="#" data-toggle="modal" data-target="#exampleModalCenter")
+                                        .icon-btn.btn-outline-danger.button-effect.btn-sm
+                                            i(data-feather='users')
 
         //.fevorite-tab.dynemic-sidebar#favourite
         //    .theme-title

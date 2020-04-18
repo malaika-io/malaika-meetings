@@ -4,7 +4,7 @@ const debug = require('../utils/logger');
 
 const isNotAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
-        return res.redirect('/organization');
+        return res.redirect('/clients/');
     }
     next();
 };

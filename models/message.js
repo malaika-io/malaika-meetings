@@ -1,6 +1,6 @@
 const {Sequelize} = require("sequelize");
 
-class ChatMessage extends Sequelize.Model {
+class Message extends Sequelize.Model {
 
     static init(sequelize, DataTypes) {
         return super.init(
@@ -16,8 +16,8 @@ class ChatMessage extends Sequelize.Model {
                     defaultValue: false, allowNull: false
                 },
             }, {
-                tableName: "ChatMessages",
-                modelName: "ChatMessage",
+                tableName: "Messages",
+                modelName: "Message",
                 underscored: true,
                 sequelize: sequelize
             }
@@ -25,11 +25,11 @@ class ChatMessage extends Sequelize.Model {
     }
 
     static associate(models) {
-        this.belongsTo(models.ChatRoom, {
+        this.belongsTo(models.Room, {
             foreignKey: 'chatRoomId',
             targetKey: 'id'
         });
     }
 }
 
-module.exports = ChatMessage;
+module.exports = Message;
