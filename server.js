@@ -26,11 +26,11 @@ const expiryDate = new Date(Date.now() + hour); // 1 hour
 let sess = {
     store: SessionStore,
     secret: process.env["SESSION_SECRET"],
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     cookie: {
         path: '/',
-        httpOnly: true,
+        httpOnly: false,
         secure: false,
         expires: expiryDate,
         maxAge: hour
@@ -40,7 +40,7 @@ let sess = {
 if (process.env.NODE_ENV === 'production') {
     //sess.cookie.httpOnly = true;
     //sess.cookie.signed = true;
-    sess.cookie.secure = true;
+    //sess.cookie.secure = true;
     //sess.cookie.sameSite = true;
 }
 const app = express();
