@@ -27,7 +27,7 @@ router.post('/', [
     check("organization", "Empty organization").not().isEmpty(),
     check('password', "Le mots de passe n'est pas correcte").isLength({min: 5})
 ], async function (req, res) {
-    debug.info('register');
+    debug.log.info('register');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.render("auth/signup", {errors: errors.array()});
