@@ -26,7 +26,7 @@ const expiryDate = new Date(Date.now() + hour); // 1 hour
 let sess = {
     store: SessionStore,
     secret: process.env["SESSION_SECRET"],
-    resave: false,
+    resave: true,
     saveUninitialized: false,
     cookie: {
         path: '/',
@@ -38,10 +38,10 @@ let sess = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-    sess.cookie.httpOnly = true;
-    sess.cookie.signed = true;
+    //sess.cookie.httpOnly = true;
+    //sess.cookie.signed = true;
     sess.cookie.secure = true;
-    sess.cookie.sameSite = true;
+    //sess.cookie.sameSite = true;
 }
 const app = express();
 var logger = require('./utils/logging');
