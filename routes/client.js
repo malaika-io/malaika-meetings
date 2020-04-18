@@ -12,7 +12,11 @@ const isAuthenticated = (req, res, next) => {
 
 router.get('/', isAuthenticated, async function (req, res) {
     const uuid = req.user.uuid;
-    res.redirect(`/clients/${uuid}`);
+    console.log('uuid', uuid)
+    if (uuid) {
+        return res.redirect(`/clients/${uuid}`);
+    }
+
 });
 
 router.get('/:uuid', isAuthenticated, async function (req, res) {
@@ -21,51 +25,59 @@ router.get('/:uuid', isAuthenticated, async function (req, res) {
     if (uuid !== user_uuid) {
         res.redirect(`/clients/${user_uuid}`);
     }
-    const organizationName = req.user.Team.name;
-    const user_id = req.user.id;
+    try {
+        const organizationName = req.user.Team.name;
+        const user_id = req.user.id;
+        let organization = await models.Team.findOne({
+            where: {
+                name: organizationName
+            },
+            include: [models.User]
+        });
+        const contacts = organization.Users.filter(contact => {
+            return contact.id !== req.user.id;
+        });
 
-    let organization = await models.Team.findOne({
-        where: {
-            name: organizationName
-        },
-        include: [models.User]
-    });
-    const contacts = organization.Users.filter(contact => {
-        return contact.id !== req.user.id;
-    });
+        const lastContactChatArray = await models.Message.findAll({
+            limit: 1,
+            where: {
+                [models.Op.or]: [{sender_id: user_id}, {receiver_id: user_id}]
+            },
+            order: [['created_at', 'DESC']]
+        });
 
-    const lastContactChatArray = await models.Message.findAll({
-        limit: 1,
-        where: {
-            [models.Op.or]: [{sender_id: user_id}, {receiver_id: user_id}]
-        },
-        order: [['created_at', 'DESC']]
-    });
-    let lastContactId;
-    let chats = [];
-    let contact = null;
+        let lastContactId;
+        let chats = [];
+        let contact = null;
 
-    if (lastContactChatArray > 0) {
-        let lastContactChat = lastContactChatArray[0];
-        if (lastContactChat.sender_id === user_id) {
-            lastContactId = lastContactChat.receiver_id;
-        } else if (lastContactChat.receiver_id === user_id) {
-            lastContactId = lastContactChat.sender_id;
-        } else {
-            lastContactId = null;
+        if (lastContactChatArray.length > 0) {
+            let lastContactChat = lastContactChatArray[0];
+            /***
+             * TODO  delete JSON.parse  after next migration
+             */
+            if (JSON.parse(lastContactChat.sender_id) === user_id) {
+                lastContactId = lastContactChat.receiver_id;
+            } else if (JSON.parse(lastContactChat.receiver_id) === user_id) {
+                lastContactId = lastContactChat.sender_id;
+            } else {
+                lastContactId = null;
+            }
         }
+        if (lastContactId) {
+            contact = await models.User.findByPk(lastContactId);
+            chats = await getMessages(lastContactId, user_id);
+        }
+        const data = {
+            contact: contact,
+            contacts: contacts,
+            chats: chats,
+            messages: [],
+            messagesGroupe: []
+        };
+        return res.render('account/home', data);
+    } catch (error) {
+        console.log(error)
     }
-    if (lastContactId) {
-        contact = await models.User.findByPk(lastContactId);
-        chats = await getMessages(lastContactId, user_id);
-    }
-    return res.render('account/home', {
-        contact: contact,
-        contacts: contacts,
-        chats: chats,
-        messages: [],
-        messagesGroupe: []
-    });
 });
 
 router.get('/:uuid/contacts/:contact_uuid', isAuthenticated, async function (req, res) {

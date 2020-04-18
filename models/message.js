@@ -6,10 +6,10 @@ class Message extends Sequelize.Model {
         return super.init(
             {
                 chatRoomId: DataTypes.INTEGER,
-                receiver_id: DataTypes.STRING,
+                receiver_id: DataTypes.INTEGER,
                 receiver_name: DataTypes.STRING,
-                sender_id: DataTypes.STRING ,
-                sender_name: DataTypes.STRING ,
+                sender_id: DataTypes.INTEGER,
+                sender_name: DataTypes.STRING,
                 content: DataTypes.TEXT,
                 read: {
                     type: DataTypes.BOOLEAN,

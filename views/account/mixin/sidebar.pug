@@ -117,7 +117,7 @@ mixin sidebar
                             ul.contact-log-main
                                 each val in contacts
                                     li.nav-item
-                                        a.nav-link(href=`/organization/${user.Organization.name}/contact/${val.id}`)
+                                        a.nav-link(href=`/clients/${user.uuid}/contacts/${val.uuid}`)
                                             .contact-box
                                                 .profile.offline
                                                     img.bg-img(src='/public/images/contact/2.jpg' alt='Avatar')

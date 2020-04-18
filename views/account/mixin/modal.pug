@@ -33,31 +33,31 @@ mixin modal
                                 a.icon-btn.btn-danger.button-effect.btn-xl.is-animating.cancelcall(href='#',data-dismiss="modal")
                                     i(data-feather='phone')
 
-    #audiorcvcall.modal.fade.audiorcvcall(tabindex='-1' role='dialog' aria-hidden='true')
-        .modal-dialog.modal-dialog-centered(role='document')
-            .modal-body
-                .audiocall2.call-modal
-                    img.bg-img(src='/public/images/avtar/big/audiocall.jpg' alt='Avatar')
-                    .center-con.text-center
-                        #basicUsage2 00:00:00
-                        .title2 Josephin water
-                        h6 log angelina california
-                        ul
-                            li
-                                a.icon-btn.btn-light.button-effect.mute(href="#",data-tippy-content='Mute')
-                                    i.fa.fa-microphone
-                            li
-                                a.icon-btn.btn-light.button-effect.mute(href="#",data-tippy-content='Speaker')
-                                    i.fa.fa-volume-up
-                            li
-                                a.icon-btn.btn-danger.button-effect.btn-xl.is-animating(href='#',data-tippy-content='Hangup',data-dismiss='modal')
-                                    i(data-feather='phone')
-                            li
-                                a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='Add Call')
-                                    i(data-feather='user-plus')
-                            li
-                                a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='Pause')
-                                    i(data-feather='pause')
+    //#audiorcvcall.modal.fade.audiorcvcall(tabindex='-1' role='dialog' aria-hidden='true')
+    //    .modal-dialog.modal-dialog-centered(role='document')
+    //        .modal-body
+    //            .audiocall2.call-modal
+    //                img.bg-img(src='/public/images/avtar/big/audiocall.jpg' alt='Avatar')
+    //                .center-con.text-center
+    //                    #basicUsage2 00:00:00
+    //                    .title2 Josephin water
+    //                    h6 log angelina california
+    //                    ul
+    //                        li
+    //                            a.icon-btn.btn-light.button-effect.mute(href="#",data-tippy-content='Mute')
+    //                                i.fa.fa-microphone
+    //                        li
+    //                            a.icon-btn.btn-light.button-effect.mute(href="#",data-tippy-content='Speaker')
+    //                                i.fa.fa-volume-up
+    //                        li
+    //                            a.icon-btn.btn-danger.button-effect.btn-xl.is-animating(href='#',data-tippy-content='Hangup',data-dismiss='modal')
+    //                                i(data-feather='phone')
+    //                        li
+    //                            a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='Add Call')
+    //                                i(data-feather='user-plus')
+    //                        li
+    //                            a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='Pause')
+    //                                i(data-feather='pause')
 
     #confercall.modal.fade(tabindex='-1' role='dialog'  aria-hidden='true')
         .modal-dialog.modal-dialog-centered(role='document')
@@ -67,15 +67,8 @@ mixin modal
                     .center-con.text-center
                         .usersprof
                             .profile
-                                img.bg-img(src='/public/images/avtar/2.jpg' alt='Avatar')
-                            .profile
-                                img.bg-img(src='/public/images/avtar/3.jpg' alt='Avatar')
-                            .profile
-                                img.bg-img(src='/public/images/avtar/5.jpg' alt='Avatar')
-                            .profile
                                 img.bg-img(src='/public/images/avtar/big/videocall_bg.jpg' alt='Avatar')
-                        p Incoming Call
-                        h3 Conference Call
+                        h3 Appel entrant
                         ul
                             li
                                 a.icon-btn.btn-danger.button-effect.btn-xl.is-animating.cancelcall(id="reject-call")
@@ -91,7 +84,7 @@ mixin modal
                     .bg-imgage
                         video(id="videoOutput" autoplay width="640px" height="480px"  poster="/public/images/webrtc.png")
                     .small-image
-                        video(id="videoInput" autoplay  width="240px" height="280px" poster="/public/images/webrtc.png")
+                        video(id="videoInput" autoplay  width="220px" height="300px" poster="/public/images/webrtc.png")
                     .media.videocall-details
                         .usersprof
                             img.bg-img(src='/public/images/avtar/3.jpg' alt='Avatar')
@@ -114,46 +107,46 @@ mixin modal
                                 a.icon-btn.btn-light.button-effect.mic(href="#",data-tippy-content='Mute')
                                     i.fa.fa-microphone
 
-    #confvideocl.modal.fade(tabindex='-1' role='dialog' aria-hidden='true')
-        .modal-dialog.modal-dialog-centered(role='document')
-            .modal-content
-                .modal-body
-                    .row.confimg
-                        .col-6
-                            div.vclimg
-                                img.bg-img(src='/public/images/avtar/big/videocall_bg.jpg' alt='Avatar')
-                        .col-6
-                            div.vclimg
-                                img.bg-img(src='/public/images/avtar/5.jpg' alt='Avatar')
-                        .col-6
-                            div.vclimg
-                                img.bg-img(src='/public/images/avtar/2.jpg' alt='Avatar')
-                        .col-6
-                            div.vclimg
-                                img.bg-img(src='/public/images/avtar/3.jpg' alt='Avatar')
-                .modal-footer.clfooter
-                    #basicUsage3 00:00:00
-                    ul
-                        li
-                            a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='speaker')
-                                i(data-feather='volume-2')
-                        li
-                            a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='Camera')
-                                i(data-feather='camera-off')
-
-                        li
-                            a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='Add Call')
-                                i(data-feather='user-plus')
-                        li
-                            a.icon-btn.btn-danger.button-effect.btn-sm.is-animating(href='#',data-dismiss='modal',data-tippy-content='Hangup')
-                                i(data-feather='phone')
-                        li
-                            a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='Disable Video')
-                                i(data-feather='video-off')
-                        li
-                            a.icon-btn.btn-light.button-effect.mic(href="#",data-tippy-content='Mute')
-                                i(data-feather='mic-off')
-                        li
-                            a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='Hold')
-                                i(data-feather='pause')
+    //#confvideocl.modal.fade(tabindex='-1' role='dialog' aria-hidden='true')
+    //    .modal-dialog.modal-dialog-centered(role='document')
+    //        .modal-content
+    //            .modal-body
+    //                .row.confimg
+    //                    .col-6
+    //                        div.vclimg
+    //                            img.bg-img(src='/public/images/avtar/big/videocall_bg.jpg' alt='Avatar')
+    //                    .col-6
+    //                        div.vclimg
+    //                            img.bg-img(src='/public/images/avtar/5.jpg' alt='Avatar')
+    //                    .col-6
+    //                        div.vclimg
+    //                            img.bg-img(src='/public/images/avtar/2.jpg' alt='Avatar')
+    //                    .col-6
+    //                        div.vclimg
+    //                            img.bg-img(src='/public/images/avtar/3.jpg' alt='Avatar')
+    //            .modal-footer.clfooter
+    //                #basicUsage3 00:00:00
+    //                ul
+    //                    li
+    //                        a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='speaker')
+    //                            i(data-feather='volume-2')
+    //                    li
+    //                        a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='Camera')
+    //                            i(data-feather='camera-off')
+    //
+    //                    li
+    //                        a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='Add Call')
+    //                            i(data-feather='user-plus')
+    //                    li
+    //                        a.icon-btn.btn-danger.button-effect.btn-sm.is-animating(href='#',data-dismiss='modal',data-tippy-content='Hangup')
+    //                            i(data-feather='phone')
+    //                    li
+    //                        a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='Disable Video')
+    //                            i(data-feather='video-off')
+    //                    li
+    //                        a.icon-btn.btn-light.button-effect.mic(href="#",data-tippy-content='Mute')
+    //                            i(data-feather='mic-off')
+    //                    li
+    //                        a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='Hold')
+    //                            i(data-feather='pause')
 

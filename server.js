@@ -332,7 +332,7 @@ async function incomingCallResponse(socketId, message) {
             return io.to(callee.socketId).emit('callResponse', calleeMessage);
         }
 
-        /*if (callResponse === 'accept') {
+        if (callResponse === 'accept') {
             const kurentoClient = await createKurentoClient();
             pipeline = await createPipeline(kurentoClient);
             try {
@@ -409,7 +409,7 @@ async function incomingCallResponse(socketId, message) {
             };
             const to_socketId = clients[from];
             io.to(to_socketId).emit('callResponse', declineMessage);
-        }*/
+        }
 
     } catch (e) {
         console.log(e)

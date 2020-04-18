@@ -24,10 +24,9 @@ block home
                                                     i(data-feather='chevron-left')
 
                             .col
-
                                 ul.calls.text-right
                                     li
-                                        a.icon-btn.btn-light.button-effect(id="call-audio", data-tippy-content='Quick Audio Call',data-toggle='modal' data-target='#pollModal')
+                                        a.icon-btn.btn-light.button-effect(id="call-audio", data-tippy-content='Quick Audio Call',data-toggle='modal' data-target='#confercall')
                                             i(data-feather='phone')
                                     li
                                         a.icon-btn.btn-light.button-effect(id="call", data-tippy-content='Appel vidéo rapide',data-toggle='modal' data-target='#videocall')
@@ -110,7 +109,7 @@ block home
                                 .cross2
                                 .dot
                                 .dot1
-                            .call-list-center
+                            .call-list-center#message_animation
                                 img(src='/public/images/chat.png' alt="")
                                 .animated-bg
                                     i
@@ -118,6 +117,8 @@ block home
                                     i
                                 if contact && chats.length === 0
                                     p aucun messages encore
+                                else if contacts
+                                    p parler avec vos amie
                                 else
                                     br
                                     br

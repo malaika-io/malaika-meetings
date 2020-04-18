@@ -21,10 +21,8 @@ script.
         let videoOutput;
         let webRtcPeer;
         let state = false;
-
         videoInput = document.getElementById('videoInput');
         videoOutput = document.getElementById('videoOutput');
-
 
         ws.on('connect', function () {
             console.log('connect')
@@ -35,7 +33,8 @@ script.
         });
 
         ws.on('chat', function (message) {
-            console.log(message)
+            $('#message_animation').hide()
+
             $('<li class="sent last typing-m"> <div class="media"> <div class="profile mr-4 bg-size" style="background-image: url(&quot;/public/images/contact/2.jpg&quot;); background-size: cover; background-position: center center; display: block;"><img class="bg-img" src="/public/images/contact/2.jpg" alt="Avatar" style="display: none;"></div><div class="media-body"> <div class="contact-name"> <h5>' + message.from + '</h5> <h6>01:42 AM</h6> <ul class="msg-box"> <li> <h5> <div class="type"> <div class="typing-loader"></div></div></h5> </li></ul> </div></div></div></li>'
             ).appendTo($('.messages .chatappend'));
 
@@ -190,11 +189,8 @@ script.
         }
 
         function incomingCall(message) {
-            console.log('incomingCall');
             let user = !{JSON.stringify(user)};
-
             $('#confercall').modal();
-
             document.getElementById('accept-call').addEventListener('click', function () {
                 $('#confercall').modal('hide');
                 $('#videocall').modal();
@@ -239,12 +235,10 @@ script.
         }
 
         function startCommunication(message) {
-            console.log('startCommunication', message.sdpAnswer)
             webRtcPeer.processAnswer(message.sdpAnswer);
         }
 
         function stop(message) {
-            console.log('stop', message)
             state = true;
             let user = !{JSON.stringify(user)};
             if (webRtcPeer) {

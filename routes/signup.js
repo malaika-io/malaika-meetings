@@ -110,6 +110,7 @@ router.post('/invite', async function (req, res) {
         organization: xss(organization),
         last_name: xss(last_name),
         first_name: xss(first_name),
+        uuid: uuidv4(),
         email: xss(email.toLowerCase()),
     };
 
