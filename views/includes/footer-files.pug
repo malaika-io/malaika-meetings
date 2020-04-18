@@ -1,36 +1,21 @@
-//- latest jquery
-script(src='/public/js/jquery-3.3.1.min.js')
-
-//- slick js
-script(src='/public/js/owl.carousel.js')
-
-//- popper js
+script(src='/public/bower_components/dist/jquery-3.3.1.min.js')
+script(src='/public/bower_components/dist/owl.carousel.js')
 script(src='/public/js/popper.min.js')
 script(src='/public/js/tippy-bundle.iife.min.js')
-
-//- Bootstrap js
-script(src='/public/js/bootstrap.js')
-
-//- Plugins JS start
+script(src='/public/bower_components/dist/js/bootstrap.js')
 script(src='/public/js/switchery.js')
 
-
 if socket
-    script(src="/public/js/webrtc-adapter/release/adapter.js")
-    script(src="/public/js/kurento-utils/js/kurento-utils.js")
-    script(src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js")
+    script(src="/public/bower_components/webrtc-adapter/release/adapter.js")
+    script(src="/public/bower_components/kurento-utils/js/kurento-utils.js")
+    script(src="/public/bower_components/socket.io-client/dist/socket.io.js")
     script(src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async="")
-//- Plugins JS start
 
 if feathericon
     script(src='/public/js/feather-icon/feather.min.js')
     script(src='/public/js/feather-icon/feather-icon.js')
 
-
-//- magnifypopup js //
 script(src='/public/js/jquery.magnific-popup.js')
-
-//- zoom gallary js //
 script(src='/public/js/zoom-gallery.js')
 
 //- Theme js
