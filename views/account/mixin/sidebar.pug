@@ -12,62 +12,25 @@ mixin sidebar
                             div
                                 img.bg-img(src='/public/images/avtar/2.jpg' alt='Avatar')
                 li
-                    a.icon-btn.btn-light.button-effect(href='favourite',data-tippy-content='Favourite')
-                        i.fa.fa-star
-                li
-                    a.icon-btn.btn-light.button-effect(href='contact-list',data-tippy-content='Contact List')
-                        i.fa.fa-users
-                li
                     .dot-btn.dot-danger.grow
                         a.icon-btn.btn-light.button-effect(href='notification',data-tippy-content='Notification')
                             i.fa.fa-bell
                 li
-                    a.icon-btn.btn-light.button-effect(href='settings',data-tippy-content='Setting',data-intro='Vous pouvez modifier les paramètres en cliquant ici ')
+                    a.icon-btn.btn-light.button-effect(href='settings',data-tippy-content='Réglage',data-intro='Vous pouvez modifier les paramètres en cliquant ici ')
                         i.fa.fa-cog
             ul.sidebar-bottom
                 li
-                    a.icon-btn.btn-light(href='/logout',data-tippy-content=' SignOut')
+                    a.icon-btn.btn-light(href='/logout',data-tippy-content=' Déconnexion')
                         i.fa.fa-power-off
 
 
     aside.chitchat-left-sidebar.left-disp
         .recent-default.dynemic-sidebar.active
-            .recent
-                .theme-title
-                    .media
-                        div
-                            h2 Récent
-                            h4 Discutez avec vos amis &#128536;
-                        .media-body
-                            a.icon-btn.btn-outline-light.button-effect.pull-right.mobile-back(href='#')
-                                i.ti-angle-right
-
-                            a.icon-btn.btn-outline-light.button-effect.pull-right.mainnav(href='#')
-                                i.ti-layout-grid2
-
-                .recent-slider.recent-chat.owl-carousel.owl-theme
-                    .item
-                        .recent-box
-                            .dot-btn.dot-danger.grow
-                            .recent-profile
-                                img.bg-img(src='/public/images/avtar/1.jpg' alt='Avatar')
-                                h6  John deo
-
             .chat.custom-scroll
                 ul.chat-cont-setting
                     li
-                        a(href="#" data-toggle="modal" data-target="#msgchatModal")
-                            span new chat
-                            .icon-btn.btn-outline-primary.button-effect.btn-sm
-                                i(data-feather='message-square')
-                    li
-                        a(href="#" data-toggle="modal" data-target="#msgcallModal")
-                            span new call
-                            .icon-btn.btn-outline-success.button-effect.btn-sm
-                                i(data-feather='phone')
-                    li
                         a(href="#" data-toggle="modal" data-target="#exampleModalCenter")
-                            span new Contact
+                            span inviter un collègues
                             .icon-btn.btn-outline-danger.button-effect.btn-sm
                                 i(data-feather='users')
                 .theme-title
@@ -173,43 +136,43 @@ mixin sidebar
                                 else
                                     li inviter des contacts
 
-        .fevorite-tab.dynemic-sidebar#favourite
-            .theme-title
-                .media
-                    div
-                        h2 Favourite
-                        h4 Last Recent
-                    .media-body.text-right
+        //.fevorite-tab.dynemic-sidebar#favourite
+        //    .theme-title
+        //        .media
+        //            div
+        //                h2 Favourite
+        //                h4 Last Recent
+        //            .media-body.text-right
+        //
+        //                a.icon-btn.btn-outline-light.btn-sm.m-r-15.search(href='#')
+        //                    i(data-feather='search')
+        //                form.form-inline.search-form
+        //                    .form-group
+        //                        input.form-control-plaintext(type='search', placeholder='Search..')
+        //                        .icon-close.close-search
+        //                a.icon-btn.btn-outline-light.btn-sm.m-r-15(href="#",data-toggle='modal' data-target='#addcallmodal')
+        //                    i(data-feather='plus')
+        //                a.icon-btn.btn-outline-light.btn-sm.close-panel(href='#')
+        //                    i(data-feather='x')
+        //
+        //    ul.chat-main
 
-                        a.icon-btn.btn-outline-light.btn-sm.m-r-15.search(href='#')
-                            i(data-feather='search')
-                        form.form-inline.search-form
-                            .form-group
-                                input.form-control-plaintext(type='search', placeholder='Search..')
-                                .icon-close.close-search
-                        a.icon-btn.btn-outline-light.btn-sm.m-r-15(href="#",data-toggle='modal' data-target='#addcallmodal')
-                            i(data-feather='plus')
-                        a.icon-btn.btn-outline-light.btn-sm.close-panel(href='#')
-                            i(data-feather='x')
-
-            ul.chat-main
-
-        .contact-list-tab.dynemic-sidebar.custom-scroll#contact-list
-            .theme-title
-                .media
-                    div
-                        h2 Contact
-                        h4 Start talking now
-                    .media-body.text-right
-                        a.icon-btn.btn-outline-light.btn-sm.m-r-15.search(href='#')
-                            i(data-feather='search')
-                        form.form-inline.search-form
-                            .form-group
-                                input.form-control-plaintext(type='search', placeholder='Search..')
-                                .icon-close.close-search
-                        a.icon-btn.btn-outline-light.btn-sm.close-panel(href='#')
-                            i(data-feather='x')
-            ul.chat-main
+        //.contact-list-tab.dynemic-sidebar.custom-scroll#contact-list
+        //    .theme-title
+        //        .media
+        //            div
+        //                h2 Contact
+        //                h4 Start talking now
+        //            .media-body.text-right
+        //                a.icon-btn.btn-outline-light.btn-sm.m-r-15.search(href='#')
+        //                    i(data-feather='search')
+        //                form.form-inline.search-form
+        //                    .form-group
+        //                        input.form-control-plaintext(type='search', placeholder='Search..')
+        //                        .icon-close.close-search
+        //                a.icon-btn.btn-outline-light.btn-sm.close-panel(href='#')
+        //                    i(data-feather='x')
+        //    ul.chat-main
 
 
         .notification-tab.dynemic-sidebar.custom-scroll#notification
@@ -290,8 +253,8 @@ mixin sidebar
                             .upload-img
                                 input(type="file")
                         .media-body
-                            h3 my status
-                            p tap to add status Update
+                            h3 Mon statut
+                            p Mettre a jour votre statut
                         div
                             a.icon-btn.btn-outline-light.btn-sm.close-panel(href='#')
                                 i(data-feather='x')

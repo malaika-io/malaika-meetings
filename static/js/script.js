@@ -395,24 +395,6 @@
 
 
     /*=====================
-           27. profile open close
-           ==========================*/
-    $('.menu-trigger, .close-profile').on('click', function (e) {
-        $('body').toggleClass('menu-active'); //add class
-        $('.app-sidebar').toggleClass('active'); //remove
-        $('.chitchat-main').toggleClass("small-sidebar"); //remove
-        if ($(window).width() <= 1440) {
-            $('.chitchat-container').toggleClass('sidebar-overlap');
-            $('.chitchat-main').addClass("small-sidebar"); //remove
-        }
-        if ($('body').hasClass('menu-active')) {
-            $('body').addClass('sidebar-active main-page');
-            $('.app-sidebar').removeClass('active');
-            $('.chitchat-main').removeClass("small-sidebar");
-        }
-
-    });
-    /*=====================
            28. dropdown
            ==========================*/
 

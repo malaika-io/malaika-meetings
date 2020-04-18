@@ -7,199 +7,54 @@ mixin app-sidebar
                         .theme-title
                             .media
                                 div
-                                    h2 Todo
-                                    h4 to create your task
+                                    h2 Tâche
+                                    h4 a venire
                                 .media-body.media-body.text-right
                                     a.icon-btn.btn-sm.btn-outline-light.close-apps(href='#')
                                         i(data-feather='x')
-                        .todo-name
-                            form.default-form
-                                select.custom-scroll(name='support[support_type]')
-                                    option All Conversations
-                                    option Josephin water
-                                    option Jony Lynetin
-                                    option Sufiya Elija
-                                    option Mukrani Pabelo
-                                    option Jhon Deo
-
-                        .todo-tab.theme-tab.custom-scroll
-                            ul.nav.nav-tabs
-                                li.nav-item
-                                    a.nav-link.button-effect.active.show(data-toggle='pill' href='#todo1')
-                                        | All
-                                li.nav-item
-                                    a.nav-link.button-effect(data-toggle='pill' href='#todo2')
-                                        | My to-dos
-                                li
-                                    a.icon-btn.btn-light.button-effect.btn-sm(data-toggle="modal" data-target="#todoModal")
-                                        i(data-feather='plus')
-                            .tab-content
-                                #todo1.tab-pane.active.show
-                                    .tab-card.text-left
-                                        .todo-task
-                                            h4 Designer Discussion
-                                            div.todo-main-content
-                                                div.input-text
-                                                    input(type='checkbox' aria-label='Checkbox for following text input')
-                                                    input#user_input12(type='text' name='todo-text' placeholder='Give me review on our side' )
-                                                div.drop-picker
-                                                    .dropdown.currency(tabindex='1')
-                                                        .select
-                                                            span Assign To
-                                                        input(type='hidden' name='currency')
-                                                        ul.dropdown-menu
-                                                            li.dropdown-divider
-                                                                .fa.fa-user
-                                                                h5.text-muted Assign To
-                                                            li
-                                                                a(href="#") Josephin john
-                                                            li
-                                                                a(href="#") Lynetin john
-                                                            li
-                                                                a(href="#") Sufiya john
-                                                            li
-                                                                a(href="#") Jhon john
-                                                    input.datepicker-here.form-control.digits(type='url' data-language='en' placeholder="Due date")
-                                            div.todo-list
-                                                div#div_3.element
-                                                    span.add.add-to-do Add-To-Do
-                                            div.todo-main-content
-                                                div.input-text
-                                                    input(type='checkbox' aria-label='Checkbox for following text input')
-                                                    input#user_input13(type='text' name='todo-text' placeholder='Redesign Your Design')
-                                                div.drop-picker
-                                                    .dropdown.currency(tabindex='1')
-                                                        .select
-                                                            span Assign To
-                                                        input(type='hidden' name='currency')
-                                                        ul.dropdown-menu
-                                                            li.dropdown-divider
-                                                                .fa.fa-user
-                                                                h5.text-muted Assign To
-                                                            li
-                                                                a(href="#") Josephin john
-                                                            li
-                                                                a(href="#") Lynetin john
-                                                            li
-                                                                a(href="#") Sufiya john
-                                                            li
-                                                                a(href="#") Jhon john
-                                                    input.datepicker-here.form-control.digits(type='url' data-language='en' placeholder="Due date")
-
-                                            div.todo-list
-                                                div#div_1.element
-                                                    span.add.add-to-do Add-To-Do
-
-                                #todo2.tab-pane.fade
-                                    .converstaion-docs.tab-card
-                                        i.fa.fa-sticky-note-o
-                                        h5.mb-3 No Open To-Dos Here
-                                        a.btn.btn-primary.btn-sm(data-toggle="modal" data-target="#createtodoModal") Create A To-Do
 
                 li#notes
                     .notes-main
                         .theme-title
                             .media
                                 div
-                                    h2 Notes
-                                    h4 Notes List
+                                    h2 Remarques
+                                    h4 a venire
                                 .media-body.media-body.text-right
                                     a.icon-btn.btn-sm.btn-outline-light.close-apps(href='#')
                                         i(data-feather='x')
-                        form.default-form
-                            .form-group.notes-content
-                                select
-                                    option Contact Or Channel
-                                    option Weekdays (Mon-Fri)
-                                    option Daily
-                                    option Weekly (Custom)
-                                ul
-                                    li
-                                        a.icon-btn.btn-light.button-effect.btn-sm(data-toggle="modal" data-target="#notesModal")
-                                            i(data-feather='plus')
-                                //- ul.notes-content
-                                  //- li
-                                  //-     a.btn.btn-primary.button-effect.btn-sm(data-toggle="modal" data-target="#notesModal") Create A Note</a>
-                                  li
-                                      a.icon-btn.btn-light.button-effect.btn-sm(data-toggle="modal" data-target="#notesModal")
-                                          i(data-feather='plus')
-                                //- p Notes are available for the selected conversation
-                        .notes-list
-                            h6.mb-2.text-muted Joshephin Water.10 Jan
-                            .media
-                                img.img-fluid.mr-3(src="/public/images/file_icons/5.png" alt="media-img")
-                                .media-body
-                                    h5.mt-0 Joshephin Water
-                            h5.mb-2 Imporatnt project link
-                            h6.mb-2 Please start testing task of your projects.
-                            .forward-main
-                                //- i.fa.fa-mail-forward
-                                a.line.fa.fa-mail-forward(href='#') Forward
                 li#reminder
                     .reminder-main
                         .theme-title
                             .media
                                 div
-                                    h2 Reminders
-                                    h4 Set reminders
+                                    h2 Rappels
+                                    h4 a venire
                                 .media-body.media-body.text-right
                                     a.icon-btn.btn-sm.btn-outline-light.close-apps(href='#')
                                         i(data-feather='x')
                         .reminder-content.tab-card
                             i.ti-alarm-clock
-                            p Never forget important tasks. Set personal and group reminders.
-                            a.setreminder.btn.btn-primary.button-effect.btn-sm(data-toggle="modal" data-target="#setReminder") set reminder
-                        .reminder-list-disp
-                            h5 Themeforest Discusssion
-                            h6 Project Discussion
-                            span 11:22 PM | 15 FAB
-                            ul.reminder-disp
-                                li.reminder-list-toggle
-                                    a.icon-btn.bg-transparent(href="#")
-                                        i(data-feather='more-vertical')
-                                    .reminder-contentlist-toggle
-                                        ul
-                                            li
-                                                a.icon-btn.btn-sm(href='#')
-                                                    i(data-feather='trash')
-                                                h5 Delete
-                        .reminder-list
-                            button.Show-reminder Show Completed
-                            button.Hide-reminder Hide Completed
-                            .target-reminder-list
-                                h5 Session Start
-                                h6 Project Discussion
-                                h6 05:22 PM | 1 JAN
-                                ul.reminder-disp
-                                    li.reminder-toggle
-                                        a.icon-btn.bg-transparent(href="#", data-tippy-content='Quick action')
-                                            i(data-feather='more-vertical')
-                                        .reminder-content-toggle
-                                            ul
-                                                li
-                                                    a.icon-btn.btn-sm(href='#')
-                                                        i(data-feather='trash')
-                                                    h5 Delete
-
-
+                            p N'oubliez jamais les tâches importantes.
+                            a.setreminder.btn.btn-primary.button-effect.btn-sm() a venire
         .app-list
             ul.app-list-ul.custom-scroll
                 li.title.apps-toggle
                     i(data-feather='grid')
-                    h5 Apps
+                    h5 Outils
                 li
                     a.icon-btn.btn-outline-primary.btn-sm.button-effect(href='notes')
                         i(data-feather='book')
-                    h5 Notes
+                    h5 Remarques
                 li
                     a.icon-btn.btn-outline-danger.btn-sm.button-effect(href='todo')
                         i(data-feather='list')
-                    h5 Todo
+                    h5  Tâche
                 li
                     a.icon-btn.btn-outline-warning.btn-sm.button-effect(href='reminder')
                         i(data-feather='clock')
-                    h5 Reminder
+                    h5 Rappels
                 li.close-app
                     a.icon-btn.btn-danger(href='#' onclick='removedefault()')
                         i(data-feather='x')
-                    h5 close
+                    h5 Fermez

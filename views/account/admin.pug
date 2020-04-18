@@ -2,14 +2,12 @@ extends ../layout
 include mixin/sidebar
 include mixin/modal
 include mixin/app-sidebar
-include mixin/right-sidebar
 
 block content
     - var socket  = true;
     .chitchat-container.sidebar-toggle
         +sidebar
         block home
-        +right-sidebar
         +app-sidebar
         +modal
     include script

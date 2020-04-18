@@ -1,21 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const models = require("../models");
-const cassandra = require('cassandra-driver');
-
-const client = new cassandra.Client({
-    contactPoints: ['localhost:32769'],
-    localDataCenter: 'datacenter1',
-    //authProvider: new cassandra.auth.PlainTextAuthProvider('developer', 'devpassword'),
-    keyspace: 'mykeyspace'
-});
-
 
 const isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
         return next()
     }
-    res.redirect("auth//login")
+    res.redirect("/login")
 };
 
 
