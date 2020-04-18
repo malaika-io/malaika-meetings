@@ -11,7 +11,8 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const redisConnect = require("connect-redis");
 const compression = require('compression');
-const csrfMiddleware = require('csurf');
+const csrf = require('csurf');
+var csrfProtection = csrf({ cookie: true })
 const xssFilter = require("x-xss-protection");
 const lusca = require('lusca');
 const dotenv = require("dotenv");
@@ -36,6 +37,7 @@ let sess = {
         maxAge: hour
     }
 };
+console.log('process.env.NODE_ENV',process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'production') {
     sess.cookie.httpOnly = true;
     sess.cookie.signed = true;
@@ -80,8 +82,8 @@ passport.deserializeUser(async (id, done) => {
 });
 app.use(
     process.env.NODE_ENV === 'development' ?
-        csrfMiddleware({ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT' /* etc */]}) :
-        csrfMiddleware()
+        csrfProtection({ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT' /* etc */]}) :
+        csrfProtection()
 );
 app.use(lusca.nosniff());
 app.use(xssFilter({setOnOldIE: true, mode: null}));
