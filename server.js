@@ -114,8 +114,10 @@ app.use('/clients', client);
 
 app.use(function (err, req, res, next) {
     console.log(err)
-    if (err.code !== 'EBADCSRFTOKEN') return next(err);
-    console.log('Oops! Something went wrong...')
+    if (err.code !== 'EBADCSRFTOKEN') {
+        console.log('EBADCSRFTOKEN')
+        return next(err);
+    }
 });
 
 
