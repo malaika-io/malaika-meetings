@@ -1,38 +1,8 @@
 version: '3'
 services:
-  cassandra:
-    image: cassandra:latest
-    container_name: cassandra
-    ports:
-      - "9042:9042"
-    environment:
-      - CASSANDRA_SEEDS=cassandra
-      - CASSANDRA_PASSWORD_SEEDER=yes
-      - CASSANDRA_PASSWORD=cassandra
-      - "MAX_HEAP_SIZE=256M"
-      - "HEAP_NEWSIZE=128M"
-    restart: always
-    volumes:
-      - ./out/cassandra_data:/var/lib/cassandra
   redis:
     image: "redis:alpine"
     container_name: redis
     restart: always
     ports:
       - "6379:6379"
-  mysql:
-    image: mysql:5.7
-    container_name: mysql
-    restart: always
-    environment:
-      MYSQL_DATABASE: 'malaika'
-      MYSQL_USER: 'admin'
-      MYSQL_PASSWORD: 'Lyna2009Karim'
-      MYSQL_ROOT_PASSWORD: 'Lyna2009Karim198322@'
-    ports:
-      - '3306:3306'
-    expose:
-      - '3306'
-volumes:
-  cassandra_data:
-    driver: local

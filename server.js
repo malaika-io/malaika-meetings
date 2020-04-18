@@ -477,14 +477,10 @@ function processOffer(webRtcEndpoint, sdpOffer, pipeline, userId) {
 
 
 async function stop(message) {
-    console.log('stop', message)
-
     if (!pipelines[message.id]) {
         return;
     }
-    console.log('stoip')
-
-    let pipeline = pipelines[message.id];
+    let pipeline = pipelines[message.id].pipeline;
     delete pipelines[message.id];
     pipeline.release();
 
@@ -503,7 +499,6 @@ async function stop(message) {
             message: 'remote user hanged out'
         };
         io.to(stoppedUser.socketId).emit('stopCommunication', message);
-
     }
 
     clearCandidatesQueue(message.id);
