@@ -1,8 +1,8 @@
 extends ../layout
-include ../mixin/admin/sidebar
-include ../mixin/admin/modal
-include ../mixin/admin/app-sidebar
-include ../mixin/admin/right-sidebar
+include mixin/sidebar
+include mixin/modal
+include mixin/app-sidebar
+include mixin/right-sidebar
 
 block content
     - var socket  = true;
@@ -12,5 +12,4 @@ block content
         +right-sidebar
         +app-sidebar
         +modal
-
-    include ../mixin/admin/script
+    include script

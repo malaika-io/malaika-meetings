@@ -1,0 +1,297 @@
+mixin sidebar
+    nav.main-nav.on.custom-scroll
+
+        .logo-warpper
+            a(href="/")
+                img(src="/public/images/logo/logo.png" , alt="logo")
+        .sidebar-main
+            ul.sidebar-top
+                li
+                    a.button-effect(href='status',data-tippy-content='status',data-intro='Check Status here')
+                        .user-popup.status.one
+                            div
+                                img.bg-img(src='/public/images/avtar/2.jpg' alt='Avatar')
+                li
+                    a.icon-btn.btn-light.button-effect(href='favourite',data-tippy-content='Favourite')
+                        i.fa.fa-star
+                li
+                    a.icon-btn.btn-light.button-effect(href='contact-list',data-tippy-content='Contact List')
+                        i.fa.fa-users
+                li
+                    .dot-btn.dot-danger.grow
+                        a.icon-btn.btn-light.button-effect(href='notification',data-tippy-content='Notification')
+                            i.fa.fa-bell
+                li
+                    a.icon-btn.btn-light.button-effect(href='settings',data-tippy-content='Setting',data-intro='Vous pouvez modifier les paramètres en cliquant ici ')
+                        i.fa.fa-cog
+            ul.sidebar-bottom
+                li
+                    a.icon-btn.btn-light(href='/logout',data-tippy-content=' SignOut')
+                        i.fa.fa-power-off
+
+
+    aside.chitchat-left-sidebar.left-disp
+        .recent-default.dynemic-sidebar.active
+            .recent
+                .theme-title
+                    .media
+                        div
+                            h2 Récent
+                            h4 Discutez avec vos amis &#128536;
+                        .media-body
+                            a.icon-btn.btn-outline-light.button-effect.pull-right.mobile-back(href='#')
+                                i.ti-angle-right
+
+                            a.icon-btn.btn-outline-light.button-effect.pull-right.mainnav(href='#')
+                                i.ti-layout-grid2
+
+                .recent-slider.recent-chat.owl-carousel.owl-theme
+                    .item
+                        .recent-box
+                            .dot-btn.dot-danger.grow
+                            .recent-profile
+                                img.bg-img(src='/public/images/avtar/1.jpg' alt='Avatar')
+                                h6  John deo
+
+            .chat.custom-scroll
+                ul.chat-cont-setting
+                    li
+                        a(href="#" data-toggle="modal" data-target="#msgchatModal")
+                            span new chat
+                            .icon-btn.btn-outline-primary.button-effect.btn-sm
+                                i(data-feather='message-square')
+                    li
+                        a(href="#" data-toggle="modal" data-target="#msgcallModal")
+                            span new call
+                            .icon-btn.btn-outline-success.button-effect.btn-sm
+                                i(data-feather='phone')
+                    li
+                        a(href="#" data-toggle="modal" data-target="#exampleModalCenter")
+                            span new Contact
+                            .icon-btn.btn-outline-danger.button-effect.btn-sm
+                                i(data-feather='users')
+                .theme-title
+                    .media
+                        div
+                            h2 Chat
+                            h4 Démarrer une nouvelle conversation
+                        .media-body.text-right
+                            a.icon-btn.btn-outline-light.btn-sm.search.contact-search(href='#')
+                                i(data-feather='search')
+                            form.form-inline.search-form
+                                .form-group
+                                    input.form-control-plaintext(type='search', placeholder='Search..')
+                                    .icon-close.close-search
+
+                            a.icon-btn.btn-primary.btn-fix.chat-cont-toggle.outside(href="#")
+                                i(data-feather='plus')
+
+                .theme-tab.tab-sm.chat-tabs
+                    ul#myTab.nav.nav-tabs(role='tablist')
+                        li.nav-item(data-to='chat-content')
+                            a#chat-tab.nav-link.button-effect.active(data-toggle='tab' href='#chat' role='tab' aria-controls='chat' ,aria-selected='true',data-intro='Start chat')
+                                i(data-feather='message-square')
+                                | Chat
+                        li.nav-item
+                            a#contact-tab.nav-link.button-effect(data-toggle='tab' href='#contact' role='tab' aria-controls='contact' aria-selected='false')
+                                i(data-feather='users')
+                                | Contact
+
+                    #myTabContent.tab-content
+                        #chat.tab-pane.fade.show.active(role='tabpanel' aria-labelledby='chat-tab')
+                            .theme-tab
+                                ul#myTab1.nav.nav-tabs(role='tablist')
+                                    li.nav-item
+                                        a#direct-tab.nav-link.button-effect.active(data-toggle='tab' href='#direct') Direct
+                                    li.nav-item
+                                        a#group-tab.nav-link.button-effect(data-toggle='tab' href='#group') Group
+
+                                #myTabContent1.tab-content
+                                    #direct.tab-pane.fade.show.active(role='tabpanel' aria-labelledby='direct-tab')
+                                        ul.chat-main
+                                            each message in messages
+                                                li(data-to='blank')
+                                                    .chat-box
+                                                        .profile.offline
+                                                            img.bg-img(src='/public/images/contact/1.jpg' alt='Avatar')
+                                                        .details
+                                                            h5 karim water
+                                                            h6 Hi, i am josephin. How are you.. ! There are many variations of passages.
+                                                        .date-status
+                                                            i.ti-pin2
+                                                            h6 22/10/19
+                                                            h6.font-success.status  Seen
+                                            else
+                                                li aucune messages
+                                    #group.tab-pane.fade(role='tabpanel' aria-labelledby='group-tab')
+                                        .search2
+                                            div
+                                                .input-group
+                                                    .input-group-append
+                                                        span.input-group-text
+                                                            i.fa.fa-search
+                                                    input.form-control(type='text' placeholder='Start Chat')
+                                        ul.group-main
+                                            each message in messagesGroupe
+                                                li.active(data-to='group_chat')
+                                                    .group-box
+                                                        .profile
+                                                            img.bg-img(src='/public/images/avtar/teq.jpg' alt='Avatar')
+                                                        .details
+                                                            h5 Tech Ninjas
+                                                            h6 Lorem Ipsum is simply dummy text the printing and typesetting industry.
+                                                        .date-status
+                                                            ul.grop-icon
+                                                                li
+                                                                    a.group-tp(href='#',data-tippy-content='Josephin')
+                                                                        img(src="/public/images/contact/1.jpg" alt="group-icon-img")
+                                                                li
+                                                                    a.group-tp(href='#',data-tippy-content='Jony ')
+                                                                        img(src="/public/images/contact/2.jpg" alt="group-icon-img")
+                                                                li
+                                                                    a.group-tp(href='#',data-tippy-content='Pabelo')
+                                                                        img(src="/public/images/contact/3.jpg" alt="group-icon-img")
+                                                                li + 35
+                                            else
+                                                li aucune messages
+                        #contact.tab-pane.fade(role='tabpanel' aria-labelledby='contact-tab')
+                            ul.contact-log-main
+                                each val in contacts
+                                    li.nav-item
+                                        a.nav-link(href=`/organization/${user.Organization.name}/contact/${val.id}`)
+                                            .contact-box
+                                                .profile.offline
+                                                    img.bg-img(src='/public/images/contact/2.jpg' alt='Avatar')
+                                                .details
+                                                    h5 #{ val.fullName}
+                                                    h6 0683267570
+                                                .contact-action
+                                                    .icon-btn.btn-outline-primary.btn-sm.button-effect
+                                                        i(data-feather='phone')
+                                                    .icon-btn.btn-outline-success.btn-sm.button-effect
+                                                        i(data-feather='video')
+                                else
+                                    li inviter des contacts
+
+        .fevorite-tab.dynemic-sidebar#favourite
+            .theme-title
+                .media
+                    div
+                        h2 Favourite
+                        h4 Last Recent
+                    .media-body.text-right
+
+                        a.icon-btn.btn-outline-light.btn-sm.m-r-15.search(href='#')
+                            i(data-feather='search')
+                        form.form-inline.search-form
+                            .form-group
+                                input.form-control-plaintext(type='search', placeholder='Search..')
+                                .icon-close.close-search
+                        a.icon-btn.btn-outline-light.btn-sm.m-r-15(href="#",data-toggle='modal' data-target='#addcallmodal')
+                            i(data-feather='plus')
+                        a.icon-btn.btn-outline-light.btn-sm.close-panel(href='#')
+                            i(data-feather='x')
+
+            ul.chat-main
+
+        .contact-list-tab.dynemic-sidebar.custom-scroll#contact-list
+            .theme-title
+                .media
+                    div
+                        h2 Contact
+                        h4 Start talking now
+                    .media-body.text-right
+                        a.icon-btn.btn-outline-light.btn-sm.m-r-15.search(href='#')
+                            i(data-feather='search')
+                        form.form-inline.search-form
+                            .form-group
+                                input.form-control-plaintext(type='search', placeholder='Search..')
+                                .icon-close.close-search
+                        a.icon-btn.btn-outline-light.btn-sm.close-panel(href='#')
+                            i(data-feather='x')
+            ul.chat-main
+
+
+        .notification-tab.dynemic-sidebar.custom-scroll#notification
+            .theme-title
+                .media
+                    div
+                        h2 Notification
+                        h4 List of notification
+                    .media-body.text-right
+                        a.icon-btn.btn-outline-light.btn-sm.close-panel(href='#')
+                            i(data-feather='x')
+
+        .settings-tab.dynemic-sidebar.custom-scroll#settings
+            .theme-title
+                .media
+                    div
+                        h2 paramètres
+                        h4 Modifier Vos paramètres .
+                    .media-body.text-right
+                        a.icon-btn.btn-outline-light.btn-sm.close-panel(href='#')
+                            i(data-feather='x')
+                .profile-box
+                    .media
+                        .profile
+                            img.bg-img(src='/public/images/contact/2.jpg' alt='Avatar')
+                        .details
+                            if user != null
+                            h5 #{user.fullName}
+                        .details.edit
+                            form.form-radious.form-sm
+                                .form-group.mb-2
+                                    input.form-control(type='text', name='username',value='Josephin water')
+                                .form-group.mb-0
+                                    input.form-control(type='text', name='address',value='Alabma , USA')
+                        .media-body
+                            a.icon-btn.btn-outline-light.btn-sm.pull-right.edit-btn(href='#')
+                                i(data-feather='edit')
+            .setting-block
+                .block
+                    .media
+                        .media-body
+                            h3 Compte
+                        .media-right
+                            a.icon-btn.btn-outline-light.btn-sm.pull-right.previous(href='#')
+                                i(data-feather='chevron-left')
+                    #accordion.theme-according
+
+                .media
+                    .media-body
+                        h3 Compte
+                        h4 Mettre à jour les détails de votre compte
+                    .media-right
+                        a.icon-btn.btn-outline-light.btn-sm.pull-right.next(href='#')
+                            i(data-feather='chevron-right')
+            .setting-block
+                .block
+                    .media
+                        .media-body
+                            h3 Chat
+                        .media-right
+                            a.icon-btn.btn-outline-light.btn-sm.pull-right.previous(href='#')
+                                i(data-feather='chevron-left')
+                .media
+                    .media-body
+                        h3 Chat
+                        h4 Control Your Chat Backup
+                    .media-right
+                        a.icon-btn.btn-outline-light.btn-sm.pull-right.next(href='#')
+                            i(data-feather='chevron-right')
+
+        .status-tab.custom-scroll.dynemic-sidebar#status
+            .my-status-box
+                .status-content
+                    .media
+                        .img-status
+                            div.user-status.two
+                                img.img-fluid.bg-img(src="/public/images/avtar/girls.jpg" alt="status")
+                            .upload-img
+                                input(type="file")
+                        .media-body
+                            h3 my status
+                            p tap to add status Update
+                        div
+                            a.icon-btn.btn-outline-light.btn-sm.close-panel(href='#')
+                                i(data-feather='x')

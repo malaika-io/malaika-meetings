@@ -15,7 +15,7 @@ const isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
         return next()
     }
-    res.redirect("/login")
+    res.redirect("auth//login")
 };
 
 
@@ -46,15 +46,10 @@ router.get('/:name', isAuthenticated, async function (req, res) {
             order: [['created_at', 'DESC']]
         });
         if (lastContactChat.length > 0) {
-            console.log('lastContactChat', lastContactChat[0].sender_id)
-            console.log('lastContactChat', lastContactChat[0].receiver_id)
             const relationId = lastContactChat[0].sender_id === req.user ? lastContactChat[0].sender_id : lastContactChat[0].receiver_id;
-            console.log('lastContactChat',relationId)
-
-
             return res.redirect(`/organization/${organization.name}/contact/${relationId}`);
         }
-        return res.render('home', {
+        return res.render('account/home', {
             contact: null,
             contacts: contacts,
             chats: [],
@@ -84,7 +79,7 @@ router.get('/:organisation/contact/:id', isAuthenticated, async function (req, r
     try {
         const contact = await models.User.findByPk(contactId);
         const chats = await getMessages(contactId, req.user.id);
-        res.render('home', {
+        res.render('account/home', {
             contact: contact,
             contacts: contacts,
             chats: chats,
