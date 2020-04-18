@@ -112,9 +112,7 @@ app.use('/clients', client);
 
 app.use(function (err, req, res, next) {
     if (err.code !== 'EBADCSRFTOKEN') return next(err);
-    return res.status(403).render("404", {
-        error: "Oops! Something went wrong..."
-    })
+    console.log('Oops! Something went wrong...')
 });
 
 

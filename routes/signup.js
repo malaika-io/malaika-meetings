@@ -91,7 +91,7 @@ router.get('/invite/:id', async function (req, res, next) {
             }
         });
         if (!invitation) {
-            return res.render('404', {message: "inviation n'exsite pas "})
+            //return res.render('404', {message: "inviation n'exsite pas "})
         }
         res.render('auth/signup-invite', {
             organization: invitation.organization_name,
