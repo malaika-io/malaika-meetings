@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const models = require("../models");
+const debug = require('../utils/logging');
 
 const isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {

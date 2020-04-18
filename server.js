@@ -117,6 +117,7 @@ app.use(function (err, req, res, next) {
     })
 });
 
+
 app.use(logger.loggerMiddleware);
 app.use(logger.exceptionMiddleware);
 process.on('uncaughtException', logger.logAndCrash);

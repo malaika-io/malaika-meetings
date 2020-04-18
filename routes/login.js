@@ -4,7 +4,6 @@ const models = require('../models');
 const {check, validationResult} = require('express-validator');
 const debug = require('../utils/logging');
 
-
 const isNotAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
         return res.redirect('/clients');
