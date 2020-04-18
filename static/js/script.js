@@ -1,6 +1,7 @@
 (function ($) {
     "use strict";
 
+
     /*=====================
       01. Tooltip js
       ==========================*/
@@ -54,12 +55,6 @@
     });
 
 
-    /*=====================
-         04. Chitchat Loder js
-         ==========================*/
-    $('.chitchat-loader').slideUp('slow', function () {
-        $(this).remove();
-    });
 
     /*=====================
          05. Search js
@@ -155,33 +150,6 @@
         $('#videocall').toggleClass("active");
     })
 
-    /*=====================
-          11.Header fix
-          ==========================*/
-    $(window).scroll(function () {
-        var scroll = $(window).scrollTop();
-        if (scroll >= 60) {
-            $(".landing-header").addClass("fixed");
-        } else {
-            $(".landing-header").removeClass("fixed");
-        }
-    });
-    /*=====================
-      12.Tap on Top
-      ==========================*/
-    $(window).on('scroll', function () {
-        if ($(this).scrollTop() > 600) {
-            $('.tap-top').fadeIn();
-        } else {
-            $('.tap-top').fadeOut();
-        }
-    });
-    $('.tap-top').on('click', function () {
-        $("html, body").animate({
-            scrollTop: 0
-        }, 600);
-        return false;
-    });
 
     /*=====================
            13. Customizer
@@ -242,27 +210,6 @@
         $(this).parent().parent().parent().toggleClass('pined');
     });
 
-    /*=====================
-        16 Reminder
-        ==========================*/
-    $(".reminder-count li").on('click', function () {
-        $('.reminder-count li').removeClass('active');
-        $(this).addClass('active');
-    });
-
-    $('.Show-reminder').on('click', function (e) {
-        $('.target-reminder-list').show(500);
-        $('.Show-reminder').hide(0);
-        $('.Hide-reminder').show(0);
-    });
-    $('.Hide-reminder').on('click', function (e) {
-        $('.target-reminder-list').hide(500);
-        $('.Show-reminder').show(0);
-        $('.Hide-reminder').hide(0);
-    });
-    $('.toggle').on('click', function (e) {
-        $('.target-reminder-list').toggle('slow');
-    });
 
     /*=====================
         17 set wallpaper onclick
@@ -345,31 +292,7 @@
         $(this).parent().parent().toggleClass("open");
     });
 
-    /*=====================
-        23. ADD tO-DO LIST
-        ==========================*/
 
-    $('.add').on('click', function (e) {
-        var total_element = $(".element").length;
-        var lastid = $(".element:last").attr("id");
-        var split_id = lastid.split("_");
-        var nextindex = Number(split_id[1]) + 1;
-        var max = 100;
-        if (total_element < max) {
-            $(".element:last").after("<div class='element' id='div_" + nextindex + "'></div>");
-            $("#div_" + nextindex).append("<form class='p-15'><div class='form-group' style='display :flex'><input type='checkbox' id='txt_" + nextindex + "'/><input type='text' class='m-l-15'/></div><div class='todo-buttons'><a class='badge badge-success font_label' href='#'' style='padding: 7px 12px'>Save</a><a class='badge badge-outline-primary font_label' href='#'' style='margin-left : 15px;padding: 7px 12px'>Cancel</a><span id='remove_" + nextindex + "' class='remove' style='margin-left : 40px'><i class='fa fa-trash' style='font-size : 20px'></i></span></div></form>");
-        }
-    });
-    $('.todo-list').on('click', '.remove', function () {
-        var id = this.id;
-        var split_id = id.split("_");
-        var deleteindex = split_id[1];
-        $("#div_" + deleteindex).remove();
-    });
-
-    $('.trashbtn').on('click', function (e) {
-        $(".todo-main-content .default-form").remove();
-    });
 
     /*=====================
            24. right sidebar
@@ -509,13 +432,23 @@
         $('.recent-default').addClass("active");
     });
 
-    $("body").on("click", ".colors li", function () {
-        $(this).addClass('active').siblings().removeClass('active');
-        var $color = $(this).attr("data-attr");
-        $("#color").attr("href", "../assets/css/" + $color + ".css");
-        return false;
-    });
 
+    if ($(window).width() <= 992) {
+        console.log('wmlsdjkpqs^^k^^sdk^^qskd')
+        $(".main-nav").removeClass("on");
+        $('body').removeClass("sidebar-active");
+        $('.app-sidebar').removeClass("active");
+        $('.chitchat-main').removeClass("small-sidebar");
+    }
+
+
+    if ($(window).width() <= 800) {
+        console.log('wmlsdjkpqs^^k^^sdk^^qskd')
+
+        $("ul.chat-main  li").on('click', function () {
+            $('.main-nav').removeClass("on");
+        });
+    }
 
 })(jQuery);
 

@@ -10,7 +10,7 @@ mixin sidebar
                     a.button-effect(href='status',data-tippy-content='status',data-intro='Check Status here')
                         .user-popup.status.one
                             div
-                                img.bg-img(src='/public/images/avtar/2.jpg' alt='Avatar')
+                            img.bg-img(src='/public/images/avtar/2.jpg' alt='Avatar')
                 li
                     .dot-btn.dot-danger.grow
                         a.icon-btn.btn-light.button-effect(href='notification',data-tippy-content='Notification')
@@ -23,9 +23,9 @@ mixin sidebar
                     a.icon-btn.btn-light(href='/logout',data-tippy-content=' Déconnexion')
                         i.fa.fa-power-off
 
-
     aside.chitchat-left-sidebar.left-disp
         .recent-default.dynemic-sidebar.active
+
             .chat.custom-scroll
                 ul.chat-cont-setting
                     li
@@ -38,16 +38,12 @@ mixin sidebar
                         div
                             h2 Chat
                             h4 Démarrer une nouvelle conversation
-                        .media-body.text-right
-                            a.icon-btn.btn-outline-light.btn-sm.search.contact-search(href='#')
-                                i(data-feather='search')
-                            form.form-inline.search-form
-                                .form-group
-                                    input.form-control-plaintext(type='search', placeholder='Search..')
-                                    .icon-close.close-search
+                        .media-body
+                            a.icon-btn.btn-outline-light.button-effect.pull-right.mobile-back(href='#')
+                                i.ti-angle-right
 
-                            a.icon-btn.btn-primary.btn-fix.chat-cont-toggle.outside(href="#")
-                                i(data-feather='plus')
+                            a.icon-btn.btn-outline-light.button-effect.pull-right.mainnav(href='#')
+                                i.ti-layout-grid2
 
                 .theme-tab.tab-sm.chat-tabs
                     ul#myTab.nav.nav-tabs(role='tablist')

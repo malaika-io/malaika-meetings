@@ -4,7 +4,7 @@ const models = require('../models');
 const bcrypt = require('bcrypt');
 const xss = require('xss');
 const {check, validationResult} = require('express-validator');
-const debug = require('../logger');
+const debug = require('../utils/logger');
 
 const isNotAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {

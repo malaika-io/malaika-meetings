@@ -1,6 +1,6 @@
 const {Sequelize} = require("sequelize");
 const bcrypt = require('bcrypt');
-const email = require('../email');
+const email = require('../utils/email');
 
 class User extends Sequelize.Model {
 
