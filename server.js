@@ -12,7 +12,6 @@ const session = require('express-session');
 const redisConnect = require("connect-redis");
 const compression = require('compression');
 const csrf = require('csurf');
-var csrfProtection = csrf({ cookie: true })
 const xssFilter = require("x-xss-protection");
 const lusca = require('lusca');
 const dotenv = require("dotenv");
@@ -37,7 +36,7 @@ let sess = {
         maxAge: hour
     }
 };
-console.log('process.env.NODE_ENV',process.env.NODE_ENV)
+
 if (process.env.NODE_ENV === 'production') {
     sess.cookie.httpOnly = true;
     sess.cookie.signed = true;
@@ -56,6 +55,7 @@ app.use(compression({
     level: 9
 }));
 app.use(cookieParser());
+app.use(csrf({cookie: true}));
 app.use(session(sess));
 app.use(passport.initialize());
 app.use(flash());
@@ -80,11 +80,6 @@ passport.deserializeUser(async (id, done) => {
         return done(e, null);
     }
 });
-app.use(
-    process.env.NODE_ENV === 'development' ?
-        csrfProtection({ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT' /* etc */]}) :
-        csrfProtection()
-);
 app.use(lusca.nosniff());
 app.use(xssFilter({setOnOldIE: true, mode: null}));
 app.use((req, res, next) => {
@@ -120,6 +115,7 @@ app.use(function (err, req, res, next) {
         console.log('EBADCSRFTOKEN')
         return next(err);
     }
+    next()
 });
 
 
