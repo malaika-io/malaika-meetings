@@ -267,10 +267,12 @@ async function call(callerSocketId, message) {
         let calleeSocketId = clients[toId];
         if (callee) {
             console.log('callee', callee)
-            await oneSignal.send({
-                tokens: [callee.web_token],
-                content: `appel entrant de ${caller.first_name}`
-            });
+            if (callee.web_token) {
+                await oneSignal.send({
+                    tokens: [callee.web_token],
+                    content: `appel entrant de ${caller.first_name}`
+                });
+            }
             if (callee.online) {
                 callee.update({peer: message.from});
                 caller.update({sdpOffer: sdpOffer, peer: toId});

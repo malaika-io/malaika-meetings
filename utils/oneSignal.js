@@ -15,13 +15,14 @@ module.exports.send = async function (body) {
     console.log('message', message)
 
     try {
-        return await axios({
+        const response =  await axios({
             method: 'POST',
             url: 'https://onesignal.com/api/v1/notifications',
             data: message,
             headers: headers,
             json: true
         });
+        console.log(response)
     } catch (e) {
         console.log('ENotfication', e)
         const err = e.response.data.errors[0];
