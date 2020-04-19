@@ -152,7 +152,6 @@ io.use(function (socket, next) {
     const sessionId = cookieParser.signedCookie(parse_cookie['connect.sid'], process.env["SESSION_SECRET"]);
     try {
         return redisStore.load(sessionId, function (err, data) {
-            console.log(data)
             if (data) {
                 const session = data['passport'];
                 if (!session) return next(new Error('socket.io: no found cookie'), false);

@@ -27,10 +27,10 @@ mixin modal
                         .title2 appel entrant
                         ul
                             li
-                                a.icon-btn.btn-success.button-effect.btn-xl.is-animating(href='#',data-toggle='modal',data-target='#audiorcvcall',data-dismiss="modal")
+                                a.icon-btn.btn-success.button-effect.btn-xl.is-animating(id="audiorcvcall-accept", data-toggle='modal',data-target='#audiorcvcall')
                                     i(data-feather='phone')
                             li
-                                a.icon-btn.btn-danger.button-effect.btn-xl.is-animating.cancelcall(href='#',data-dismiss="modal")
+                                a.icon-btn.btn-danger.button-effect.btn-xl.is-animating.cancelcall(id="audiorcvcall-dismiss",data-dismiss="modal")
                                     i(data-feather='phone')
 
     #audiorcvcall.modal.fade.audiorcvcall(tabindex='-1' role='dialog' aria-hidden='true')
