@@ -487,7 +487,6 @@ function processOffer(webRtcEndpoint, sdpOffer, pipeline, userId) {
 
 
 async function stop(message) {
-    console.log('stop', message)
     if (!pipelines[message.id]) {
         return;
     }
@@ -512,8 +511,6 @@ async function stop(message) {
     }
 
     clearCandidatesQueue(message.id);
-    console.log('pipelines', pipelines)
-
 }
 
 //web.onesignal.auto.14469d21-a548-446f-9323-a0e21fc14d38
