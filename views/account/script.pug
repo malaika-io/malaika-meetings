@@ -135,10 +135,7 @@ script.
             showSpinner(videoInput, videoOutput);
             const constraintsVideo = {
                 audio: true,
-                video: {
-                    //width: 640,
-                    framerate: 15
-                }
+                video: true
             };
             const constraintsAudio = {
                 audio: true,
@@ -152,22 +149,19 @@ script.
                 mediaConstraints: type === 'video' ? constraintsVideo : constraintsAudio
             };
 
-            console.log('options',options)
-
             webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function (error) {
-                this.generateOffer(onOffer);
+                this.generateOffer(function (error, offerSdp) {
+                    let contact = !{JSON.stringify(contact)};
+                    let user = !{JSON.stringify(user)};
+                    const message = {
+                        type: type,
+                        from: user.id,
+                        to: contact.id,
+                        sdpOffer: offerSdp
+                    };
+                    ws.emit('call', message);
+                });
             });
-        }
-
-        function onOffer(error, offerSdp) {
-            let contact = !{JSON.stringify(contact)};
-            let user = !{JSON.stringify(user)};
-            const message = {
-                from: user.id,
-                to: contact.id,
-                sdpOffer: offerSdp
-            };
-            ws.emit('call', message);
         }
 
         function onIceCandidate(candidate) {
@@ -189,77 +183,61 @@ script.
 
         function incomingCall(message) {
             let user = !{JSON.stringify(user)};
-            $('#confercall').modal();
-            document.getElementById('accept-call').addEventListener('click', function () {
-                $('#confercall').modal('hide');
-                $('#videocall').modal();
-                showSpinner(videoInput, videoOutput);
+            let type = message.type;
 
-                const options = {
-                    localVideo: videoInput,
-                    remoteVideo: videoOutput,
-                    onicecandidate: onIceCandidate
-                };
-                webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function (error) {
-                    this.generateOffer(function (error, offerSdp) {
-                        const response = {
-                            me: user.id,
-                            id: 'incomingCallResponse',
-                            from: message.from,
-                            callResponse: 'accept',
-                            sdpOffer: offerSdp
-                        };
-                        ws.emit('incomingCallResponse', response)
+            if (type === 'video') {
+                $('#confercall').modal();
+                document.getElementById('accept-call').addEventListener('click', function () {
+                    $('#confercall').modal('hide');
+                    $('#videocall').modal();
+                    showSpinner(videoInput, videoOutput);
+                    const options = {
+                        localVideo: videoInput,
+                        remoteVideo: videoOutput,
+                        onicecandidate: onIceCandidate
+                    };
+                    webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function (error) {
+                        this.generateOffer(function (error, offerSdp) {
+                            const response = {
+                                me: user.id,
+                                id: 'incomingCallResponse',
+                                from: message.from,
+                                callResponse: 'accept',
+                                sdpOffer: offerSdp
+                            };
+                            ws.emit('incomingCallResponse', response)
+                        });
                     });
                 });
-            });
-            document.getElementById('reject-call').addEventListener('click', function () {
-                const response = {
-                    id: 'incomingCallResponse',
-                    me: user.id,
-                    from: message.from,
-                    callResponse: 'reject',
-                    message: 'user declined'
-                };
-                ws.emit('incomingCallResponse', response)
-                stop(true);
-            });
-
-
-            document.getElementById('audiorcvcall').addEventListener('click', function () {
-                $('#audiocall').modal('hide');
-                $('#audiorcvcall').modal();
-                showSpinner(videoInput, videoOutput);
-
-                const options = {
-                    localVideo: videoInput,
-                    remoteVideo: videoOutput,
-                    onicecandidate: onIceCandidate
-                };
-                webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function (error) {
-                    this.generateOffer(function (error, offerSdp) {
-                        const response = {
-                            me: user.id,
-                            id: 'incomingCallResponse',
-                            from: message.from,
-                            callResponse: 'accept',
-                            sdpOffer: offerSdp
-                        };
-                        ws.emit('incomingCallResponse', response)
-                    });
+                document.getElementById('reject-call').addEventListener('click', function () {
+                    const response = {
+                        id: 'incomingCallResponse',
+                        me: user.id,
+                        from: message.from,
+                        callResponse: 'reject',
+                        message: 'user declined'
+                    };
+                    ws.emit('incomingCallResponse', response)
+                    stop(true);
                 });
-            });
-            document.getElementById('audiorcvcall-dismiss').addEventListener('click', function () {
-                const response = {
-                    id: 'incomingCallResponse',
-                    me: user.id,
-                    from: message.from,
-                    callResponse: 'reject',
-                    message: 'user declined'
-                };
-                ws.emit('incomingCallResponse', response)
-                stop(true);
-            });
+            } else {
+                document.getElementById('audiorcvcall-accept').addEventListener('click', function () {
+                    $('#audiocall').modal('hide');
+                    $('#audiorcvcall').modal();
+
+                });
+                document.getElementById('audiorcvcall-dismiss').addEventListener('click', function () {
+                    const response = {
+                        id: 'incomingCallResponse',
+                        me: user.id,
+                        from: message.from,
+                        callResponse: 'reject',
+                        message: 'user declined'
+                    };
+                    ws.emit('incomingCallResponse', response)
+                    stop(true);
+                });
+            }
         }
 
         function startCommunication(message) {

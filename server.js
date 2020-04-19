@@ -265,7 +265,6 @@ async function call(callerSocketId, message) {
         let callee = await models.User.findByPk(toId);
         let calleeSocketId = clients[toId];
         if (callee) {
-            console.log('callee', callee)
             if (callee.web_token) {
                 await oneSignal.send({
                     tokens: [callee.web_token],
@@ -277,7 +276,8 @@ async function call(callerSocketId, message) {
                 caller.update({sdpOffer: sdpOffer, peer: toId});
                 if (callerSocketId) {
                     return io.to(calleeSocketId).emit('incomingCall', {
-                        from: fromId
+                        from: fromId,
+                        type: message.type
                     });
                 }
             }
@@ -294,7 +294,6 @@ async function call(callerSocketId, message) {
         });
 
     } catch (e) {
-        console.log('e', e)
         rejectCause = `err servenue`;
         return io.to(callerSocketId).emit('callResponse', {
             response: 'rejected: ',

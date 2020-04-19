@@ -24,38 +24,43 @@ mixin modal
                 .audiocall1.call-modal
                     img.bg-img(src='/public/images/avtar/big/audiocall.jpg' alt='Avatar')
                     .center-con.text-center
-                        .title2= contact !== null ? `${contact.last_name.toString()}` : ""
-                        h6 Appel  video entrant
+                        .title2 appel entrant
                         ul
                             li
-                                a.icon-btn.btn-danger.button-effect.btn-xl.is-animating.cancelcall(id="audiorcvcall-dismiss",data-dismiss="modal")
+                                a.icon-btn.btn-light.button-effect.pause(id="audiorcvcall-accept",data-tippy-content='Hold')
+                                    i.ti-control-pause
+                            li
+                                a.icon-btn.btn-danger.button-effect.btn-xl.is-animating(id="audiorcvcall-dismiss",data-dismiss="modal",data-tippy-content='Hangup')
                                     i(data-feather='phone')
+                            li
+                                a.icon-btn.btn-light.button-effect.mic(href="#",data-tippy-content='Mute')
+                                    i.fa.fa-microphone
 
-    //#audiorcvcall.modal.fade.audiorcvcall(tabindex='-1' role='dialog' aria-hidden='true')
-    //    .modal-dialog.modal-dialog-centered(role='document')
-    //        .modal-body
-    //            .audiocall2.call-modal
-    //                img.bg-img(src='/public/images/avtar/big/audiocall.jpg' alt='Avatar')
-    //                .center-con.text-center
-    //                    #basicUsage2 00:00:00
-    //                    .title2 Josephin water
-    //                    h6 log angelina california
-    //                    ul
-    //                        li
-    //                            a.icon-btn.btn-light.button-effect.mute(href="#",data-tippy-content='Mute')
-    //                                i.fa.fa-microphone
-    //                        li
-    //                            a.icon-btn.btn-light.button-effect.mute(href="#",data-tippy-content='Speaker')
-    //                                i.fa.fa-volume-up
-    //                        li
-    //                            a.icon-btn.btn-danger.button-effect.btn-xl.is-animating(href='#',data-tippy-content='Hangup',data-dismiss='modal')
-    //                                i(data-feather='phone')
-    //                        li
-    //                            a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='Add Call')
-    //                                i(data-feather='user-plus')
-    //                        li
-    //                            a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='Pause')
-    //                                i(data-feather='pause')
+    #audiorcvcall.modal.fade.audiorcvcall(tabindex='-1' role='dialog' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered(role='document')
+            .modal-body
+                .audiocall2.call-modal
+                    img.bg-img(src='../assets/images/avtar/big/audiocall.jpg' alt='Avatar')
+                    .center-con.text-center
+                        #basicUsage2 00:00:00
+                        .title2= contact !== null ? `${contact.last_name.toString()}` : ""
+                        h6 log angelina california
+                        ul
+                            li
+                                a.icon-btn.btn-light.button-effect.mute(href="#",data-tippy-content='Mute')
+                                    i.fa.fa-microphone
+                            li
+                                a.icon-btn.btn-light.button-effect.mute(href="#",data-tippy-content='Speaker')
+                                    i.fa.fa-volume-up
+                            li
+                                a.icon-btn.btn-danger.button-effect.btn-xl.is-animating(href='#',data-tippy-content='Hangup',data-dismiss='modal')
+                                    i(data-feather='phone')
+                            li
+                                a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='Add Call')
+                                    i(data-feather='user-plus')
+                            li
+                                a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='Pause')
+                                    i(data-feather='pause')
 
     #confercall.modal.fade(tabindex='-1' role='dialog'  aria-hidden='true')
         .modal-dialog.modal-dialog-centered(role='document')
