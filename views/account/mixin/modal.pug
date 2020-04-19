@@ -24,12 +24,9 @@ mixin modal
                 .audiocall1.call-modal
                     img.bg-img(src='/public/images/avtar/big/audiocall.jpg' alt='Avatar')
                     .center-con.text-center
-                        .title2 Josephin water
-                        h6 log angelina california
+                        .title2= contact !== null ? `${contact.last_name.toString()}` : ""
+                        h6 Appel  video entrant
                         ul
-                            li
-                                a.icon-btn.btn-success.button-effect.btn-xl.is-animating(id="audiorcvcall" data-toggle='modal',data-target='#audiorcvcall')
-                                    i(data-feather='phone')
                             li
                                 a.icon-btn.btn-danger.button-effect.btn-xl.is-animating.cancelcall(id="audiorcvcall-dismiss",data-dismiss="modal")
                                     i(data-feather='phone')

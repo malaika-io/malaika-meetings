@@ -13,6 +13,7 @@ script.
         let state = false;
         videoInput = document.getElementById('videoInput');
         videoOutput = document.getElementById('videoOutput');
+
         document.getElementById('call').addEventListener('click', function () {
             call('video');
         });
@@ -150,6 +151,8 @@ script.
                 onicecandidate: onIceCandidate,
                 mediaConstraints: type === 'video' ? constraintsVideo : constraintsAudio
             };
+
+            console.log('options',options)
 
             webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function (error) {
                 this.generateOffer(onOffer);
