@@ -24,8 +24,8 @@ script.
             call('audio');
         });
 
-        document.getElementById('call-audio').addEventListener('click', function () {
-            call('call_side_bar');
+        document.getElementById('call_side_bar').addEventListener('click', function () {
+            call('audio');
         });
 
         document.getElementById('stop').addEventListener('click', function () {
@@ -211,6 +211,42 @@ script.
                 });
             });
             document.getElementById('reject-call').addEventListener('click', function () {
+                const response = {
+                    id: 'incomingCallResponse',
+                    me: user.id,
+                    from: message.from,
+                    callResponse: 'reject',
+                    message: 'user declined'
+                };
+                ws.emit('incomingCallResponse', response)
+                stop(true);
+            });
+
+
+            document.getElementById('audiorcvcall').addEventListener('click', function () {
+                $('#audiocall').modal('hide');
+                $('#audiorcvcall').modal();
+                showSpinner(videoInput, videoOutput);
+
+                const options = {
+                    localVideo: videoInput,
+                    remoteVideo: videoOutput,
+                    onicecandidate: onIceCandidate
+                };
+                webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function (error) {
+                    this.generateOffer(function (error, offerSdp) {
+                        const response = {
+                            me: user.id,
+                            id: 'incomingCallResponse',
+                            from: message.from,
+                            callResponse: 'accept',
+                            sdpOffer: offerSdp
+                        };
+                        ws.emit('incomingCallResponse', response)
+                    });
+                });
+            });
+            document.getElementById('audiorcvcall-dismiss').addEventListener('click', function () {
                 const response = {
                     id: 'incomingCallResponse',
                     me: user.id,
