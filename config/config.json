@@ -16,11 +16,11 @@
     "operatorsAliases": false
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
+    "username": "admin",
+    "password": "Lyna2009Karim",
+    "database": "malaika",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "operatorsAliases": false
+    "operatorsAliases": true
   }
 }
