@@ -30,11 +30,13 @@ script.
         OneSignal.getUserId(function (userId) {
             console.log("OneSignal User ID:", userId);
             const csrf_token = `${csrfToken}`;
+            const user = !{JSON.stringify(user)};
             console.log('csrfToken', csrfToken)
             $.ajax({
                 url: "/users/onesignal",
                 method: "POST",
                 data: {
+                    id: user.id,
                     oneSignalId: userId,
                     csrf_token: csrf_token,
                 },
