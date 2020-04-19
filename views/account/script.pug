@@ -14,13 +14,12 @@ script.
         videoInput = document.getElementById('videoInput');
         videoOutput = document.getElementById('videoOutput');
         $("#call").click(call)
+        $("#video_side_bar").click(call)
         document.getElementById('stop').addEventListener('click', function () {
             stop();
         });
 
-        ws.on('connect', function () {
-            console.log('connect')
-        });
+        ws.on('connect', function () {});
 
         ws.on('leaveChat', function (message) {
             console.log(message)
@@ -121,17 +120,14 @@ script.
             showSpinner(videoInput, videoOutput);
             const constraints = {
                 audio: true,
-                video: {
-                    width: 640,
-                    framerate: 15
-                }
+                video:false
             };
 
             const options = {
                 localVideo: videoInput,
                 remoteVideo: videoOutput,
                 onicecandidate: onIceCandidate,
-                //mediaConstraints: constraints
+                mediaConstraints: constraints
             };
 
             webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function (error) {
