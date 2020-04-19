@@ -1,6 +1,6 @@
 script.
     document.addEventListener("DOMContentLoaded", function (event) {
-        const ws = io.connect( "!{ socket_url}" , {
+        const ws = io.connect("!{ socket_url}", {
             path: '/kurento',
             transports: ['websocket', 'polling']
         });
@@ -20,6 +20,7 @@ script.
         });
 
         document.getElementById('call-audio').addEventListener('click', function () {
+            console.log('call-audio')
             call('audio');
         });
 
@@ -130,6 +131,7 @@ script.
 
 
         function call(type) {
+            console.log('type', type)
             showSpinner(videoInput, videoOutput);
             const constraintsVideo = {
                 audio: true,
@@ -157,6 +159,7 @@ script.
                         to: contact.id,
                         sdpOffer: offerSdp
                     };
+                    console.log('message', message)
                     ws.emit('call', message);
                 });
             });
@@ -180,6 +183,8 @@ script.
         }
 
         function incomingCall(message) {
+            console.log('incomingCall', message)
+
             let user = !{JSON.stringify(user)};
             let type = message.type;
 
@@ -219,6 +224,7 @@ script.
                     stop(true);
                 });
             } else {
+                $('#audiocall').modal();
                 document.getElementById('audiorcvcall-accept').addEventListener('click', function () {
                     $('#audiocall').modal('hide');
                     $('#audiorcvcall').modal();
