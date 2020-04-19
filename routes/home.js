@@ -12,10 +12,7 @@ const isNotAuthenticated = (req, res, next) => {
 router.get('/', isNotAuthenticated, async function (req, res, next) {
     debug.log.info('home');
     try {
-        const SOCKET_URL = process.env.SOCKET_URL;
-        res.render('landing',{
-            socket_url: SOCKET_URL
-        });
+        res.render('landing');
     } catch (e) {
         next(e);
     }

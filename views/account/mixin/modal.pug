@@ -40,24 +40,17 @@ mixin modal
         .modal-dialog.modal-dialog-centered(role='document')
             .modal-body
                 .audiocall2.call-modal
-                    img.bg-img(src='../assets/images/avtar/big/audiocall.jpg' alt='Avatar')
+                    img.bg-img(src='/public/images/avtar/big/audiocall.jpg' alt='Avatar')
                     .center-con.text-center
                         #basicUsage2 00:00:00
                         .title2= contact !== null ? `${contact.last_name.toString()}` : ""
-                        h6 log angelina california
                         ul
-                            li
-                                a.icon-btn.btn-light.button-effect.mute(href="#",data-tippy-content='Mute')
-                                    i.fa.fa-microphone
                             li
                                 a.icon-btn.btn-light.button-effect.mute(href="#",data-tippy-content='Speaker')
                                     i.fa.fa-volume-up
                             li
                                 a.icon-btn.btn-danger.button-effect.btn-xl.is-animating(href='#',data-tippy-content='Hangup',data-dismiss='modal')
                                     i(data-feather='phone')
-                            li
-                                a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='Add Call')
-                                    i(data-feather='user-plus')
                             li
                                 a.icon-btn.btn-light.button-effect(href="#",data-tippy-content='Pause')
                                     i(data-feather='pause')

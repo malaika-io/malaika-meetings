@@ -1,6 +1,6 @@
 script.
     document.addEventListener("DOMContentLoaded", function (event) {
-        const ws = io.connect(!{socket_url}, {
+        const ws = io.connect( "!{ socket_url}" , {
             path: '/kurento',
             transports: ['websocket', 'polling']
         });

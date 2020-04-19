@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const models = require("../models");
 const debug = require('../utils/logging');
+const SOCKET_URL = process.env.SOCKET_URL;
 
 const isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
@@ -13,7 +14,6 @@ const isAuthenticated = (req, res, next) => {
 
 router.get('/', isAuthenticated, async function (req, res,next) {
     const uuid = req.user.uuid;
-    console.log('uuid', uuid)
     if (uuid) {
         return res.redirect(`/clients/${uuid}`);
     }
@@ -73,7 +73,8 @@ router.get('/:uuid', isAuthenticated, async function (req, res,next) {
             contacts: contacts,
             chats: chats,
             messages: [],
-            messagesGroupe: []
+            messagesGroupe: [],
+            socket_url: SOCKET_URL
         };
         return res.render('account/home', data);
     } catch (error) {
@@ -114,7 +115,8 @@ router.get('/:uuid/contacts/:contact_uuid', isAuthenticated, async function (req
             contacts: contacts,
             chats: chats,
             messages: [],
-            messagesGroupe: []
+            messagesGroupe: [],
+            socket_url: SOCKET_URL
         });
     }
     catch (e) {
