@@ -35,7 +35,7 @@ script.
                 data: {
                     id: user.id,
                     oneSignalId: userId,
-                    csrf_token: JSON.stringify(!{csrfToken}),
+                    csrf_token: "!{csrfToken}",
                 },
                 dataType: "json",
             }).done(function (response) {
