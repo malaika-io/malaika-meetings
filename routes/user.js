@@ -25,12 +25,15 @@ router.post('/invite', async function (req, res) {
 
 router.post('/onesignal', async function (req, res) {
     const {id, oneSignalId} = req.body;
-    console.log(req.body)
     try {
-        const user = models.User.findByPk(id);
-        user.update({web_token: oneSignalId});
+        await models.User.update({web_token: oneSignalId}, {
+            where: {
+                id: id
+            }
+        });
         return res.json({ok: true});
     } catch (e) {
+        console.log(e)
         res.status(400).json(new Error('error'));
     }
 });
