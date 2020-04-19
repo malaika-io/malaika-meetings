@@ -13,13 +13,27 @@ script.
         let state = false;
         videoInput = document.getElementById('videoInput');
         videoOutput = document.getElementById('videoOutput');
-        $("#call").click(call)
-        $("#video_side_bar").click(call)
+        document.getElementById('call').addEventListener('click', function () {
+            call('video');
+        });
+        document.getElementById('video_side_bar').addEventListener('click', function () {
+            call('video');
+        });
+
+        document.getElementById('call-audio').addEventListener('click', function () {
+            call('audio');
+        });
+
+        document.getElementById('call-audio').addEventListener('click', function () {
+            call('call_side_bar');
+        });
+
         document.getElementById('stop').addEventListener('click', function () {
             stop();
         });
 
-        ws.on('connect', function () {});
+        ws.on('connect', function () {
+        });
 
         ws.on('leaveChat', function (message) {
             console.log(message)
@@ -116,18 +130,25 @@ script.
         };
 
 
-        function call() {
+        function call(type) {
             showSpinner(videoInput, videoOutput);
-            const constraints = {
+            const constraintsVideo = {
                 audio: true,
-                video:false
+                video: {
+                    //width: 640,
+                    framerate: 15
+                }
+            };
+            const constraintsAudio = {
+                audio: true,
+                video: false,
             };
 
             const options = {
                 localVideo: videoInput,
                 remoteVideo: videoOutput,
                 onicecandidate: onIceCandidate,
-                mediaConstraints: constraints
+                mediaConstraints: type === 'video' ? constraintsVideo : constraintsAudio
             };
 
             webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function (error) {
