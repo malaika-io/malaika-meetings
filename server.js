@@ -152,6 +152,7 @@ io.use(function (socket, next) {
     const sessionId = cookieParser.signedCookie(parse_cookie['connect.sid'], process.env["SESSION_SECRET"]);
     try {
         return redisStore.load(sessionId, function (err, data) {
+            console.log(data)
             if (data) {
                 const session = data['passport'];
                 if (!session) return next(new Error('socket.io: no found cookie'), false);
@@ -265,12 +266,12 @@ async function call(callerSocketId, message) {
         let callee = await models.User.findByPk(toId);
         let calleeSocketId = clients[toId];
         if (callee) {
-            if (callee.web_token) {
+            /*if (callee.web_token) {
                 await oneSignal.send({
                     tokens: [callee.web_token],
                     content: `appel entrant de ${caller.first_name}`
                 });
-            }
+            }*/
             if (callee.online) {
                 callee.update({peer: message.from});
                 caller.update({sdpOffer: sdpOffer, peer: toId});
