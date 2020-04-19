@@ -228,6 +228,30 @@ script.
                 document.getElementById('audiorcvcall-accept').addEventListener('click', function () {
                     $('#audiocall').modal('hide');
                     $('#audiorcvcall').modal();
+                    const constraintsAudio = {
+                        audio: true,
+                        video: false,
+                    };
+
+                    const options = {
+                        localVideo: videoInput,
+                        remoteVideo: videoOutput,
+                        onicecandidate: onIceCandidate,
+                        mediaConstraints: constraintsAudio
+                    };
+
+                    webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function (error) {
+                        this.generateOffer(function (error, offerSdp) {
+                            const response = {
+                                me: user.id,
+                                id: 'incomingCallResponse',
+                                from: message.from,
+                                callResponse: 'accept',
+                                sdpOffer: offerSdp
+                            };
+                            ws.emit('incomingCallResponse', response)
+                        });
+                    });
 
                 });
                 document.getElementById('audiorcvcall-dismiss').addEventListener('click', function () {
