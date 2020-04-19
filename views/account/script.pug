@@ -3,13 +3,13 @@ script.
         const url = 'https://malaika.io';
         //const url = 'http://' + location.host;
         const OneSignal = window.OneSignal || [];
-        if (url === "https://malaika.io") {
-            OneSignal.push(function () {
-                OneSignal.init({
-                    appId: "33332867-5fd8-4785-846d-bcebf163bfef",
-                });
+        OneSignal.push(function () {
+            OneSignal.init({
+                appId: "33332867-5fd8-4785-846d-bcebf163bfef",
             });
-        }
+        });
+        //web.onesignal.auto.5462a642-4744-4944-be08-d03aa1430cc8
+
 
         const ws = io.connect(url, {
             path: '/kurento',
