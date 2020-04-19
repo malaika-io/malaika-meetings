@@ -60,6 +60,7 @@ script.
         });
 
         ws.on('stopCommunication', function (parsedMessage) {
+            console.log('stopCommunication', parsedMessage)
             stop(true);
         });
 

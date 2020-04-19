@@ -490,20 +490,18 @@ async function stop(message) {
             peer: stopperUser.peer
         }
     });
-    console.log('stopperUser', stopperUser);
-    console.log('stopperUser', stoppedUser);
 
     if (stoppedUser) {
         stoppedUser.update({peer: null, sdpOffer: null}, {where: {id: stoppedUser.id}});
         delete pipelines[stoppedUser.id];
         const message = {
-            id: 'stopCommunication',
             message: 'remote user hanged out'
         };
         io.to(stoppedUser.socketId).emit('stopCommunication', message);
     }
 
     clearCandidatesQueue(message.id);
+    console.log('pipelines', pipelines)
 
 }
 
