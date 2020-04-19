@@ -152,11 +152,16 @@ io.use(function (socket, next) {
     const sessionId = cookieParser.signedCookie(parse_cookie['connect.sid'], process.env["SESSION_SECRET"]);
     try {
         return redisStore.load(sessionId, function (err, data) {
-            const session = data['passport'];
-            if (!session) return next(new Error('socket.io: no found cookie'), false);
-            socket.user_id = session.user;
-            clients[session.user] = socket.id;
-            return next(null, true);
+            if(data){
+                const session = data['passport'];
+                if (!session) return next(new Error('socket.io: no found cookie'), false);
+                socket.user_id = session.user;
+                clients[session.user] = socket.id;
+                return next(null, true);
+            }
+            else {
+                return next(new Error('socket.io: no found cookie'), false);
+            }
         });
     } catch (e) {
         return next(new Error('socket.io: no found cookie'), false);
