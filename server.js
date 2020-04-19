@@ -432,9 +432,10 @@ async function incomingCallResponse(socketId, message) {
 
 function createKurentoClient() {
     return new Promise(function (resolve, reject) {
-        return kurento("ws://malaika.io:8888/kurento", function (error, _kurentoClient) {
+        const WS_URI = process.env.WS_URI;
+        return kurento(WS_URI, function (error, _kurentoClient) {
             if (error) {
-                return reject(new Error('Coult not find media server at address ' + ws_uri))
+                return reject(new Error('Coult not find media server at address ' + WS_URI))
             }
             resolve(_kurentoClient);
         });

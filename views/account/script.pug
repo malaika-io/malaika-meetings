@@ -1,8 +1,6 @@
 script.
     document.addEventListener("DOMContentLoaded", function (event) {
-        const url = 'https://malaika.io';
-        //const url = 'http://' + location.host;
-        const ws = io.connect(url, {
+        const ws = io.connect(!{socket_url}, {
             path: '/kurento',
             transports: ['websocket', 'polling']
         });

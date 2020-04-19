@@ -5,7 +5,7 @@ const moment = require("moment");
 module.exports = {
     up: (queryInterface, Sequelize) => {
 
-        return queryInterface.bulkInsert('Organization', [{
+        return queryInterface.bulkInsert('Team', [{
             id: 1,
             name: "libheros",
             created_at: moment(new Date()).format("YYYY-MM-DD HH:mm:ss"),
