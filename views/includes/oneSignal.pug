@@ -4,6 +4,7 @@ script.
         OneSignal.init({
             appId: "87997d16-ab3a-478f-ace8-a640af97cfc5", autoRegister: false,
             allowLocalhostAsSecureOrigin: true,
+            safari_web_id:"web.onesignal.auto.14469d21-a548-446f-9323-a0e21fc",
             notifyButton: {
                 enable: false,
             }
@@ -40,12 +41,7 @@ script.
                     oneSignalId: userId
                 },
                 dataType: "json",
-            }).done(function (response) {
-                let data = JSON.stringify(response);
-                console.log(data)
-            }).fail(function (error) {
-                alert("La requête s'est terminée en échec. Infos : " + JSON.stringify(error));
-            })
+            });
         });
 
         OneSignal.on('notificationDisplay', function (event) {
