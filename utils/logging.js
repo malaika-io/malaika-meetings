@@ -65,5 +65,5 @@ module.exports.exceptionMiddleware = function (err, req, res, next) {
 };
 module.exports.logAndCrash = function (err) {
     logger.error(err.message, {stack: err.stack});
-    throw err;
+    //throw err;
 };
