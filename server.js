@@ -107,7 +107,6 @@ app.use('/clients', client);
 app.use(function (err, req, res, next) {
     console.log(err)
     if (err.code !== 'EBADCSRFTOKEN') {
-        console.log('EBADCSRFTOKEN')
         return next(err);
     }
     next()
