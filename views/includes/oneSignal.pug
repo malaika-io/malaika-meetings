@@ -15,6 +15,11 @@ script.
             console.log("The prompt displayed");
         });
 
+        OneSignal.push(["getNotificationPermission", function (permission) {
+            console.log("Site Notification Permission:", permission);
+            // (Output) Site Notification Permission: default
+        }]);
+
 
         var isPushSupported = OneSignal.isPushNotificationsSupported();
         if (isPushSupported) {
