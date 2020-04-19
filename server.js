@@ -266,8 +266,9 @@ async function call(callerSocketId, message) {
         let callee = await models.User.findByPk(toId);
         let calleeSocketId = clients[toId];
         if (callee) {
+            console.log('callee', callee)
             await oneSignal.send({
-                tokens: [caller.web_token],
+                tokens: [callee.web_token],
                 content: `appel entrant de ${caller.first_name}`
             });
             if (callee.online) {
