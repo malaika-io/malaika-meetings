@@ -32,10 +32,12 @@ script.
             $.ajax({
                 url: "/users/onesignal",
                 method: "POST",
+                headers: {
+                    'X-CSRF-Token': "!{csrfToken}",
+                },
                 data: {
                     id: user.id,
-                    oneSignalId: userId,
-                    csrf_token: "!{csrfToken}",
+                    oneSignalId: userId
                 },
                 dataType: "json",
             }).done(function (response) {
