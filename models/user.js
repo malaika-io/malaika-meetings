@@ -39,7 +39,8 @@ class User extends Sequelize.Model {
                     set(value) {
                         throw new Error('Do not try to set the `fullName` value!');
                     }
-                }
+                },
+                web_token: {type: Sequelize.STRING(45), unique: true}
             }, {
                 indexes: [{
                     unique: true,

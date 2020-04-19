@@ -23,4 +23,9 @@ router.post('/invite', async function (req, res) {
     res.redirect(`/clients`);
 });
 
+router.post('/onesignal', async function (req, res) {
+    const {id, oneSignalId} = req.body;
+    console.log(req.body)
+});
+
 module.exports = router;

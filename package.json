@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "app-root-path": "^3.0.0",
+    "axios": "^0.19.2",
     "bcrypt": "^4.0.1",
     "body-parser": "^1.19.0",
     "cassandra-driver": "^4.5.1",
