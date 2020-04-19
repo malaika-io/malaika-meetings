@@ -22,19 +22,16 @@ mixin modal
         .modal-dialog.modal-dialog-centered(role='document')
             .modal-body
                 .audiocall1.call-modal
-                    img.bg-img(src='/public/images/avtar/big/audiocall.jpg' alt='Avatar')
+                    img.bg-img(src='../assets/images/avtar/big/audiocall.jpg' alt='Avatar')
                     .center-con.text-center
                         .title2 appel entrant
                         ul
                             li
-                                a.icon-btn.btn-light.button-effect.pause(id="audiorcvcall-accept",data-tippy-content='Hold')
-                                    i.ti-control-pause
-                            li
-                                a.icon-btn.btn-danger.button-effect.btn-xl.is-animating(id="audiorcvcall-dismiss",data-dismiss="modal",data-tippy-content='Hangup')
+                                a.icon-btn.btn-success.button-effect.btn-xl.is-animating(href='#',data-toggle='modal',data-target='#audiorcvcall',data-dismiss="modal")
                                     i(data-feather='phone')
                             li
-                                a.icon-btn.btn-light.button-effect.mic(href="#",data-tippy-content='Mute')
-                                    i.fa.fa-microphone
+                                a.icon-btn.btn-danger.button-effect.btn-xl.is-animating.cancelcall(href='#',data-dismiss="modal")
+                                    i(data-feather='phone')
 
     #audiorcvcall.modal.fade.audiorcvcall(tabindex='-1' role='dialog' aria-hidden='true')
         .modal-dialog.modal-dialog-centered(role='document')
