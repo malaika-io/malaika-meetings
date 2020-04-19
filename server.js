@@ -13,6 +13,7 @@ const redisConnect = require("connect-redis");
 const compression = require('compression');
 const csrf = require('csurf');
 const xssFilter = require("x-xss-protection");
+const oneSignal = require('./utils/oneSignal');
 const lusca = require('lusca');
 const dotenv = require("dotenv");
 dotenv.config();
@@ -152,14 +153,13 @@ io.use(function (socket, next) {
     const sessionId = cookieParser.signedCookie(parse_cookie['connect.sid'], process.env["SESSION_SECRET"]);
     try {
         return redisStore.load(sessionId, function (err, data) {
-            if(data){
+            if (data) {
                 const session = data['passport'];
                 if (!session) return next(new Error('socket.io: no found cookie'), false);
                 socket.user_id = session.user;
                 clients[session.user] = socket.id;
                 return next(null, true);
-            }
-            else {
+            } else {
                 return next(new Error('socket.io: no found cookie'), false);
             }
         });
@@ -259,12 +259,17 @@ async function call(callerSocketId, message) {
     const sdpOffer = message.sdpOffer;
     let rejectCause = ``;
 
+
     clearCandidatesQueue(fromId);
     try {
         let caller = await models.User.findByPk(fromId);
         let callee = await models.User.findByPk(toId);
         let calleeSocketId = clients[toId];
         if (callee) {
+            await oneSignal.send({
+                tokens: [caller.web_token],
+                content: `appel entrant de ${caller.first_name}`
+            });
             if (callee.online) {
                 callee.update({peer: message.from});
                 caller.update({sdpOffer: sdpOffer, peer: toId});
