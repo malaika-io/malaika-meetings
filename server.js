@@ -37,12 +37,6 @@ let sess = {
     }
 };
 
-if (process.env.NODE_ENV === 'production') {
-    //sess.cookie.httpOnly = true;
-    //sess.cookie.signed = true;
-    //sess.cookie.secure = true;
-    //sess.cookie.sameSite = true;
-}
 const app = express();
 var logger = require('./utils/logging');
 
@@ -233,6 +227,7 @@ io.on('connection', async function (socket) {
         return incomingCallResponse(socketId, message);
     });
     socket.on('stop', async function (message) {
+
         return stop(message);
     });
 
@@ -481,6 +476,7 @@ function processOffer(webRtcEndpoint, sdpOffer, pipeline, userId) {
 
 
 async function stop(message) {
+    console.log('stop', message)
     if (!pipelines[message.id]) {
         return;
     }
@@ -494,6 +490,8 @@ async function stop(message) {
             peer: stopperUser.peer
         }
     });
+    console.log('stopperUser', stopperUser);
+    console.log('stopperUser', stoppedUser);
 
     if (stoppedUser) {
         stoppedUser.update({peer: null, sdpOffer: null}, {where: {id: stoppedUser.id}});

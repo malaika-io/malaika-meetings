@@ -23,7 +23,9 @@ script.
         videoInput = document.getElementById('videoInput');
         videoOutput = document.getElementById('videoOutput');
         $("#call").click(call)
-        $("#stop").click(stop)
+        document.getElementById('stop').addEventListener('click', function () {
+            stop();
+        });
 
         ws.on('connect', function () {
             console.log('connect')
@@ -217,16 +219,17 @@ script.
         }
 
         function stop(message) {
-            state = true;
+            console.log('stop', message);
+            //state = true;
             let user = !{JSON.stringify(user)};
             if (webRtcPeer) {
                 webRtcPeer.dispose();
                 webRtcPeer = null;
-                ws.emit('stop', {
-                    id: user.id
-                })
-
-                if (!message) {}
+                if (!message) {
+                    ws.emit('stop', {
+                        id: user.id
+                    })
+                }
             }
             hideSpinner(videoInput, videoOutput);
         }
