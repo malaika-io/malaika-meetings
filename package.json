@@ -35,7 +35,7 @@
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "postmark": "^2.5.1",
-    "pug": "^2.0.4",
+    "pug": "^3.0.1",
     "redis": "^3.0.2",
     "request-promise-native": "^1.0.5",
     "sequelize": "^5.21.3",
