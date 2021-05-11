@@ -28,7 +28,7 @@
     "gulp-autoprefixer": "^7.0.1",
     "http-errors": "^1.7.3",
     "kurento-client": "git+https://github.com/Kurento/kurento-client-js.git",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.21",
     "lusca": "^1.6.1",
     "moment": "^2.20.1",
     "mysql2": "^1.5.3",
