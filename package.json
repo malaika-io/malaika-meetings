@@ -30,7 +30,7 @@
     "kurento-client": "git+https://github.com/Kurento/kurento-client-js.git",
     "lodash": "^4.17.5",
     "lusca": "^1.6.1",
-    "moment": "^2.20.1",
+    "moment": "^2.29.2",
     "mysql2": "^1.5.3",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
